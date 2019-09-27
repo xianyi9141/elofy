@@ -1,0 +1,16 @@
+
+application/config/config\.php
+
+application/config/constants\.php
+
+application/config/database\.php
+
+assets/img/
+
+assets/upload/
+
+application/models/database\.php
+
+application/logs/
+
+\.idea/
