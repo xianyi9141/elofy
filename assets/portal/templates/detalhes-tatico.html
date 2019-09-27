@@ -1,0 +1,2114 @@
+<style type="text/css">
+    .panel-default {
+        border: none !important;
+        -webkit-border-radius: 3px;
+        -webkit-background-clip: padding-box;
+        -moz-border-radius: 3px;
+        -moz-background-clip: padding;
+        border-radius: 3px;
+        background-clip: padding-box;
+    }
+
+    .panel-group .panel-heading+.panel-collapse .panel-body {
+        border-top: none !important;
+    }
+
+    .key-list>.right {
+        width: 80px;
+        padding: 0 10px;
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    table.dataTable {
+        border: none !important;
+    }
+</style>
+<div class="hide" ng-class="{'hide': !tatic}">
+    <!-- Objetivos Táticos -->
+    <div>
+        <div class="col-sm-12">
+            <!--<div class="button_sets backlink inline" style="border: none;">
+                    <a href="javascript:history.back()"  class="startappraisal "><i class="fa fa-reply"></i> Voltar</a>-->
+            <a href="javascript:history.back()">
+                <button class="mdc-button mdc-button--outlined mdc-voltar">
+                    <i class="material-icons mdc-button__icon">navigate_before</i>
+                    <span class="mdc-button__label">Voltar</span>
+                </button>
+            </a>
+
+            <h2 class="h2 linkh2" ng-repeat="goal in parentgoals">
+                <a href="#!/{{goal.id}}" ng-if="goal.parent_id==null" style="font-size: 19px;"
+                    class="linkh2">{{ tatic.parent.title }}</a>
+                <a href="#!/tatic/{{goal.id}}" ng-if="goal.parent_id!=null" style="font-size: 19px;"
+                    class="linkh2">{{ tatic.parent.title }}</a>
+            </h2>
+        </div>
+        <div ng-class="{'col-sm-12':user.empresa.contrato_metas==1, 'col-sm-9':user.empresa.contrato_metas==0}">
+            <div id="taticsDetails" class="box-border-noshadow nopadding">
+
+                <div class="show-view_headings">
+                    <div class="subTitle" data-toggle="tooltip" title="{{ tatic.title }}"><span
+                            ng-if="!editerGoalModel">
+                            <a class="favorite right-align hover-cls" ng-if="user.empresa.contrato_metas==0"
+                                ng-click="favorite(tatic)"><i
+                                    ng-class="{'icon-star-empty': tatic.estrategico == 0 || tatic.estrategico == null, 'icon-star': tatic.estrategico == 1}"></i></a>
+                            {{tatic.title.substr(0,68)}}<span ng-if="tatic.title.length > 69">...</span></span>
+                        <input ng-if="editerGoalModel" id="editTitle" type="text" name="tatic_title"
+                            ng-value="tatic.title" class="input_name_goal">
+                    </div>
+                    <div class="goal-type">
+                        <dl class="users dl-horizontal">
+                            <dd>
+                                <div class="images">
+                                    <div class="dropdown">
+                                        <a href="javascript:void(0)" class="dropdown-toggle selected-option"
+                                            id="link-user" data-toggle="dropdown" aria-haspopup="true"
+                                            ng-class="{'disabled':!editerGoalModel}" aria-expanded="true"
+                                            ng-model="tatic_type">{{tatic.type!=null?'('+tatic.type+')':''}}</a>
+                                        <div class="dropdown-menu">
+                                            <a href="javascript:void(0)" class="link"
+                                                ng-click="changeGoalType('c')">Compartilhado</a>
+                                            <a href="javascript:void(0)" class="link"
+                                                ng-click="changeGoalType('t')">Time</a>
+                                            <a href="javascript:void(0)" class="link"
+                                                ng-click="changeGoalType('i')">Individual</a>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+
+                    <div class="dropdown pull-right" style="display:inline-block;"
+                        ng-if="user.goal_register==1 || user.user_reviewer==1 || user.admin=='true'">
+                        <a href="javascript:void(0)" class="btn btn-link btn-sm noshadow dropdown-toggle"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <i class="icon-ellipsis-vert" style="font-size: 20px;"></i>
+                        </a>
+                        <ul class="dropdown-menu pull-right">
+                            <li>
+                                <a href="javascript:void(0)" ng-click="editerGoal()">Editar</a>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="pull-right" ng-show="((tatic.gestor_responsavel_objetivo != '' && user.id != '' && user.empresa.workflow == 1) && (tatic.gestor_responsavel_objetivo == user.id))" ng-if="!editerGoalModel">
+                        
+                        <button ng-show="!(workflow == 1 || workflow == 2) && !(tatic.workflow == 1 || tatic.workflow == 2)" class="mdc-button mdc-button--unelevated mdc-button--dense mdc-ripple-upgraded" ng-click="approveDisapprove('A',tatic.id)">
+                            <i class="material-icons mdc-button__icon">check</i>
+                            <span class="mdc-button__label">Aprovar</span>
+                        </button>
+                       
+                        <button ng-show="!(workflow == 1 || workflow == 2) && !(tatic.workflow == 1 || tatic.workflow == 2)" class="mdc-button mdc-button--outlined mdc-button--dense mdc-ripple-upgraded" ng-click="modalJustifica();">
+                            <i class="material-icons mdc-button__icon">close</i>
+                            <span class="mdc-button__label">Reprovar</span>
+                        </button>
+
+                    </div>
+                    
+                    <div class="pull-right" ng-show="(user.empresa.workflow == 1)">
+                        <div ng-show="(workflow == 1 || workflow == 2) || (tatic.workflow == 1 || tatic.workflow == 2)" style="margin-top: 5px;" id="tags-status">
+                            <span class="finalizado-btn clr-finalizado ng-scope" ng-show="(workflow == 1 || tatic.workflow == 1)">Aprovado</span>
+                            
+                            <span class="finalizado-btn clr-atrasado ng-scope" ng-show="(workflow == 2 || tatic.workflow == 2)">Reprovado</span>
+                            <button ng-show="(workflow == 2 || tatic.workflow == 2) && (tatic.responsavel == user.id)" class="mdc-button mdc-button--unelevated mdc-button--dense mdc-ripple-upgraded" ng-click="approveDisapprove('P',tatic.id, tatic.user.name, tatic.user.email)" ng-if="!editerGoalModel">
+                                <i class="material-icons mdc-button__icon">settings_backup_restore</i>
+                                <span class="mdc-button__label">Reenviar</span>
+                            </button>
+                        </div>
+                        
+                        <div ng-show="((workflow == 0) || (tatic.workflow == 0)) && !((tatic.gestor_responsavel_objetivo != '' && user.id != '') && (tatic.gestor_responsavel_objetivo == user.id))" style="margin-top: 5px;" id="tags-status-pendente">
+                            <span class="finalizado-btn clr-pendente ng-scope" ng-show="(workflow == 0 || tatic.workflow == 0)">Pendente</span>
+                        </div>
+                    </div>
+                    
+                </div>
+                <hr class="clear" ng-if="user.empresa.contrato_metas==0">
+
+                <div class="box-panel" ng-if="user.empresa.contrato_metas==0">
+                    <div class="slc-teams">
+                        <dl class="users dl-horizontal" ng-if="tatic.tipo != 'c' || tatic.tipo == ''">
+                            <dd>
+                                <div class="images">
+                                    <div class="dropdown left-cycle">
+                                        <a href="javascript:void(0)" class="dropdown-toggle" id="link-user"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"
+                                            ng-class="{'disabled':!editerGoalModel}">
+                                            <span class="image-replace"
+                                                ng-if="tatic.team.name">{{ initials(tatic.team.name) }}</span>
+                                            {{tatic.team.name}}
+                                            <span id="team-add-responsibles" class="image-replace"
+                                                ng-if="editerGoalModel" style="margin-right: 20px"><i
+                                                    class="fa fa-plus"></i></span>
+                                        </a>
+                                        <div class="dropdown-menu">
+                                            <div class="scroll">
+                                                <a href="javascript:void(0)" class="link normal-check"
+                                                    ng-repeat="team in teams"
+                                                    ng-class="{'selected': team.id == tatic.team.id}"
+                                                    ng-click="editTeam(team.id); team.id == tatic.team.id?showTeamError():''">
+                                                    <span class="image-replace">{{ initials(team.name) }}</span>
+                                                    <span class="text">{{ team.name }}</span>
+                                                    <span ng-if="team.id == tatic.team.id">
+                                                        <i class="fa fa-check" aria-hidden="true"></i>
+                                                    </span>
+                                                    <span ng-if="team.id != tatic.team.id">
+                                                        <i class="fa fa-check normal-checkbox" aria-hidden="true"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl class="user-list users dl-horizontal" ng-if="tatic.tipo == 'c'">
+                            <dd>
+                                <div class="images">
+                                    <div class="user-thumb">
+                                        <a ng-if="tatic.shared_teams && editerGoalModel"
+                                            ng-repeat="team in tatic.shared_teams" href="javascript:void(0)"
+                                            class="dropdown-toggle " ng-class="{'left-space':!editerGoalModel}"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"
+                                            ng-title="team.name">
+                                            <span ng-if="editerGoalModel">
+                                                <i class="fa fa-times" aria-hidden="true"
+                                                    ng-click="removeSharedTeam(team.id)"></i>
+                                            </span>
+                                            <span class="image-replace">{{ initials(team.name) }}</span>
+                                        </a>
+
+                                        <span class="image-replace" ng-if="!editerGoalModel"
+                                            ng-class="{'img_model':!editerGoalModel}"><i class="fa fa-users"></i></span>
+                                        <a ng-if="tatic.shared_teams && !editerGoalModel"
+                                            ng-repeat="team in tatic.shared_teams" href="javascript:void(0)"
+                                            class="dropdown-toggle teams" data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="true" ng-title="team.name">
+                                            <span ng-if="editerGoalModel">
+                                                <i class="fa fa-times" aria-hidden="true"
+                                                    ng-click="removeSharedTeam(team.id)"></i>
+                                            </span>
+                                            <span class="font600">{{ team.name }}</span>{{$last ? '' : ', '}}
+                                        </a>
+                                    </div>
+
+                                    <div class="dropdown left-cycle"
+                                        ng-if="user.goal_register==1 || user.user_reviewer==1 || user.admin=='true'">
+                                        <a href="javascript:void(0)" class="dropdown-toggle" ng-if="editerGoalModel"
+                                            id="link-add-responsibles" data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="true">
+                                            <span class="image-replace"><i class="fa fa-plus"></i></span>
+                                        </a>
+                                        <div class="dropdown-menu">
+                                            <div class="scroll">
+                                                <a href="javascript:void(0)" class="link"
+                                                    ng-class="{'selected': checkTeamId(team.id)}"
+                                                    ng-repeat="team in teams">
+                                                    <span class="image-replace">{{ initials(team.name) }}</span>
+                                                    <span class="text">{{ team.name }}</span>
+
+                                                    <span ng-if="checkTeamId(team.id)"
+                                                        ng-click="removeSharedTeam(team.id)">
+                                                        <i class="fa fa-check" aria-hidden="true"></i>
+                                                    </span>
+                                                    <span ng-if="!checkTeamId(team.id)"
+                                                        ng-click="addSharedTeam(team.id)">
+                                                        <i class="fa fa-check normal-checkbox" aria-hidden="true"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </dd>
+                        </dl>
+
+                    </div>
+                    <div class="dropdown left-cycle"
+                        ng-if="user.goal_register==1 || user.user_reviewer==1 || user.admin=='true'">
+                        <div class="team-qtr" id="link-user" ng-class="{'disabled':!editerGoalModel}"
+                            ng-repeat="cycle in tatic.cycles">{{cycle.name}}</div>
+                        <a href="javascript:void(0)" class="dropdown-toggle ng-scope" ng-if="editerGoalModel"
+                            id="link-add-responsibles" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                            <span class="image-replace" style="margin-right: 20px"><i class="fa fa-plus"></i></span>
+                        </a>
+                        <div class="dropdown-menu">
+                            <div class="scroll">
+                                <a href="javascript:void(0)" class="link"
+                                    ng-class="{'selected': checkCycleId(cycle.id)}" ng-repeat="cycle in cycles">
+                                    <span class="image-replace">{{ initials(cycle.name) }}</span>
+                                    <span class="text">{{ cycle.name }}</span>
+                                    <span ng-if="checkCycleId(cycle.id)" ng-click="removeCycleTatic(cycle.id)">
+                                        <i class="fa fa-check" aria-hidden="true"></i>
+                                    </span>
+                                    <span ng-if="!checkCycleId(cycle.id)" ng-click="addCycleTatic(cycle.id)">
+                                        <i class="fa fa-check normal-checkbox" aria-hidden="true"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="team-status">
+                        <dl class="users dl-horizontal">
+                            <dd>
+                                <div class="images">
+                                    <div class="dropdown">
+                                        <a href="javascript:void(0)"
+                                            class="dropdown-toggle selected-option {{ tatic.active==0?'inactive':'' }}"
+                                            ng-class="{'disabled':!editerGoalModel}" id="link-user"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            <i class="fa fa-circle " aria-hidden="true"></i>
+                                            {{tatic.active=='1'?'Ativo':'Inativo'}}</a>
+                                        <div class="dropdown-menu">
+                                            <a href="javascript:void(0)" class="link" ng-click="changeAtivoType('1')"><i
+                                                    class="fa fa-circle" aria-hidden="true"></i> Ativo</a>
+                                            <a href="javascript:void(0)" class="link inactive"
+                                                ng-click="changeAtivoType('0')"><i class="fa fa-circle"
+                                                    aria-hidden="true"></i> Inativo</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </dd>
+                        </dl>
+
+                    </div>
+                    <div class="team-status" style="margin-left: 2%;">
+                        <dl class="users dl-horizontal">
+                            <dd>
+                                <div class="images">
+
+                                    <!--
+                                                <div class="dropdown" >
+                                                    <a href="javascript:void(0)" class="dropdown-toggle selected-option "  ng-class="{'disabled':!editerGoalModel}" id="link-user" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                        <i class="fa fa-circle " aria-hidden="true" ng-class="{'ontrack':tatic.color==1,'attention':tatic.color==2,'delayed':tatic.color==3}"></i>
+                                                    <p ng-if="tatic.color=='1'" class="inline-cls">Até 50%</p>
+                                                    <p ng-if="tatic.color=='2'" class="inline-cls">Entre 50% e 80%</p>
+                                                    <p ng-if="tatic.color=='3'" class="inline-cls">Acima de 80%</p></a>
+                                                    <div class="dropdown-menu">
+                                                            <a href="javascript:void(0)" class="link" ng-click="changeCorType('1')"><i class="fa fa-circle ontrack" aria-hidden="true"></i>Em dia</a>
+                                                            <a href="javascript:void(0)" class="link inactive" ng-click="changeCorType('2')"><i class="fa fa-circle attention" aria-hidden="true"></i>Atenção</a>
+                                                            <a href="javascript:void(0)" class="link inactive" ng-click="changeCorType('3')"><i class="fa fa-circle delayed" aria-hidden="true"></i> Atrasado</a>
+                                                    </div>
+                                                </div>
+                                            -->
+                                </div>
+                            </dd>
+                        </dl>
+
+                    </div>
+                    <div class="sv-btn">
+                        <!--<button type="button" ng-if="editerGoalModel" ng-click="editSubmitGoal()" class="save-btn">Salvar Alterações</button>-->
+                        <button type="submit" class="mdc-button mdc-button--raised"
+                            data-loading-text="<i class='icon-spinner animate-spin'></i> Salvando"
+                            ng-if="editerGoalModel" ng-click="editSubmitGoal()">Salvar</button>
+                    </div>
+                    <div class="progress_wrap full-width2">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: {{tatic.percentage}}%;"
+                                aria-valuenow="{{tatic.percentage}}"
+                                ng-class="{'ontrack':tatic.color==1,'attention':tatic.color==2,'delayed':tatic.color==3}"
+                                aria-valuemin="0" aria-valuemax="100"></div>
+
+                        </div>
+                        <span>{{tatic.percentage}}%</span>
+                    </div>
+                    <hr class="clear">
+                    <div class="hideForContrato">
+                        <div ng-if="!editerGoalModel">
+                            <a href="javascript:void(0)" class="btn-request pending activebtn"
+                                ng-if="tatic.status==0">Pendente</a>
+                            <a href="javascript:void(0)" class="btn-request progress activebtn"
+                                ng-if="tatic.status==2">Em andamento</a>
+                            <a href="javascript:void(0)" class="btn-request closed activebtn"
+                                ng-if="tatic.status==3">Encerrado</a>
+                            <a href="javascript:void(0)" class="btn-request finished activebtn"
+                                ng-if="tatic.status==1">Atingido</a>
+                        </div>
+                        <div ng-if="editerGoalModel">
+                            <a href="javascript:void(0)" class="btn-request pending " ng-click="changeTaticStatus(0)"
+                                ng-class="{'activebtn':tatic.status==0}">Pendente</a>
+                            <a href="javascript:void(0)" class="btn-request progress" ng-click="changeTaticStatus(2)"
+                                ng-class="{'activebtn':tatic.status==2}">Em andamento</a>
+                            <a href="javascript:void(0)" class="btn-request closed" ng-click="changeTaticStatus(3)"
+                                ng-class="{'activebtn':tatic.status==3}">Encerrado</a>
+                            <a href="javascript:void(0)" class="btn-request finished" ng-click="changeTaticStatus(1)"
+                                ng-class="{'activebtn':tatic.status==1}">Atingido</a>
+                        </div>
+
+                        <div class="sub-heading">Descrição</div>
+                        <div class="desc_text" ng-if="!editerGoalModel">
+                            {{tatic.description}}</div>
+                        <div class="desc_text" ng-if="editerGoalModel">
+                            <textarea id="newDescription">{{tatic.description}}</textarea>
+                        </div>
+                        <div class="clearfix"></div>
+                        <!-- <div class="row" ng-if="editerGoalModel">
+    								<div class="col-md-12 model_bod">
+    									<div class="model_ch" style="margin: 0 0 7px 0;">
+    										<div class="model_che" style="margin: 0 0 7px 0;">
+    											<input type="checkbox" name="estrategicotactico" ng-model="estrategicotacticomodel" id="estrategicotactico" ng-click="estrategicotacticofun()" value="1" >
+    											<label for="estrategicotactico"  style="line-height: 17px;"> Destacar para Empresa </label>
+    										</div>
+    									</div>
+    								</div>
+    							</div>
+                                <div class="clearfix"></div> -->
+                        <div class="row" ng-if="editerGoalModel">
+                            <div class="link_btns" style="margin-left: 2%">
+                                <div class="valores_dv_pop">
+                                    <label for="link" class="control-label">Link</label>
+                                    <label class="btn_valoresa_pop valores_dv_btn_pop ">
+                                        <input type="checkbox" id="direcionador-perfil"
+                                            onclick="$('#objetivo-perfil').attr('checked',false);$('#objetivo-perfil').prop('checked',false);$('#estrategico-perfil').attr('checked',false);$('#estrategico-perfil').prop('checked',false)"
+                                            ng-model="direcionadorperfil" name="link[]" value="1"
+                                            class="styled-checkbox" ng-click="linkTypePerfil(1)">
+                                        <span>Direcionador</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="link_btns">
+                                <div class="valores_dv_pop">
+                                    <label for="link" class="control-label">&nbsp;</label>
+                                    <label class="btn_valoresa_pop valores_dv_btn_pop ">
+                                        <input type="checkbox" id="objetivo-perfil"
+                                            onclick="$('#direcionador-perfil').attr('checked',false);$('#direcionador-perfil').prop('checked',false);$('#estrategico-perfil').attr('checked',false);$('#estrategico-perfil').prop('checked',false)"
+                                            ng-model="objetivoperfil" value="2" name="link[]" class="styled-checkbox"
+                                            ng-click="linkTypePerfil(2)">
+                                        <span>Objetivo</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="link_btns">
+                                <div class="valores_dv_pop">
+                                    <label for="link" class="control-label">&nbsp;</label>
+                                    <label class="btn_valoresa_pop valores_dv_btn_pop ">
+                                        <input type="checkbox" id="estrategico-perfil"
+                                            onclick="$('#objetivo-perfil').attr('checked',false);$('#objetivo-perfil').prop('checked',false);$('#direcionador-perfil').attr('checked',false);$('#direcionador-perfil').prop('checked',false)"
+                                            value="3" name="link[]" ng-model="estrategicoperfil" class="styled-checkbox"
+                                            ng-click="linkTypePerfil(3)">
+                                        <span>Destacado</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="okr-tatic-objectives" class="control-label">{{link_text_perfil}}</label>
+                                    <select id="okr-objectives-perfil" name="objetivo" class="objetivo-okr-tatic"
+                                        data-allow-clear="true" data-placeholder="Selecione um Objetivo"
+                                        ng-model="ObjectiveIdPerfil">
+                                        <option value=""></option>
+                                        <optgroup label="{{link_text_perfil}}">
+                                            <option ng-repeat="item in objectives" value="{{ item.id }}">
+                                                {{ item.title }}</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="sub-heading" ng-if="tatic.tags.length>0 || editerGoalModel">Tags</div>
+                        <div class="hash-tags goal_details" ng-hide="editerGoalModel">
+                            <div class="bootstrap-tagsinput">
+                                <span class="tag label label-info" ng-repeat="tag in tatic.tags">#{{tag.name}}</span>
+                            </div>
+                        </div>
+                        <form id="form-obj">
+                            <div class="hash-tags" ng-show="editerGoalModel"
+                                ng-class="{'disable_state':!editerGoalModel}">
+                                <input id="key-tags" class="input-tags-key-objective"
+                                    ng-class="{'disabled':!editerGoalModel}" type="text" />
+                            </div>
+                        </form>
+                        <dl class="users dl-horizontal user_sec">
+                            <dd>
+                                <div class="images">
+                                    <div class="dropdown left-cycle">
+                                        <a href="javascript:void(0)" class="dropdown-toggle" id="link-user"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"
+                                            ng-class="{'disabled':!editerGoalModel}">
+                                            <img src="" ng-if="tatic.user.xs_image" ng-src="{{ tatic.user.xs_image }}"
+                                                class="img-circle" width="40" height="40" alt="{{ tatic.user.name }}" />
+                                            <span class="image-replace size40"
+                                                ng-if="!tatic.user.xs_image">{{ initials(tatic.user.name) }}</span>
+                                            <span id="user-add-responsible" ng-if="editerGoalModel"
+                                                class="image-replace size40"><i class="fa fa-plus"></i></span>
+                                        </a>
+                                        <div class="dropdown-menu">
+                                            <form ng-submit="searchResponsibles()" class="ng-pristine ng-valid">
+                                                <div class="input-group" style="width:100%;">
+                                                    <input type="text"
+                                                        class="form-control ng-pristine ng-untouched ng-valid ng-empty"
+                                                        placeholder="Pesquisar Usuários" ng-model="filterResponsibles">
+                                                    <span class="input-group-btn">
+                                                        <button type="submit"><i class="icon-search"></i></button>
+                                                    </span>
+                                                </div>
+                                            </form>
+                                            <div class="scroll" id="editUserResp">
+                                                <a href="javascript:void(0)" class="link normal-check"
+                                                    ng-repeat="user in users | filter:filterResponsibles"" ng-class="
+                                                    {'selected': user.id==tatic.user.id}"
+                                                    ng-click="editUser(user.id);user.id == tatic.user.id?showRespError():''"
+                                                    id="item_user_{{user.id}}">
+                                                    <img src="" ng-if="user.xs_image" ng-src="{{ user.xs_image }}"
+                                                        class="img-circle" width="40" height="40"
+                                                        alt="{{ initials(user.name) }}" />
+
+                                                    <span class="image-replace size40"
+                                                        ng-if="!user.xs_image">{{ initials(user.name) }}</span>
+                                                    <span class="text">{{ user.name }}</span>
+                                                    <span ng-if="user.id == tatic.user.id" class="checkd">
+                                                        <i class="fa fa-check checked_class" aria-hidden="true"></i>
+                                                    </span>
+                                                    <span ng-if="user.id != tatic.user.id">
+                                                        <i class="fa fa-check normal-checkbox" aria-hidden="true"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl class="user-list users dl-horizontal">
+                            <dd>
+                                <div class="images">
+                                    <div class="user-thumb left-cycle">
+                                        <a ng-if="tatic.user" ng-repeat="tatic_user in tatic.users"
+                                            href="javascript:void(0)" class="dropdown-toggle "
+                                            ng-class="{'left-space':!editerGoalModel}" data-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="true" ng-title="tatic_user.name">
+                                            <img src="" ng-if="tatic_user.xs_image" ng-src="{{ tatic_user.xs_image }}"
+                                                class="img-circle" width="40" height="40" alt="{{ tatic_user.name }}" />
+                                            <span ng-if="editerGoalModel">
+                                                <i class="fa fa-times" aria-hidden="true"
+                                                    ng-click="removeResponsible(tatic_user.id)"></i>
+                                            </span>
+                                            <span class="image-replace size40"
+                                                ng-if="!tatic_user.xs_image">{{ initials(tatic_user.name) }}</span>
+                                        </a>
+                                    </div>
+
+                                    <div class="dropdown left-cycle"
+                                        ng-if="user.goal_register==1 || user.user_reviewer==1 || user.admin=='true'">
+                                        <a href="javascript:void(0)" class="dropdown-toggle" ng-if="editerGoalModel"
+                                            id="link-add-responsibles" data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="true">
+                                            <span class="image-replace size40"><i class="fa fa-plus"></i></span>
+                                        </a>
+                                        <div class="dropdown-menu">
+                                            <form ng-submit="searchResponsibles()" class="ng-pristine ng-valid">
+                                                <div class="input-group" style="width:100%;">
+                                                    <input type="text"
+                                                        class="form-control ng-pristine ng-untouched ng-valid ng-empty"
+                                                        placeholder="Pesquisar Usuários" ng-model="filterResponsibles">
+                                                    <span class="input-group-btn">
+                                                        <button type="submit"><i class="icon-search"></i></button>
+                                                    </span>
+                                                </div>
+                                            </form>
+                                            <div class="scroll">
+                                                <a href="javascript:void(0)" class="link"
+                                                    ng-class="{'selected': checkId(user.id)}"
+                                                    ng-repeat="user in users | filter:filterResponsibles">
+                                                    <img src="" ng-if="user.xs_image" ng-src="{{ user.xs_image }}"
+                                                        class="img-circle" width="30" alt="{{ user.name }}" />
+                                                    <span class="image-replace"
+                                                        ng-if="!user.xs_image">{{ initials(user.name) }}</span>
+                                                    <span class="text">{{ user.name }}</span>
+
+
+                                                    <span ng-if="checkId(user.id)"
+                                                        ng-click="removeResponsible(user.id)">
+                                                        <i class="fa fa-check" aria-hidden="true"></i>
+                                                    </span>
+                                                    <span ng-if="!checkId(user.id)" ng-click="addResponsible(user.id)">
+                                                        <i class="fa fa-check normal-checkbox" aria-hidden="true"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+                <!--box-panel END-->
+                <hr class="clear" ng-if="user.empresa.contrato_metas==0">
+
+
+
+                <div class="sub-heading2">Resultados Chave <span class="text-muted">({{ tatic.keys.length }})</span>
+                </div>
+                <div class="div_add_keyresult" ng-if="user.goal_register==1 || user.user_reviewer==1 || user.admin=='true'">
+                    <button ng-if="user.empresa.contrato_metas!=1" class="mdc-button mdc-button--unelevated" style="margin-right: 20px;" ng-click="modalKey(0)">
+                        <i class="material-icons mdc-button__icon">add</i>
+                        <span class="mdc-button__label">Resultado Chave</span>
+                    </button>
+                    <button ng-if="user.empresa.contrato_metas!=1" class="mdc-button mdc-button--outlined" ng-click="showImportModal()">
+                            <i class="material-icons mdc-button__icon">import_export</i>
+                        <span class="mdc-button__label">Importar</span>
+                    </button>
+                    <button ng-if="user.empresa.contrato_metas==1" class="mdc-button mdc-button--outlined mdc-ripple-upgraded" style="margin-right: 20px;" ng-click="modalIndicador()">Criar novo indicador</button>
+                    <button ng-if="user.empresa.contrato_metas==1" class="mdc-button mdc-button--outlined mdc-ripple-upgraded" ng-click="showImportModal()">Importar novo indicador</button>
+                </div>
+                <div class="add-key-btn" style="width: 250px;">
+                    <!-- <a href="javascript:void(0)" ng-click="modalKey(0)" ng-if="user.goal_register==1 || user.user_reviewer==1 || user.admin=='true'" class="add-key-rslts"><span>+</span> Criar novo resultado chave</a> -->
+                    <!-- import key result -->
+                    <!-- <select id="cmbAddObj" ng-if="user.goal_register==1 || user.user_reviewer==1 || user.admin=='true'"
+                        data-native="true" ng-change="addKeyResult()" ng-model="addMode">
+                        <option value="">Selecione</option>
+                        <option ng-if="user.empresa.contrato_metas!=1" value="0">Criar novo resultado chave</option>
+                        <option ng-if="user.empresa.contrato_metas==1" value="0">Criar novo indicador</option>
+                        <option ng-if="user.empresa.contrato_metas!=1" value="1">Importar novo resultado chave</option>
+                        <option ng-if="user.empresa.contrato_metas==1" value="1">Importar novo indicador</option>
+                    </select> -->
+                    <!-- import key result end -->
+                </div>
+                <hr ng-if="user.empresa.contrato_metas==0">
+                <div class="elofy_table_row elofy_table_row_hdr" ng-if="user.empresa.contrato_metas==0">
+                    <div class="Dvtab_colums_dv clm_main" style="width: 47%;">
+                        <label>Nome</label>
+                    </div>
+                    <div class="Dvtab_colums_dv" style="width:7%">
+                        <label>Direcao</label>
+                    </div>
+                    <div class="Dvtab_colums_dv" style="width:7%">
+                        <label>De</label>
+                    </div>
+                    <div class="Dvtab_colums_dv" style="width:7%">
+                        <label>Para</label>
+                    </div>
+                    <div class="Dvtab_colums_dv" style="width:7%">
+                        <label>Atual</label>
+                    </div>
+                    <div class="Dvtab_colums_dv" style="width:9%">
+                        <label>Progresso</label>
+                    </div>
+                    <div class="Dvtab_colums_dv" style="width:11%">
+                        <label>Atualizado em</label>
+                    </div>
+
+                    <div class="Dvtab_colums_dv" style="width:2%">
+                        <label>&nbsp;</label>
+                    </div>
+                </div>
+                <div class="panel-group" id="accordion" ng-if="user.empresa.contrato_metas==0">
+                    <div class="panel panel-default item{{key.id}}" ng-class="{'open': key.open}"
+                        ng-repeat="key in tatic.keys" ng-init="updatePercentage($index);" ng-if="tatic.keys.length>0">
+                        <div class="panel-heading collapsed">
+                            <div class="key-list">
+                                <div class="elofy_table_row elofy_table_row_hdr">
+                                    <div class="Dvtab_colums_dv clm_main" style="width:47%;">
+                                        <span class="icon" ng-click="openActivities(key.id)">
+                                            <i ng-if="key.link == 0" class="icon-angle-right"></i>
+                                            <i ng-if="key.link ==0" class="icon-angle-down"></i>
+                                            <img title="Resultado Chave Importado" ng-if="key.link == 1"
+                                                src="assets/portal/img/unlink.png" width="20"
+                                                style="margin-right: 5px;">
+                                        </span>
+                                        <h4 class="title news" ng-click="openActivities(key.id)">
+                                            {{ key.title }} 
+                                        </h4>
+                                    </div>
+                                    <div>
+                                        <div class="Dvtab_colums_dv" style="width:7%">
+                                            <img ng-if="key.direcao ==1" src="assets/portal/img/up-arrow.png">
+                                            <img ng-if="key.direcao ==0" src="assets/portal/img/down-arrow.png">
+                                        </div>
+                                        <div class="Dvtab_colums_dv" style="width:7%">
+                                            <span>
+                                                {{ key.de }}
+                                            </span>
+                                        </div>
+                                        <div class="Dvtab_colums_dv" style="width:7%">
+                                            <span>
+                                                {{ key.para }}
+                                            </span>
+                            
+                                        </div>
+                                        <div class="Dvtab_colums_dv" style="width:7%">
+                                            <span>
+                                                {{ key.atual }}
+                                            </span>
+
+                                        </div>
+                                        <div class="Dvtab_colums_dv" style="width:9%">
+                                            <span title="{{key.percentage}}">
+                                                {{ key.percentage.substr(0,7) }}<span
+                                                    ng-show="{{key.percentage.length > 7}}">...</span>%
+                                            </span>
+                                        </div>
+                                        <div class="Dvtab_colums_dv" style="width:11%">
+                                            <span>
+                                                {{ key.last_date | amUtc | amDateFormat:'DD/MM/YYYY' }}
+                                            </span>
+                                        </div>
+
+
+                                        <div class="Dvtab_colums_dv" style="width:2%">
+                                            <div class="right text-right">
+
+
+
+                                                <div class="dropdown" style="display:inline-block;"
+                                                    ng-if="user.goal_register==1 || user.user_reviewer==1 || user.admin=='true'">
+                                                    <a href="javascript:void(0)"
+                                                        class="btn btn-link btn-sm noshadow dropdown-toggle"
+                                                        data-toggle="dropdown" aria-haspopup="true"
+                                                        aria-expanded="true">
+                                                        <i class="icon-ellipsis-vert"></i>
+                                                    </a>
+                                                    <ul class="dropdown-menu pull-right">
+                                                        <li ng-if="key.link == 0">
+                                                            <a href="javascript:void(0)"
+                                                                ng-click="modalKey(key.id)">Editar</a>
+                                                        </li>
+                                                        <li ng-if="key.tipo_calculo != 2 && key.link == 0">
+                                                            <a href="okr/{{key.id}}">Medições</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="javascript:void(0)"
+                                                                ng-click="deleteKeyResults(key.id)">Excluir</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <!--<div class="center_peso" ng-click="openActivities(key.id)">
+
+                                        <span style="width: 20%;">
+                                            {{ key.percentage }}%
+                                        </span>
+                                        <span style="width: 22%;">{{ key.goal }} {{ key.measurement }}</span>
+                                        <span style="width: 9%;"> {{ key.weight }} Peso</span>
+                                    </div>-->
+
+                            </div>
+                        </div>
+                        <div class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <table class="table table-hover table{{key.id}}">
+                                    <tbody>
+                                        <tr ng-if="key.activities.length>0" ng-repeat="activity in key.activities">
+                                            <td class="text-left">
+                                                <div class="carrier_row" ng-click="showTaticModal(activity, $event)"
+                                                    style="margin-top: 4px;">
+                                                    <svg class="TaskRowCompletionStatus-checkIcon" viewBox="0 0 32 32">
+                                                        <polygon
+                                                            points="27.672,4.786 10.901,21.557 4.328,14.984 1.5,17.812 10.901,27.214 30.5,7.615 ">
+                                                        </polygon>
+                                                    </svg>
+                                                </div>
+                                            </td>
+                                            <td><span>-</span> {{ activity.title }}</td>
+                                            <td class="text-center">
+                                                <span>{{ activity.user.name }}</span>
+                                            </td>
+                                            <td class="text-center">
+                                                {{ activity.percentage }}%
+                                            </td>
+                                            <td class="text-center"><span class="grey-font">Início :</span>
+                                                {{ activity.init | amUtc | amDateFormat:'DD/MM/YYYY' }}</td>
+                                            <td class="text-center"><span class="grey-font">Fim :</span>
+                                                {{ activity.end }}</td>
+                                            <td class="text-right">
+                                                <a href="javascript:void(0)"
+                                                    ng-if="user.admin=='false' || user.admin=='true' || activity.responsible == user.id || user.goal_register == 1"
+                                                    ng-click="modalActivities(key.id, activity.id)"
+                                                    class="btn btn-link btn-xs noshadow" style="font-size:14px;"><i
+                                                        class="icon-edit"></i></a>
+                                            </td>
+                                        </tr>
+                                        <tr ng-if="!key.activities.length">
+                                            <td colspan="5">Não há atividades.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="buttons">
+                                    <a href="javascript:void(0)" ng-if="key.link == 0"
+                                        ng-click="modalActivities(key.id, 0)"
+                                        class="btn btn-link btn-lg noshadow add_adivade"><i class="icon-plus"></i> Criar
+                                        plano de ação</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default" ng-if="!tatic.keys.length">
+                        <div class="panel-heading collapsed">
+                            <div class="key-list">
+                                <div class="elofy_table_row elofy_table_row_hdr">
+                                    <div class="Dvtab_colums_dv clm_main" style="width:100%;">
+                                        <h4 class="title">
+                                            Não foram encontrados resultados.
+                                        </h4>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div ng-if="user.empresa.contrato_metas==1 && tatic.keyGlobals.length>0">
+                    <div class="elofy_table_row elofy_table_row_hdr">
+                        <div class="Dvtab_colums_dv clm_main" style="width: 80%;">
+                            <label>METAS GLOBAIS (CONSOLIDADO MP)</label>
+                        </div>
+                        <div class="Dvtab_colums_dv" style="width:20%">
+                            <label></label>
+                        </div>
+                    </div>
+                    <div class="elofy_table_row grouping-header bold-font white-font">
+                        <div class="Dvtab_colums_dv clm_main grouping-title" style="width: 33%;">
+                            <label>INDICADOR</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%;">
+                            <label>MÍNIMO</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%;">
+                            <label>TARGET</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%;">
+                            <label>MÁXIMO</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%;">
+                            <label>UNIDADE</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 7%;">
+                            <label>PESO</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 11%;">
+                            <label>ATUAL</label>
+                        </div>
+                        <!-- <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 11%;">
+                            <label>PROGRESSO</label>
+                        </div> -->
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width:13%">
+                            <label>&nbsp;</label>
+                        </div>
+                    </div>
+                    <div class="elofy_table_row grouping-header white-font">
+                        <div class="Dvtab_colums_dv clm_main grouping-title" style="width: 33%;">
+                            <label>Fator Multiplicador</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%;">
+                            <label>0.60</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%;">
+                            <label>1.00</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%;">
+                            <label>2.00</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%">
+                            <label></label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 7%;">
+                            <label>(%)</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 11%">
+                            <label></label>
+                        </div>
+                        <!-- <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 11%">
+                            <label></label>
+                        </div> -->
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 13%">
+                            <label>&nbsp;</label>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="user.empresa.contrato_metas==1">
+                    <div class="elofy_table_row grouping-header bold-font keys" ng-repeat="key in tatic.keyGlobals">
+                        <div class="Dvtab_colums_dv clm_main grouping-title" style="width: 33%;">
+                            <label>{{key.title}}</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%;">
+                            <label ng-if="key.acomp != 1">{{key.inferior}}</label>
+                            <label ng-if="key.acomp == 1">{{ key.minimo_date | amUtc | amDateFormat:'DD/MM/YYYY' }}</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%;">
+                            <label ng-if="key.acomp != 1">{{key.goal}}</label>
+                            <label ng-if="key.acomp == 1">{{ key.target_date | amUtc | amDateFormat:'DD/MM/YYYY' }}</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%;">
+                            <label ng-if="key.acomp != 1">{{key.superior}}</label>
+                            <label ng-if="key.acomp == 1">{{ key.maximo_date | amUtc | amDateFormat:'DD/MM/YYYY' }}</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%;">
+                            <label>{{key.measurement}}</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content peso" style="width: 7%;">
+                            <label>{{key.weight}}</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content peso" style="width: 11%;">
+                            <label ng-if="key.acomp != 1">{{key.atual}}</label>
+                            <label ng-if="key.acomp == 1">{{ key.medicao_date | amUtc | amDateFormat:'DD/MM/YYYY' }}</label>
+                        </div>
+                        <!-- <div class="Dvtab_colums_dv clm_main grouping-content peso" style="width: 11%;">
+                            <label>{{key.percentage}}</label>
+                        </div> -->
+                        <div class="Dvtab_colums_dv" style="width:4%">
+                            <label>&nbsp;</label>
+                        </div>
+                        <div class="Dvtab_colums_dv" style="width:4%">
+                            <a>
+                                <button class="mdc-icon-button material-icons mdc-theme--secondary mdc-ripple-surface--accent" ng-click="okrMedicao(key.id)">insert_chart</button>
+                            </a>
+                        </div>
+                        <div ng-if="user.admin=='true'" class="Dvtab_colums_dv" style="width:4%">
+                            <a>
+                                <button class="mdc-icon-button material-icons" ng-click="removeKeyResultContratoMetas(key.id)">delete</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="user.empresa.contrato_metas==1 && tatic.keyNotGloabls.length>0">
+                    <div class="elofy_table_row elofy_table_row_hdr">
+                        <div class="Dvtab_colums_dv clm_main" style="width: 80%;">
+                            <label>METAS SELETIVAS / INDIVIDUAIS</label>
+                        </div>
+                        <div class="Dvtab_colums_dv" style="width:20%">
+                            <label></label>
+                        </div>
+                    </div>
+                    <div class="elofy_table_row grouping-header bold-font white-font">
+                        <div class="Dvtab_colums_dv clm_main grouping-title" style="width: 33%;">
+                            <label>INDICADOR</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%;">
+                            <label>MÍNIMO</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%;">
+                            <label>TARGET</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%;">
+                            <label>MÁXIMO</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%;">
+                            <label>UNIDADE</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 7%;">
+                            <label>PESO</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 11%;">
+                            <label>ATUAL</label>
+                        </div>
+                        <!-- <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 11%;">
+                            <label>PROGRESSO</label>
+                        </div> -->
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width:4%">
+                            <label>&nbsp;</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width:4%">
+                            <label>&nbsp;</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width:4%">
+                            <label>&nbsp;</label>
+                        </div>
+                    </div>
+                    <div class="elofy_table_row grouping-header white-font">
+                        <div class="Dvtab_colums_dv clm_main grouping-title" style="width: 33%;">
+                            <label>Fator Multiplicador</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%;">
+                            <label>0.60</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%;">
+                            <label>1.00</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%;">
+                            <label>2.00</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%">
+                            <label></label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 7%;">
+                            <label>(%)</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 11%">
+                            <label></label>
+                        </div>
+                        <!-- <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 11%">
+                            <label></label>
+                        </div> -->
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 4%">
+                            <label>&nbsp;</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 4%">
+                            <label>&nbsp;</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 4%">
+                            <label>&nbsp;</label>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="user.empresa.contrato_metas==1">
+                    <div class="elofy_table_row grouping-header bold-font keys" ng-repeat="key in tatic.keyNotGloabls">
+                        <div class="Dvtab_colums_dv clm_main grouping-title" style="width: 33%;">
+                            <label style="font-weight: 400;">{{key.title}}</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%;">
+                            <label ng-if="key.acomp != 1">{{key.inferior}}</label>
+                            <label ng-if="key.acomp == 1">{{ key.minimo_date | amUtc | amDateFormat:'DD/MM/YYYY' }}</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%;">
+                            <label ng-if="key.acomp != 1">{{key.goal}}</label>
+                            <label ng-if="key.acomp == 1">{{ key.target_date | amUtc | amDateFormat:'DD/MM/YYYY' }}</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%;">
+                            <label ng-if="key.acomp != 1">{{key.superior}}</label>
+                            <label ng-if="key.acomp == 1">{{ key.maximo_date | amUtc | amDateFormat:'DD/MM/YYYY' }}</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content" style="width: 9%;">
+                            <label>{{key.measurement}}</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content peso" style="width: 7%;">
+                            <label>{{key.weight}}</label>
+                        </div>
+                        <div class="Dvtab_colums_dv clm_main grouping-content peso" style="width: 11%;">
+                            <label ng-if="key.acomp != 1">{{key.atual}}</label>
+                            <label ng-if="key.acomp == 1">{{ key.medicao_date | amUtc | amDateFormat:'DD/MM/YYYY' }}</label>
+                        </div>
+                        <!-- <div class="Dvtab_colums_dv clm_main grouping-content peso" style="width: 11%;">
+                            <label>{{key.percentage}}</label>
+                        </div> -->
+                        <div class="Dvtab_colums_dv" style="width:4%">
+                            <!-- <button class="mdc-button mdc-button--outlined mdc-ripple-upgraded adjusted"
+                                ng-click="modalKey(key.id)">Editar</button> -->
+                                <button class="mdc-icon-button material-icons" disabled="disabled" ng-click="modalKey(key.id)">edit</button>
+                        </div>
+                        <div class="Dvtab_colums_dv" style="width:4%">
+                            <!-- <a href="okr/{{key.id}}"><button
+                                    class="mdc-button mdc-button--outlined mdc-ripple-upgraded adjusted">Medições</button></a> -->
+                            <a>
+                                <button class="mdc-icon-button material-icons mdc-theme--secondary mdc-ripple-surface--accent" ng-click="okrMedicao(key.id)">insert_chart</button>
+                            </a>
+                        </div>
+                        <div ng-if="user.admin=='true'" class="Dvtab_colums_dv" style="width:4%">
+                            <a>
+                                <button class="mdc-icon-button material-icons" ng-click="removeKeyResultContratoMetas(key.id)">delete</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="dblock comentarios">
+                <div class="dblock_head pd0">
+                    <div class="sub-heading2" style="padding-left: 0px;">Atividades Recentes</div>
+                    <!-- <div class="add-key-btn">
+                            <a href="javascript:void(0)" ng-click="newObjectivoComment()" class="add-key-rslts"><span>+</span> Novo comentario ou impeditivo</a>
+                        </div> -->
+                </div>
+
+                <div class="dblock_body" id="elotab">
+                    <div class="elos-list">
+                        <div ng-repeat="elo in eloslist" class="elo-item" ng-class="{ new : elo.lido==0 }">
+                            <div class="user-image">
+                                <img src="" ng-if="elo.usuario_responsavel.image"
+                                    ng-src="{{ elo.usuario_responsavel.image }}" class="img-circle" width="32"
+                                    height="32" data-toggle="tooltip" data-placement="top"
+                                    title="{{ elo.usuario_responsavel.name }}" />
+                                <span class="image-replace"
+                                    ng-if="!elo.usuario_responsavel.image">{{ initials(elo.usuario_responsavel.name) }}</span>
+                            </div>
+                            <div class="elo-content">
+                                <div class="elo-header">
+                                    <span class="usuario-responsavel">{{elo.usuario_responsavel.name}}</span> para
+                                    <span class="usuarios-mencionados"
+                                        ng-repeat="mentioned in elo.usuarios_mencionados"><span
+                                            ng-if="!$first && !$last">, </span><span
+                                            ng-if="$last && elo.usuarios_mencionados.length > 1"> e
+                                        </span>{{ mentioned.name }}</span>
+                                    <time class="timeago"
+                                        datetime="{{ elo.data_atualizacao }}">{{ elo.data_atualizacao | timeAgo}}</time>
+                                </div>
+                                <div class="elo-body">
+                                    <p hashtagify term-click="tagTermClick($event)" user-click="tagUserClick($event)">
+                                        {{ elo.descricao_elogio }}</p>
+                                </div>
+
+
+                                <div class="elo-footer">
+                                    <span class="likes">
+                                        <i class="fa fa-heart" ng-class="{ liked: elo.i_liked>0 }"
+                                            ng-click="likeElo($event, elo)"></i>{{ elo.total_likes }}
+                                        <span class="like-container">
+                                            <span class="label" ng-if="elo.total_likes!=1"
+                                                ng-mouseover="showLikes(elo)">curtidas</span>
+                                            <span class="label" ng-if="elo.total_likes==1"
+                                                ng-mouseover="showLikes(elo)">curtida</span>
+                                            <div class="like-box" ng-if="elo.total_likes > 0">
+                                                <span ng-if="!elo.likes || elo.likes.length == 0">carregando...</span>
+                                                <ul>
+                                                    <li ng-repeat="name in elo.likes">{{ name.nome_usuario }}</li>
+                                                </ul>
+                                            </div>
+                                        </span>
+                                    </span>
+                                    <span class="comments">
+                                        <span ng-click="toggleShowComments($event, elo)">
+                                            <i class="fa fa-comment"></i>{{ elo.total_comment }}
+                                            <span class="label" ng-if="elo.total_comment!=1">comentários</span>
+                                            <span class="label" ng-if="elo.total_comment==1">comentário</span>
+                                        </span>
+                                        <form class="form-elo-comment" ng-submit="commentElo($event, elo)"
+                                            ng-if="elo.showComments">
+                                            <textarea rows="1" name="comment"
+                                                placeholder="Digite seu comentário"></textarea>
+                                            <button type="submit"><i class="fa fa-paper-plane"></i></button>
+                                            <div class="clearfix"></div>
+                                        </form>
+                                        <ul class="elo-comment-list" ng-if="elo.showComments">
+                                            <li ng-repeat="comment in elo.comments" class="comment-item"><span
+                                                    class="username">{{comment.username}}</span><span
+                                                    class="comment-text">{{comment.comment_text}}</span></li>
+                                        </ul>
+                                        <div class="load-more" ng-if="elo.hasMoreComments"
+                                            ng-click="loadMoreComments(elo)">Carregar mais <i
+                                                class="fa fa-angle-down"></i> </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="br-section1" on-scroll-to-bottom="loadMoreElos()" ng-show="loadingElos"
+                            style=" text-align: center; margin-bottom: 10px;"><i class='icon-spinner animate-spin'></i>
+                            Carregando</div>
+                    </div>
+
+
+                    <div class="babs-2-pabel" ng-if="comment_listsection">
+                        <div class="tab tab-feedback-panel" role="tabpanel">
+                            <!-- Nav tabs -->
+
+                            <!-- Tab panes -->
+                            <div class="tab-content tabs feedbacktabs" id="elotab">
+                                <div role="tabpanel" class="tab-pane fade in active" id="Section1ObjectivoComment">
+
+
+                                    <div class="dblock_body_new elo">
+                                        <div class="babs-2-pabel">
+                                            <form id="form-elo" ng-submit="saveNewCommentObjetivo($event, comment)">
+                                                <div class="mentions-input-box new"><textarea rows="1" id="comment" name="comment"
+                                                        placeholder="Digite seu comentário"
+                                                        class="elo-height"></textarea>
+                                                </div>
+                                                <!--<button type="submit" class="add-cmt tatic-btn">Enviar comentário<i class="fa fa-comment"></i></button>-->
+                                                <button type="submit" class="mdc-button mdc-button--unelevated"
+                                                    data-loading-text="<i class='icon-spinner animate-spin'></i> Salvando"
+                                                    style="width: auto;">
+                                                    <i class="material-icons mdc-button__icon">insert_comment</i>
+                                                    <span class="mdc-button__label mdc">Enviar</span>
+                                                </button>
+
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    <div class="clearfix"></div>
+
+                                    <div class="feedbcsections customized ">
+                                        <div class="elos-list">
+                                            <div class="elo-item" ng-repeat="comment in obj_comments" ng-if="
+                                                    obj_comments.length">
+                                                <div class="user-image">
+                                                    <img src="" ng-if="comment.user.image"
+                                                        ng-src="{{ comment.user.image }}" class="img-circle" width="40"
+                                                        height="40" data-toggle="tooltip" data-placement="top"
+                                                        title="{{ initials(comment.user.nome_usuario) }}" />
+                                                    <span class="image-replace"
+                                                        ng-if="!comment.user.image">{{ initials(comment.user.nome_usuario) }}</span>
+                                                </div>
+
+                                                <div class="elo-content">
+                                                    <div class="elo-header customized">
+                                                        <div class="elo-user-names">
+                                                            <span
+                                                                class="usuario-responsavel">{{comment.user.nome_usuario}}</span>
+                                                        </div>
+                                                        <time class="timeago right-position"
+                                                            datetime="{{ elo.data_atualizacao }}">
+                                                            <!-- <div class="time-info"><i class="fa fa-info"></i> impeditivo</div> -->
+                                                            {{ comment.data_atualizacao | timeAgo }}</time>
+                                                    </div>
+
+
+
+                                                    <div class="elo-body">
+                                                        <p><span>{{comment.comentario}}</span></p>
+                                                        <!-- <p>Reportou um <a href="javascript:void(0)">impeditivo</a> ao objetivo <span>"{{comment.goal_name}} : {{comment.comentario}}"</span></p>  -->
+                                                        <div class="clear"></div>
+                                                        <!-- <div class="emoji-icons">
+                                                            	<div class="emoji-data" ng-class="(comment.tipo==1 && comment.logged_user==comment.comment_user) ? ['active'] : ['']">
+                                                                <a href="javascript:void(0)" ng-click="saveNewEmojiObjetivo($event,1,comment.id_objetivo_comentario)">
+                                                                	<img src="assets/portal/img/grinning-face.png" alt="" />
+                                                                    </a>
+                                                			    </div>
+                                                            	<div class="emoji-data"ng-class="(comment.tipo==2 && comment.logged_user==comment.comment_user) ? ['active'] : ['']">
+                                                                    <a href="javascript:void(0)"ng-click="saveNewEmojiObjetivo($event,2,comment.id_objetivo_comentario)">
+                                                                	<img src="assets/portal/img/pouting-face.png" alt="" />
+                                                                    </a>
+                                                			    </div>
+                                                            	<div class="emoji-data"ng-class="(comment.tipo==3 && comment.logged_user==comment.comment_user) ? ['active'] : ['']">
+                                                                    <a href="javascript:void(0)"ng-click="saveNewEmojiObjetivo($event,3,comment.id_objetivo_comentario)">
+                                                                	<img src="assets/portal/img/face-throwing.png" alt="" />
+                                                                    </a>
+                                                			    </div>
+                                                            	<div class="emoji-data"ng-class="(comment.tipo==4 && comment.logged_user==comment.comment_user) ? ['active'] : ['']">
+                                                                    <a href="javascript:void(0)"ng-click="saveNewEmojiObjetivo($event,4,comment.id_objetivo_comentario)">
+                                                                	<img src="assets/portal/img/flushed-face.png" alt="" />
+                                                                    </a>
+                                                			    </div>
+                                                            </div> -->
+
+
+
+
+                                                    </div>
+
+                                                    <div class="elo-footer no-pdr">
+                                                        <div class="cmt-row">
+                                                            <div class="likse-box">
+                                                                <i class="fa fa-heart" style="cursor:pointer"
+                                                                    ng-click="likeobjetivo($event, comment)"
+                                                                    ng-class="(comment.liked==comment.logged_user) ? ['liked'] : ['']"></i>
+                                                                <span class="label">{{ comment.total_likes }}
+                                                                    curtidas</span>
+                                                            </div>
+                                                            <div class="comments" ng-if="!comment.sub_comments.length"
+                                                                style="margin: 0">
+                                                                <span>
+                                                                    <i class="fa fa-comment"></i> 0
+                                                                    <span class="label"
+                                                                        style="margin-right:0">comentários</span> <a
+                                                                        href="javascript:void(0)"
+                                                                        style="top: 3px;position: relative;left: -3px;"><i
+                                                                            class="fa fa-angle-down collapse-icon"></i></a></span>
+                                                            </div>
+                                                            <div class="comments"
+                                                                ng-click="toggleSubComment(comment.id_objetivo_comentario)"
+                                                                ng-if="comment.sub_comments.length > 0"
+                                                                style="margin: 0">
+                                                                <span>
+                                                                    <i class="fa fa-comment"></i>
+                                                                    {{ comment.sub_comments.length }}
+                                                                    <span class="label">comentários</span> <a
+                                                                        href="javascript:void(0)"><i
+                                                                            class="fa fa-angle-down collapse-icon"></i></a></span>
+                                                            </div>
+
+
+
+                                                            <div class="responder">
+                                                                <a href="javascript:void(0)"
+                                                                    ng-click="toggleShowComments( comment.id_objetivo_comentario)"><i
+                                                                        class="fa fa-comment"></i> Responder</a></div>
+                                                        </div>
+                                                        <ul class="elo-comment-list"
+                                                            id="subcomment_{{comment.id_objetivo_comentario}}"
+                                                            style="display: none;">
+                                                            <li class="comment-item" ng-if="comment.sub_comments.length"
+                                                                ng-repeat="sub_comment in comment.sub_comments">
+                                                                <div class="username">
+                                                                    <h3>{{sub_comment.user.nome_usuario}}</h3>
+                                                                    <div class="cmt-time">
+                                                                        {{sub_comment.data_atualizacao | timeAgo}}</div>
+                                                                </div>
+                                                                <div class="comment-text">{{sub_comment.comentario}}
+                                                                </div>
+                                                            </li>
+
+                                                        </ul>
+
+                                                        <form class="form-elo-comment2"
+                                                            ng-submit="commentObj($event, comment)"
+                                                            id="form_{{comment.id_objetivo_comentario}}"
+                                                            style="display: none">
+                                                            <textarea rows="1" name="comment"
+                                                                placeholder="Digite seu comentário"
+                                                                class="save_comment"></textarea>
+                                                            <button type="submit"><i
+                                                                    class="fa fa-paper-plane"></i></button>
+                                                            <div class="clearfix"></div>
+                                                        </form>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="elo-item" ng-if="!
+                                                    obj_comments.length">Sem comentários para o objetivo selecionado
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-3" ng-if="user.empresa.contrato_metas==0">
+            <div class="sidebar-box-border-noshadow">
+                <div class="skill_header">Objetivos Filho</div>
+                <ul class="general_list goals-list" id="child_objectives">
+                    <li ng-if="childgoals.length>0" ng-repeat="goal in childgoals">
+                        <a ng-href="#!/tatic/{{goal.id}}">{{goal.title}}<span>{{goal.percentage}}%</span>
+                        </a>
+                    </li>
+                    <li ng-if="!childgoals.length">
+                        <a href="javascript:void(0)">Sem resultados
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!--sidebar-box END-->
+        </div>
+
+
+    </div>
+</div>
+<div class="modal fade in" id="delete-key-results">
+    <div class="modal-dialog">
+        <form id="activity_dismiss_form" class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Excluir Resultado Chave</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <span>Você realmente deseja excluir esse Resultado Chave?</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!--<button type="button" class="btn btn-white" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary salvar" id="deleteKeyAction" data-loading-text="<i class='icon-spinner animate-spin'></i> Salvando">Continuar</button>-->
+
+                <button class="mdc-button mdc-fechar" data-dismiss="modal">Fechar</button>
+                <button type="submit" class="mdc-button mdc-button--raised mdc-excluir"
+                    data-loading-text="<i class='icon-spinner animate-spin' style='color: #fff;'></i> <span style='color:#fff;'>Salvando</span>"
+                    id="deleteKeyAction">Excluir</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Modal Resultado Chave -->
+<div class="modal fade in" id="modal-key">
+    <div class="modal-dialog">
+        <form id="form-key" class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title"><span ng-class="{'hide': keyDetail.id}">Novo</span> <span
+                        ng-class="{'hide': !keyDetail.id}">Editar</span><span ng-if="user.empresa.contrato_metas!=1">Resultado Chave</span><span ng-if="user.empresa.contrato_metas==1">Indicador</span></h4>
+            </div>
+            <div class="modal-body">
+                <div class="progress" ng-class="{'hide': users.length}" style="margin-top:17px;">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100"
+                        aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                </div>
+                <div class="form" ng-class="{'hide': !users.length}">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="key-name" class="control-label">Nome</label>
+                                <input name="nome" type="text" class="form-control" id="key-name"
+                                    value="{{ keyDetail.title }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="key-description" class="control-label">Descrição</label>
+                                <textarea name="descricao" id="key-description" value="empty" class="form-control"
+                                    rows="5">{{ keyDetail.description != 0?keyDetail.description:'' }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" style="padding-right:15px;">
+                            <div class="form-group">
+                                <label for="key-user" class="control-label">Responsável</label>
+                                <select id="key-user" name="usuario" class="usuario-key"
+                                    data-placeholder="Selecione um Usuário" ng-model="keyDetailUser">
+                                    <option value=""></option>
+                                    <option ng-repeat="user in users" value="{{user.id}}">{{user.name}}</option>
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 hide" style="padding-right:15px">
+                            <div class="form-group">
+                                <label for="key-frequency" class="control-label">Frequência Alertas</label>
+                                <select id="key-frequency" name="frequencia" class="select-frequency form-control"
+                                    data-placeholder="Selecione um Frequência" ng-model="frequencyKey">
+                                    <option ng-repeat="frequency in frequencies" value="{{frequency.id}}">
+                                        {{frequency.name}}</option>
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6" ng-show="user.empresa.contrato_metas!=1">
+                            <label for="key-frequency" class="control-label">Manutencão</label>
+                            <div class="form-group checkbox-okr">
+                                <div class="container-block">
+                                    <input type="checkbox" id="chkd_manutencao" name="chkd_manutencao" value="1"
+                                        ng-model="chkd_manutencao">
+                                    <label for="chkd_manutencao" class="control-label"
+                                        id="label_check">Manutencão</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6" ng-show="user.empresa.contrato_metas==1">
+                            <div class="form-group">
+                                <label for="key-forma" class="control-label">Fórmula Cálculo</label>
+                                <select id="key-forma" name="forma" class="select-forma form-control"
+                                    data-placeholder="Selecione um Forma Atualização" ng-model="formaKey">
+                                    <!-- <option ng-repeat="forma in formas" value="{{forma.id}}">
+                                        {{forma.name}}</option> -->
+                                    <option value="0">média das linhas preenchidas</option>
+                                    <option value="1">total proporcional</option>
+                                    <option value="2">total absoluto</option>
+                                    <option value="3">última linha preenchida</option>
+                                    <option value="4">manual</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6" style="padding-right:15px">
+                            <div class="form-group">
+                                <label for="key-frequency" class="control-label">Periodicidade</label>
+                                <select id="periodicidade" name="periodicidade" class="select-frequency form-control"
+                                    data-placeholder="Selecione um periodicidade" ng-model="periodicidade">
+                                    <option value="t">Trimestral</option>
+                                    <option value="m">Mensal</option>
+                                    <option value="s">Semanal</option>
+                                    <option value="a">Anual</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div ng-class="{'col-md-6':user.empresa.contrato_metas!=1, 'col-md-4':user.empresa.contrato_metas==1}">
+                            <div class="form-group">
+                                <label for="key-weight" class="control-label">Peso</label>
+                                <div class="input-spinner">
+                                    <button type="button" class="btn btn-info" ng-click="numberLessKey()">-</button>
+                                    <input id="key-weight" type="number" name="peso"
+                                        class="form-control size-1 input-lg" ng-model="keyWeight"
+                                        value="{{ keyWeight }}" min="1" max="100" style="width:140px;">
+                                    <button type="button" class="btn btn-info" ng-click="numberMoreKey()">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6" ng-show="user.empresa.contrato_metas!=1" ng-hide="chkd_manutencao == 1">
+                            <div class="form-group">
+                                <label for="ponto_partida" class="control-label">Atual</label>
+                                <input type="text" class="form-control" onchange="alteraPonto($(this))"
+                                    name="ponto_partida" id="ponto_partida"
+                                    ng-value="keyDetail.ponto_partida?keyDetail.ponto_partida:0" placeholder="0" />
+                            </div>
+                        </div>
+                        <div class="col-md-4" ng-show="user.empresa.contrato_metas==1">
+                            <div class="form-group">
+                                <label for="key-accompan" class="control-label">Tipo Acompanhamento</label>
+                                <select id="key-accompan" name="accompan" class="select-accompan" data-allow-clear="true"
+                                    data-placeholder="Selecione um Tipo Acompanhamento" ng-model="accompanKey">
+                                    <option value="0">Numérico</option>
+                                    <option value="1">Cronograma</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- <div id="tipo_pattern" class="col-md-4" ng-if="user.empresa.contrato_metas==1"></div> -->
+                        <div id="tipo_pattern" class="col-md-4">
+                            <div class="form-group"> 
+                                <label for="key-pattern" class="control-label">Tipo de Informação</label>
+                                <select id="key-pattern" name="pattern" class="select-pattern form-control"
+                                    data-placeholder="Selecione um Tipo Acompanhamento" ng-model="patternKey">
+                                    <option value="0">Número</option>
+                                    <option value="1">Monetário</option>
+                                    <option value="2">Percentual</option>
+                                    <option value="3">Inteiro</option>
+                                    <option value="4">Data</option>
+                                    <option value="5">Numérico 3 casas decimais</option>
+                                    <option value="6">Monetário Reduzido</option>
+                                </select>
+                            </div>
+                        </div> 
+                        <!--
+                        <div class="col-sm-3" id="div_pattern">
+                            <div class="form-group">
+                                <label for="tipo_pattern" class="control-label">Tipo de Informação</label>
+                                <select id="key-pattern" name="pattern" class="select-pattern form-control"
+                                data-placeholder="" ng-model="patternKey">
+                                    <option value="">Selecione um Tipo Acompanhamento</option>
+                                    <option ng-repeat="tipo in patterns" value="{{tipo.id}}">{{tipo.name}}</option>
+                                </select>
+                            </div>
+                        </div>-->
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label ng-if="user.empresa.contrato_metas!=1" for="key-inferior" class="control-label">Inferior</label>
+                                <label ng-if="user.empresa.contrato_metas==1" for="key-inferior" class="control-label">MÍNIMO</label>
+                                <input id="key-inferior" ng-show="accompanKey != 1" type="number" name="inferior" onchange="alteraPonto($(this))"
+                                    class="form-control" ng-value="keyDetail.inferior?keyDetail.inferior:0" />
+                                <input id="ind_minimo_date" ng-show="accompanKey == 1" type="text" class="form-control" value="">
+                            </div>
+                        </div>
+                        <!-- <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="user-birthday" class="control-label">Data de Admissão</label>
+                                <div class="input-group" style="width:100%;">
+                                    <input id="user-birthday" name="birthday" type="text" class="form-control data" value="{{ userDetail.birthday || '' }}">
+                                    <div class="input-group-addon"> <a href="#"><i class="entypo-calendar"></i></a> </div>
+                                </div>
+                            </div>
+                        </div> -->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label ng-if="user.empresa.contrato_metas!=1" for="key-goal" class="control-label">Meta</label>
+                                <label ng-if="user.empresa.contrato_metas==1" for="key-goal" class="control-label">TARGET</label>
+                                <input id="key-goal" ng-show="accompanKey != 1" type="number" name="meta" onchange="alteraPonto($(this))"
+                                    class="form-control" ng-value="keyDetail.goal?keyDetail.goal:100" />
+                                <input id="ind_target_date" ng-show="accompanKey == 1" type="text" class="form-control" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label ng-if="user.empresa.contrato_metas!=1" for="key-superior" class="control-label">Superior</label>
+                                <label ng-if="user.empresa.contrato_metas==1" for="key-superior" class="control-label">MÁXIMO</label>
+                                <input id="key-superior" ng-show="accompanKey != 1" type="number" name="superior" onchange="alteraPonto($(this))"
+                                    class="form-control" ng-value="keyDetail.superior?keyDetail.superior:0" />
+                                <input id="ind_maximo_date" ng-show="accompanKey == 1" type="text" class="form-control" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="tipo_calculo" class="control-label">Tipo</label>
+                                <select id="tipo_calculo" name="tipo_calculo" class="tipo_calculo"
+                                    data-allow-clear="true" data-placeholder="Selecione o tipo" ng-model="tipo_calculo">
+                                    <option value=""></option>
+                                    <option value="0">Menor Melhor</option>
+                                    <option value="1">Maior Melhor</option>
+                                    <option value="2">Plano de Ação</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="key-measure" class="control-label">Unidade de Medida</label>
+                                <input id="key-measure" name="unidade" type="text" class="form-control"
+                                    value="{{ keyDetail.measurement }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" ng-if="tipo_calculo == 2">
+                        <div class="col-md-8">
+                            <div class="form-group checkbox-okr">
+                                <div class="container-block">
+                                    <input type="checkbox" id="chkd_tipo" name="chkd_tipo" value="1"
+                                        ng-model="chkd_tipo">
+                                    <label for="chkd_tipo" class="control-label" id="label_check">Atualizar progresso
+                                        pela conclusão de plano de ação</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="key-users" class="control-label">Contribuidores</label>
+                                <select id="key-users" class="form-control" ng-model="selectedUserNotAddedCon"
+                                    ng-options="userr.name for userr in usersNotAddedCon track by userr.id"></select>
+
+                                <span class="corresponsaveis-selected" ng-repeat="selected in usersNotAddedSelectedCon"
+                                    ng-click="removeUserAndRefreshCon(selected)"><label>{{selected.name}}</label><input
+                                        type="hidden" value="{{selected.id}}" name="corresponsaveis[]"
+                                        class="form-control" readonly><i class="fa fa-remove"></i></span>
+                                <!-- <select id="key-users" multiple="multiple" name="corresponsaveis[]" class="form-control multi-select users-key" ng-model="keyDetailUsers" ng-options="user.name for user in users track by user.id">
+                                            </select> -->
+                            </div>
+                        </div>
+                        <div class="col-md-6 ">
+                            <div class="form-group">
+                                <label for="key-tags-rchave" class="control-label">Tags</label>
+                                <input id="key-tags-rchave" class="input-tags-key" type="text" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer modalBotoes">
+                <!--<a href="javascript:void(0)" ng-click="opcoesAvancadas()" id="opcaoes_btn">Opcões avancadas</a>-->
+
+                <a ng-click="opcoesAvancadas()">
+                    <button class="mdc-button mdc-fechar mdc-button--outlined">
+                        <i class="material-icons mdc-button__icon">
+                            extension_outlined
+                        </i>
+                        <span class="mdc-button__label">Opções Avançadas</span>
+                    </button>
+                </a>
+                <!--<button type="button" class="btn fechar" data-dismiss="modal">Fechar</button>
+                            <button type="submit" class="btn salvar" data-loading-text="<i class='icon-spinner animate-spin' ></i> Salvando">Salvar</button>-->
+                <button class="mdc-button mdc-fechar" data-dismiss="modal">Fechar</button>
+                <button type="submit" class="mdc-button mdc-button--raised"
+                    data-loading-text="<i class='icon-spinner animate-spin'></i> Salvando">Salvar</button>
+            </div>
+
+            <div class="advanced-options" style="display:none" id='advanced-options'>
+                <div class="modal-header">
+                    <button type="button" class="close" ng-click="hideModalkeyAdvanced()">×</button>
+                    <h4 class="modal-title"> Opcões avançadas </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="h1-radio">Forma de atualizacao</div>
+                            <div class="custom_radio">
+                                <div class="radio_dv">
+                                    <input type="radio" id="WebService" name="selectedOption" value="1"
+                                        ng-model="selectedOption" ng-click="optionType('1')">
+                                    <label for="WebService">WebService</label>
+                                </div>
+
+                                <div class="radio_dv">
+                                    <input type="radio" id="Database" name="selectedOption" value="0"
+                                        ng-model="selectedOption" ng-click="optionType('0')">
+                                    <label for="Database">Database</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="fonte-dados" class="control-label">Fonte de dados</label>
+                                <select id="fonte-dados" name="fontedados" class="select-fonte form-control"
+                                    ng-options="integration.id as integration.name for integration in integracoes"
+                                    ng-model="selectedIntegration"></select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="frequenci" class="control-label">Frequência</label>
+                                <select id="frequenci" name="frequenci" class="select-frequencia form-control"
+                                    ng-options="frequenci.id as frequenci.name for frequenci in frequencia"
+                                    ng-model="selectedFrequenci"></select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="modalBotoes">
+                        <!--<button type="button" class="btn fechar" ng-click="hideModalkeyAdvanced()">Fechar</button>
+                                    <button type="button" class="btn salvar" data-loading-text="<i class='icon-spinner animate-spin'></i> Salvando" ng-click="saveKeyAdvanced()">Salvar</button>-->
+                        <a href="" ng-click="hideModalkeyAdvanced()">
+                            <button class="mdc-button mdc-fechar">Fechar</button>
+                        </a>
+                        <button type="submit" class="mdc-button mdc-button--raised"
+                            data-loading-text="<i class='icon-spinner animate-spin'></i> Salvando"
+                            ng-click="saveKeyAdvanced()">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- import key result -->
+<div class="modal fade in" id="modal-key-import">
+    <div class="modal-dialog">
+        <form id="form-key-import" class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 ng-if="user.empresa.contrato_metas==0" class="modal-title">Importar Resultado Chave</h4>
+                <h4 ng-if="user.empresa.contrato_metas==1" class="modal-title">Importar Indicador</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12" style="margin-bottom: 10px;">
+                    <div class="input-group" style="width: 100%;">
+                        <input type="text" id="query_keyresult" class="form-control" placeholder="{{user.empresa.contrato_metas==1 ? 'Indicador' : 'Resultado chave'}}" 
+                            ng-model="query">
+                        <span class="input-group-btn">
+                            <button type="button"><i class="entypo-search"></i></button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-12" style="overflow-y: auto; max-height: 200px;">
+                    <table class="form-group values-table">
+                        <tr ng-if="user.empresa.contrato_metas!=1" class="valores_dv">
+                            <th style="width:60%">Nome
+                            </th>
+                            <th style="width:15%">Ponto de partida
+                            </th>
+                            <th style="width:15%">Meta
+                            </th>
+                            <th style="width:15%">Medição
+                            </th>
+                            <th style="width:15%">Progresso
+                            </th>
+                        </tr>
+                        <tr ng-if="user.empresa.contrato_metas==1" class="valores_dv">
+                            <th style="width:60%">Nome
+                            </th>
+                            <th style="width:20%">MÍNIMO
+                            </th>
+                            <th style="width:15%">TARGET
+                            </th>
+                            <th style="width:20%">MÁXIMO
+                            </th>
+                        </tr>
+                        <tr ng-if="user.empresa.contrato_metas!=1" class="valores_dv" ng-repeat="keyresult in importKeyResults | filter : query">
+                            <td style="width: 60%">
+                                <label class="btn_valoresa valores_dv_checker">
+                                    <input type="checkbox" name="keyresult[]" autocomplete="off" ng-value="0"
+                                        ng-model="keyresult.status" ng-change="selectImportObj(keyresult)">
+                                    <span><i class="fa fa-check-circle"></i>{{keyresult.nomeRChave}}</span>
+                                </label>
+                            </td>
+                            <td style="width: 15%">{{keyresult.ponto_partida}}
+                            </td>
+                            <td style="width: 15%">{{keyresult.meta_final_prevista}}
+                            </td>
+                            <td style="width: 15%">{{keyresult.medicao}}
+                            </td>
+                            <td style="width: 15%">{{keyresult.progresso}}
+                            </td>
+                        </tr>
+                        <tr ng-if="user.empresa.contrato_metas==1" class="valores_dv" ng-repeat="keyresult in importKeyResults | filter : query">
+                            <td style="width: 60%">
+                                <label class="btn_valoresa valores_dv_checker">
+                                    <input type="checkbox" name="keyresult[]" autocomplete="off" ng-value="0"
+                                        ng-model="keyresult.status" ng-change="selectImportObj(keyresult)">
+                                    <span><i class="fa fa-check-circle"></i>{{keyresult.nomeRChave}}</span>
+                                </label>
+                            </td>
+                            <td style="width: 20%">{{keyresult.inferior}}
+                            </td>
+                            <td style="width: 15%">{{keyresult.target}}
+                            </td>
+                            <td style="width: 20%">{{keyresult.superior}}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer modalBotoes">
+                <!--<button type="button" class="btn fechar" data-dismiss="modal">Fechar</button>
+                            <button type="submit" class="btn salvar" ng-click="importKeyResult()" data-loading-text="<i class='icon-spinner animate-spin' ></i> Importando">Importar</button>-->
+
+                <button class="mdc-button mdc-fechar" data-dismiss="modal">Fechar</button>
+                <button type="submit" class="mdc-button mdc-button--raised"
+                    data-loading-text="<i class='icon-spinner animate-spin'></i> Importando"
+                    ng-click="importKeyResult()">Importar</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- import key result end -->
+
+<!-- Modal Medicao -->
+<div class="modal fade in" id="modal-measure">
+    <div class="modal-dialog">
+        <form id="form-measure" class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Medições</h4>
+            </div>
+            <div class="modal-body">
+                <div class="progress" ng-class="{'hide': measures}" style="margin-top:17px;">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100"
+                        aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                </div>
+
+                <div class="hide" ng-class="{'hide': !measures}">
+                    <h2 style="margin-top:0;" ng-if="measures.length">{{ measureText }}</h2>
+                    <hr ng-if="measures.length">
+                    <ul id="medicoes" class="scroll" ng-if="measures.length">
+                        <li ng-repeat="measure in measures">
+                            <h3>
+                                <div class="img">
+                                    <img src="" ng-if="measure.user.image" ng-src="{{ measure.user.image }}"
+                                        class="img-circle" width="32" height="32" alt="{{ measure.user.name }}"
+                                        style="border:#fff 1px solid;" />
+                                    <span class="image-replace" ng-if="!measure.user.image"
+                                        style="width:32px; height:32px; line-height:32px;">{{ initials(measure.user.name) }}</span>
+                                </div>
+                                <i>{{ measure.date }}</i>
+                                <span class="pull-right">Valor: <b>{{ measure.value }}</b></span>
+                            </h3>
+                            <p ng-if="measure.description">{{ measure.description }}</p>
+                            <p class="anexos" ng-if="measure.anexo.length > 0"><b>Anexos:</b> <a
+                                    ng-repeat="item in measure.anexo" href="{{ item.anexo }}" target="_blank"
+                                    class="btn btn-link btn-xs noshadow"><i class="icon-doc-text"></i></a></p>
+                        </li>
+                    </ul>
+                    <div class="form">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group" style="width:100%;">
+                                        <input name="data" type="text" class="form-control datepicker" id="measure-date"
+                                            placeholder="Data">
+                                        <div class="input-group-addon"> <a href="#"><i class="icon-calendar-5"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input name="medicao" type="tel" class="form-control" id="measure-value"
+                                        placeholder="Medição">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <textarea name="descricao" id="measure-description" class="form-control" rows="2"
+                                        placeholder="Descrição"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group row" style="margin-bottom:0;">
+                                    <label class="control-label col-md-1" style="line-height:35px;">Anexos:</label>
+                                    <div class="col-md-11">
+                                        <input id="measure-files" name="anexos" type="file" class="form-control"
+                                            multiple="multiple">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modalBotoes">
+                <button type="button" class="btn fechar" data-dismiss="modal">Fechar</button>
+                <button type="submit" class="btn salvar"
+                    data-loading-text="<i class='icon-spinner animate-spin'></i> Salvando">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Atividades -->
+<div class="modal fade in" id="modal-activities">
+    <div class="modal-dialog">
+        <form id="form-activities" class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title"><span ng-class="{'hide': activityDetail.id}">Nova</span> <span
+                        ng-class="{'hide': !activityDetail.id}">Editar</span> Atividade</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="form-group">
+                                <label for="activity-name" class="control-label">Nome</label>
+                                <input name="nome" type="text" class="form-control" id="activity-name"
+                                    value="{{ activityDetail.title }}">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="team-status" style="margin-top: 31px;">
+                                <dl class="users dl-horizontal">
+                                    <dd style="margin-left: 0px">
+                                        <div class="images">
+                                            <div class="dropdown">
+                                                <a href="javascript:void(0)" class="dropdown-toggle selected-option"
+                                                    id="link-user-ativade" ng-class="{'inactive':activity_status==0}"
+                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fa fa-circle " aria-hidden="true"></i>
+                                                    <p ng-if="activity_status==0" style="display: inline;">Inativa</p>
+                                                    <p ng-if="activity_status==1 || activity_status != 0"
+                                                        style="display: inline;">Ativa</p>
+                                                </a>
+                                                <div class="dropdown-menu">
+                                                    <a href="javascript:void(0)" class="link"
+                                                        ng-click="changeAtivoTypeAtivade('1')"><i class="fa fa-circle"
+                                                            aria-hidden="true"></i> Ativa</a>
+                                                    <a href="javascript:void(0)" class="link inactive"
+                                                        ng-click="changeAtivoTypeAtivade('0')"><i class="fa fa-circle"
+                                                            aria-hidden="true"></i> Inativa</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </dd>
+                                </dl>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="activity-description" class="control-label">Descrição</label>
+                                <textarea name="descricao" id="activity-description" class="form-control"
+                                    rows="5">{{ activityDetail.description }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="activity-init" class="control-label">Início</label>
+                                <div class="input-group" style="width:100%;">
+                                    <input id="activity-init" name="inicio" type="text" class="form-control datepicker"
+                                        value="{{ activityDetail.init }}">
+                                    <div class="input-group-addon"> <a href="#"><i class="entypo-calendar"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="activity-end" class="control-label">Fim</label>
+                                <div class="input-group" style="width:100%;">
+                                    <input id="activity-end" name="fim" type="text" class="form-control datepicker"
+                                        value="{{ activityDetail.end }}">
+                                    <div class="input-group-addon"> <a href="#"><i class="entypo-calendar"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="activity-end" class="control-label">Porcentagem</label>
+                                <div class="input-group" style="width:100%; margin-top:13px;">
+                                    <input type="hidden" id="activity-percentage"
+                                        ng-value="activityDetail.percentage" />
+                                    <div class="slider"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="activity-user" class="control-label">Responsável</label>
+                                <select id="activity-user" name="usuario" class="select2 usuario-activity"
+                                    data-placeholder="Selecione um Usuário"
+                                    ng-options="user.id as user.name for user in users"
+                                    ng-model="activityDetailUser"></select>
+                            </div>
+                        </div>
+                        <!--     <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="activity-hours" class="control-label">Horas</label>
+                                            <input name="horas" type="number" class="form-control" id="activity-hours" value="{{ activityDetail.hour }}">
+                                        </div>
+                                    </div>
+                                 <div class="col-md-6">
+                                        <div class="form-group big-select">
+                                            <label for="activity-type" class="control-label">Tipo</label>
+                                            <select id="activity-type" name="tipo" class="select-type form-control select-lg" ng-options="type.id as type.name for type in types" ng-model="typeActivity"></select>
+                                        </div>
+                                    </div>-->
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="activity-users" class="control-label">Contribuidores </label>
+                                <select id="activity-users" class="form-control" ng-model="selectedUserNotAddedAtivade"
+                                    ng-options="userr.name for userr in usersNotAddedAtivade track by userr.id"></select>
+
+                                <span class="corresponsaveis-selected"
+                                    ng-repeat="selected in usersNotAddedSelectedAtivade"
+                                    ng-click="removeUserAndRefreshAtivade(selected)"><label>{{selected.name}}</label><input
+                                        type="hidden" value="{{selected.id}}" name="corresponsaveis[]"
+                                        class="form-control" readonly><i class="fa fa-remove"></i></span>
+
+                                <!-- <select id="activity-users" multiple="multiple" name="corresponsaveis[]" class="form-control multi-select users-activity" ng-model="activityDetailUsers" ng-options="user.name for user in users track by user.id">
+                                            </select> -->
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="activity-tags" class="control-label">Tags</label>
+                                <input id="activity-tags" class="input-tags-activity" type="text" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer modalBotoes">
+                <button type="button" class="btn fechar" data-dismiss="modal">Fechar</button>
+                <button type="submit" class="btn salvar"
+                    data-loading-text="<i class='icon-spinner animate-spin'></i> Salvando">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- tatic activity modal -->
+
+<div class="modal fade in" id="tatic-activity-modal">
+    <div class="modal-dialog " style="width: 800px !important;">
+        <form id="form-tatic-activity-modal" class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <div class="row update-content">
+                    <div class="col-md-5">
+                        <div class="progress_left_corner ng-binding">
+                            <div class="progress_title_content ng-binding" title="{{update_tactivity.title}}">
+                                <h4 class="modal-title">
+                                    {{update_tactivity.title | limitTo:34}}{{update_tactivity.title.length>34 ? '...' : ''}}
+                                </h4>
+                                <div class="modal_header_title cs-margin-top-4">
+                                    <span ng-if="update_tactivity.situacao == 0">Não Iniciada</span>
+                                    <span ng-if="update_tactivity.situacao == 1">Finalizada</span>
+                                    <span ng-if="update_tactivity.situacao == 2">Em andamento</span>
+                                    <span ng-if="update_tactivity.situacao == 3">Cancelada</span>
+                                    <span style="margin-left: 20px;">{{update_tactivity.end}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 cs-padding-con">
+                        <div class="" style="float: left;">
+                            <input type="checkbox" id="check-finished" ng-model="finishedSituation"
+                                ng-change="changeSituation(1)" style="margin-top: 3px;" value="">
+                            <label for="lbl-progress" class="control-label progress-checkbox">Finalizar: </label>
+                        </div>
+                        <div class="" style="float: right;">
+                            <input type="checkbox" id="check-cancelled" ng-model="cancelledSituation"
+                                ng-change="changeSituation(3)" style="margin-top: 3px;" value="">
+                            <label for="lbl-progress" class="control-label progress-checkbox">Cancelar: </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3 cs-padding-top-13 progress-slider">
+                        <div class="input-group" style="width:100%;">
+                            <input type="hidden" id="update-percentage" />
+                            <div class="slider"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row" style="padding-bottom: 10px;">
+                    <div class="col-md-12" style="overflow-y: auto; max-height: 80px;">
+                        <label class="" style="font-size: 14px; font-weight: bold;">Descrição:</label>
+                        <div class="">{{update_tactivity.description}}</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 elo comment-box-header-tatic">
+                        <div class="row">
+                            <div class="col-md-9 cs-padding-right-0">
+                                <textarea rows="1" id="comment_content" placeholder="Digite seu comentário"
+                                    class="elo-height col-md-9"></textarea>
+                            </div>
+                            <div class="col-md-3" style="float: right;">
+                                <button class="col-md-3 btn-primary salvar"
+                                    data-loading-text="<i class='icon-spinner animate-spin'></i> Adicionando"
+                                    ng-click="addActivityComment()">Enviar comentário</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="comment-box-container">
+                        <div class="carrier_panel clearfix removehover cs-margin-top-10"
+                            ng-if="activityComments.length>0" ng-repeat="comment in activityComments">
+                            <div class="col-md-1 ng-binding pdl-30 comment-box-img">
+                                <img src="{{comment.url_image}}">
+                            </div>
+                            <div class="col-md-9 ng-binding comment-box-comments">
+                                <div class="comment-user">
+                                    {{comment.nome_usuario}}
+                                </div>
+                                <div class="comment-content">
+                                    {{comment.comentario}}
+                                </div>
+                            </div>
+                            <div class="col-md-2 comment-box-date">
+                                <span class="ng-binding">{{comment.commentdate}}</span>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="clearfix removehover cs-margin-top-25 cs-margin-left-3"
+                            ng-if="!activityComments.length>0">
+                            <div class="col-md-12 comment-box-nocomment">
+                                <div class="comment-no">Não existem comentários ainda.</div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer modalBotoes">
+                <button type="button" class="btn fechar" data-dismiss="modal">Fechar</button>
+                <button class="btn salvar" ng-click="updateActivityProgress()"
+                    data-loading-text="<i class='icon-spinner animate-spin'></i> Salvando">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL REPROVAÇÃO DE OBJETIVOS -->
+<div class="modal fade in" id="modal-justificativa">
+    <div class="modal-dialog">
+        <form id="form-justificativa" class="modal-content" ng-submit="saveNewCommentObjetivo($event, comment, true);approveDisapprove('R', tatic.id, tatic.user.name, tatic.user.email)">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title"><span ng-class="{'hide': activityDetail.id}">Justifique o motivo da sua reprovação</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="activity-description" class="control-label">Estou reprovando este objetivo conforme minha justificativa abaixo:</label>
+                                <textarea name="descricao" id="activity-description" class="form-control"
+                                    rows="5"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer modalBotoes">
+                <button type="button" class="btn fechar" data-dismiss="modal">Fechar</button>
+                <button type="submit" class="btn salvar"
+                    data-loading-text="<i class='icon-spinner animate-spin'></i> Salvando">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- MODAL REPROVAÇÃO DE OBJETIVOS -->

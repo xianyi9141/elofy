@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_feedback` ADD `situacao` INT(11) NOT NULL DEFAULT '0' AFTER `prazo`;

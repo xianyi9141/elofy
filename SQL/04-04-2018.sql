@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_empresa` ADD `feedback` INT(11) NOT NULL DEFAULT '1' AFTER `label_elos`, ADD `okr` INT(11) NOT NULL DEFAULT '1' AFTER `feedback`;

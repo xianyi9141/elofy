@@ -1,0 +1,779 @@
+<div>
+	<!-- Objetivos Globais -->
+	<h2 class="new_heading_dv"  style="margin-top:24px !important;margin-bottom: 24px !important;">
+		<div class="tag_filtering">
+			<div class="tag_label">
+				<span>Tags:</span>
+			</div>
+			<select  id="search-tag" class="" name="tag" ng-change="onChangeTagSelect()" ng-model="selectedTag">
+                <option ng-repeat="tag in tagsFilter | filter : {added : '!'}" value="{{tag.id}}">{{tag.name}}</option>
+            </select>
+            
+		</div>
+		<div class="buttons pull-right" style="width: 900px;">
+			<div class="model_bod estrategicofilter" style="display:inline-block; vertical-align:top; margin-top:5px;" >
+				<div class="model_ch">
+					<span style="font-size:14px;padding-right: 5px;">Quero ver por:</span>
+					<div class="model_che">
+						<input type="checkbox" id="direcionadorf" ng-model="direcionadorf">
+						<label for="direcionadorf" class="line-ht" > Direcionador</label>
+					</div>
+					<div class="model_che">
+						<input type="checkbox" id="estrategicof" ng-model="estrategicof">
+						<label for="estrategicof" class="line-ht" > Destacados</label>
+					</div>
+				</div>
+			</div>
+			<form style="display:inline-block; vertical-align:top; margin:0 5px;" ng-submit="search()">
+				<div class="input-group">
+					<input style="border-radius: 30px;border:1px solid #dadce0" type="text" class="form-control" placeholder="{{ 'UI.SEARCH_FOR_NAME' | translate }}" ng-model="query">
+					<span class="input-group-btn">
+						<button type="submit"><i class="icon-search"></i></button>
+					</span>
+				</div>
+			</form>
+			<form style="display:inline-block; vertical-align:top; width:120px; margin:0 5px;">
+				<select class="select-year form-control" data-native="true" ng-options="year as year for year in years" ng-model="selectedYear" ng-change="changeYear()"></select>
+			</form>
+		<!--	<a href="" class="btn" ng-class="{'btn-white': !onlyFav, 'btn-primary': onlyFav}" style="display:inline-block; vertical-align:top; margin:0 5px;" ng-model="estrategicof"><i class="icon-star"></i></a>-->
+			<!--<a href="javascript:;" ng-if="user.goal_register==1 || user.user_reviewer==1 || user.admin=='true'" ng-click="new()" class="adicionar-btnx" style="display:inline-block; vertical-align:top; margin:0 5px;">Novo direcionador</a>
+            <a href="" ng-if="user.goal_register==1" ng-click="okr()" class="adicionar-btnx">{{ "OBJETIVOS.NEW_GOAL" | translate }}</a>-->		
+					<!--<a href="javascript:;" ng-if="user.goal_register==1 || user.user_reviewer==1 || user.admin=='true'" ng-click="new()" class="adicionar-btnx" style="height: 35px;margin-top: 0px !important;line-height: 2;">Novo Direcionador</a>-->
+					
+				<a href="javascript:;" ng-if="user.goal_register==1 || user.user_reviewer==1 || user.admin=='true'" ng-click="new()">
+					<button class="mdc-button mdc-button--raised mdc-button--dense">
+							<i class="material-icons mdc-button__icon">add</i>
+							<span class="mdc-button__label">Objetivo Global</span>
+					</button>
+				</a>
+            		
+                     	<!--<a href="" ng-if="user.goal_register==1" class="hdp dropdown-toggle b-ankar" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><img src="assets/portal/img/ico_plus.png" height="20" width="auto">  Adicionar</a>
+                       </a>
+
+                        <ul class="dropdown-menu">
+                            <li>
+                                 <a href="" ng-click="okr()">{{ "OBJETIVOS.NEW_GOAL" | translate }}</a>
+                             </li>
+                             <li>
+                              <a href="javascript:;" ng-if="user.goal_register==1 || user.user_reviewer==1 || user.admin=='true'" ng-click="new()">Novo Direcionador</a>
+                        	 </li>	
+             			</ul> -->
+             		 
+             		
+		</div>
+		
+	</h2>
+	<div class="clearfix"></div>
+	
+	<!-- nuvens de tags -->
+	<div class="tag_button_div">
+		<button style="height: 25px; font-size: 10px; margin-top: -5px;margin-bottom: 10px;margin-right: 2px;" ng-repeat="selected in tagsFilter | filter : { added : true}" ng-click="removeTagSelect(selected)" class="mdc-button mdc-button--outlined mdc-ripple-upgraded tag_button"><span>{{selected.name}}</span><i class="fa fa-remove"></i></button>
+	</div>
+	<!-- nuvens de tags -->
+
+	<div class="row side_dv">
+		<div ng-repeat="item in globalsFilter | filter:q" >
+			<div class="col-md-4 col-sm-6 abc item{{ $index }}" id="item_{{ $index }}" ng-if="item.direcionador==direcionadorf && direcionadorf==true">
+				<div class="top_view_box" ng-class="{'tile-aqua': bright(item.color) == 'aqua', 'tile-gray':  bright(item.color) == 'gray', 'tile-primary': bright(item.color) == false, 'favorite': item.favorite}" ng-click="goDetails(item.id)" >
+					<div class="">
+						<div class="content-box" ng-class="{'estrategico': item.estrategico==1}">
+							<div class="content-box-heading Econtent-box-heading">
+								
+								<div class="tags_dv">
+								<h2 ng-repeat="tag in item.tags" title="{{ tag.name }}" style="" ng-hide="tag.name==''">{{ tag.name.substr(0,36) }}</h2>
+								</div>
+								<span> {{ item.created |timeago}}
+							<!--	<span class="delete-icon goal-delete" ng-if="user.access_delete_direcionar==1"><a ng-if="user.access_delete_direcionar==1" href="javascript:void(0);" ng-click="DeleteTatic(item.id,0)" ><i class="fa fa-trash" ></i></span>-->
+								</span>
+
+							</div>
+							<div class="clearfix"></div>
+							<h4><a ng-href="#!/{{item.id}}" class="overlay" title="{{ item.title }}">{{ item.title.substr(0,86) }}<span ng-if="item.title.length > 86">...</span></a></h4>
+							<div class="clearfix"></div>
+							<div class="progres" style="padding:0px;height: 22px;margin-bottom: 24px;">
+								<div class="progress" style="height: 22px;">
+									<div class="progress-bar" role="progressbar" aria-valuenow="{{ item.percentage }}"
+										aria-valuemin="0" aria-valuemax="100" style="width:{{ item.percentage }}%;max-width: 100%" ng-class="{'ontrack':item.color==1,'attention':item.color==2,'delayed':item.color==3}">
+										<!--<span class="sr-only">{{ item.percentage }}%</span>-->
+									</div>
+									<div class="completed barraDirecionador" style="width:{{ item.percentage }}%;max-width: 100%">
+										<span ng-show="item.percentage>0" ng-hide="item.percentage==0"style="color: #fff;">{{ item.percentage }}%</span>
+										<span ng-show="item.percentage==0" ng-hide="item.percentage>0" style="color: #222;">{{ item.percentage }}%</span>
+										<!--<label>Concluído</label>-->
+									</div>
+									<!--<div ng-hide="item.percentage!=0" class="completed completed_bar not_started" style="width:100%">
+										<span>0%</span>
+										<label>Não iniciado</label>
+									</div>
+									<div ng-if="item.percentage>0" class="completed completed_bar" ng-class="[item.percentage==0 ? 'comp':'asdf']"  ng-hide="item.percentage==100" style="width:{{ 100-item.percentage }}%">
+										<span >{{ 100-item.percentage }}%</span>
+										<label >Em andamento</label>
+									</div>-->
+									<!--<div class="col-sm-2 col-xs-12 progres-perfil" style="padding-right: 0px;padding-left: 0px;">
+	                            <div class="progress_wrap">
+
+	                                <div class="progress" ng-class="{'ontrack':item.color==1,'attention':item.color==2,'delayed':item.color==3}">
+	                                    <div class="progress-bar" role="progressbar" style="width:{{ item.percentage }}%;max-width: 100%" aria-valuenow="{{ item.percentage }}" aria-valuemin="0" aria-valuemax="100" ng-class="{'ontrack':item.color==1,'attention':item.color==2,'delayed':item.color==3}"></div>
+	                                </div>
+	                                <span class="ng-binding" style="padding-left: 0px;">{{ item.percentage }}%</span>
+	                            </div>
+	                        </div>-->
+								</div>
+								
+							</div>
+							<div class="clearfix"></div>
+							<div class="major_content_div">
+								<div class="row" ng-if="item.estrategico !=1 ">
+									<div class="col-sm-6">
+										<div class="major_content-sv-view orange cursor-auto">
+											<span style="font-size: 14;font-weight: bold;align-items: center;">{{item.tatics.length}}</span>
+											<span style="text-transform: none;font-size: 14px;">Objetivos</span>
+											<div class="popup_show" ng-hide="item.tatics.length < 1">
+												<h4>Total de Objetivos</h4>
+												<div class="overflow_dv">
+													<div class="objective_table">
+														<div class="objective_row" ng-repeat="tatic in item.tatics | filter:q">
+															<div class="objective_column">
+																<span>Objetivo</span>
+																<label><a href="javascript:void(0)" ng-click="teticoTest()"><i class="fa fa-plus"></i></a>
+																<a ng-href="#!/tatic/{{tatic.id}}" class="tatic_title" >{{tatic.title}}</a>
+															</label>
+															</div>
+															<div class="objective_column">
+																<span>Responsável</span>
+																<label>{{tatic.user.name}}</label>
+															</div>
+															<div class="objective_column">
+																<span>Time</span>
+																<label>{{tatic.team.name}}</label>
+															</div>
+															<div class="objective_column">
+																<span>Progresso</span>
+																<label>{{tatic.percentage}}%</label>
+															</div>
+															<div class="objective_column" ng-if="user.admin=='true'" >
+																<span>&nbsp;</span>
+															<!--	<label class="delete-icon"><a href="javascript:void(0)" ng-click="DeleteTatic(tatic.id,0)"><i class="fa fa-trash" aria-hidden="true"></i></a></label>-->
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="major_content-sv-view green cursor-auto">
+											<span style="font-size: 14;font-weight: bold;align-items: center;">{{item.keys.length}}</span>
+											<span style="text-transform: none;font-size: 14px;">Key Results</span>
+											<!--<div class="overlay"></div>-->
+											<div class="popup_show" ng-hide="item.keys.length < 1">
+												<h4>Resultados Chave</h4>
+												<div class="overflow_dv">
+												<div class="objective_table">
+													<div class="objective_row" ng-repeat="key in item.keys | filter:q">
+														<div class="objective_column">
+															<span>Objetivo</span>
+															<label><a href="javascript:void(0)"><i class="fa fa-plus"></i></a>{{key.objetivo.title}}</label>
+														</div>
+														<div class="objective_column">
+															<span>Progresso</span>
+															<label>{{ key.objetivo.percentage }}%</label>
+														</div>
+														<div class="objective_column">
+															<span>Nome</span>
+															<label>{{key.title}}</label>
+														</div>
+														<div class="objective_column">
+															<span>Medição</span>
+															<label>{{ (key.Medicao!=null)?key.Medicao:0 }}</label>
+														</div>
+														<div class="objective_column">
+															<span>Meta</span>
+															<a href="javascript:void(0)" class="activity_process">{{ (key.Meta!=null)?key.Meta:0 }}</a>
+														</div>
+													</div>
+												</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- <div class="col-sm-4">
+										<div class="major_content-sv-view yellow">
+											<span style="font-size: 14;font-weight: bold;align-items: center;text-transform: none;">{{item.activities.length}}</span>
+											<span style="text-transform: none;font-size: 14px;">Atividades</span>
+											<div class="popup_show" ng-hide="item.activities.length < 1">
+												<h4>Atividades</h4>
+												<div class="overflow_dv">
+													<div class="objective_table">
+														<div class="objective_row" ng-repeat="activity in item.activities | filter:q">
+															<div class="objective_column">
+																<span>Objetivo</span>
+																<label>{{ activity.objetivo.title }}</label>
+															</div>
+															<div class="objective_column">
+															<span>Resultado Chave</span>
+																<label>{{ activity.keyresult.title }}</label>
+															</div>
+															<div class="objective_column">
+																<span>Atividade</span>
+																<a href="javascript:void(0)" class="activity_process">{{ activity.title }}</a>
+															</div>
+															<div class="objective_column">
+																<span>Progresso</span>
+																<label>{{ activity.percentage }}%</label>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div> -->
+								</div>
+							</div>
+						</div>
+						<div class="bottom_footer"  ng-class="{'estrategico': item.estrategico==1}">
+							<a href="javascript:void(0)" class="left-align">
+								<img src="" ng-if="item.user.xs_image" ng-src="{{ item.user.xs_image }}" class="img-circle" width="30" height="30" alt="{{ item.user.name }}" />
+								<span class="image-replace" ng-if="!item.user.xs_image" ng-style="{ 'color' : (bright(item.color) == false) ? item.color : '' }">{{ initials(item.user.name) }}</span><label>{{ item.user.name }}</label></a>
+								
+							<a style="padding-top: 5px;" href="{{ baseurl }}organograma/{{ item.id }}" class="favorite right-align"><i  ng-class="{'hide': !check(item.id)}"></i><img src="assets/portal/img/ico_org.png" ng-class="{'hide': check(item.id)}" height="31" width="31"></a>
+							<a style="padding-top: 6px; margin-right: 20px;" href="javascript:;" ng-click="key_details(item)" class="favorite right-align"><img src="assets/portal/img/icone_checkin.png" style="border-radius: 145px;"  width="29"></a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4 col-sm-6 abc item{{ $index }}" id="item_{{ $index }}" ng-if="item.estrategico_status==estrategicof && estrategicof==true">
+				<div class="top_view_box" ng-class="{'tile-aqua': bright(item.color) == 'aqua', 'tile-gray':  bright(item.color) == 'gray', 'tile-primary': bright(item.color) == false, 'favorite': item.favorite}" ng-click="goDetails(item.id)" >
+					<div class="">
+						<div class="content-box" ng-class="{'estrategico': item.estrategico==1}">
+							<div class="content-box-heading Econtent-box-heading">
+								<div class="tags_dv">
+								<h2 ng-repeat="tag in item.tags" title="{{ tag.name }}" style="" ng-hide="tag.name==''">{{ tag.name.substr(0,36) }}</h2>
+								</div>
+								<span> {{ item.created |timeago}}
+							<!--	<span class="delete-icon goal-delete" ng-if="user.access_delete_direcionar==1"><a ng-if="user.admin=='true'" href="javascript:void(0);" ng-click="DeleteTatic(item.id,0)" ><i class="fa fa-trash" ></i></span>-->
+								</span>
+
+							</div>
+							<div class="clearfix"></div>
+							<h4><a ng-href="#!/tatic/{{item.id}}" class="overlay" title="{{ item.title }}">{{ item.title.substr(0,74) }}<span ng-if="item.title.length > 70">...</span></a></h4>
+							<div class="clearfix"></div>
+							<div class="progres" style="padding:0px;height: 22px;margin-bottom: 24px;">
+								<div class="progress" style="height: 22px;">
+									<div class="progress-bar" role="progressbar" aria-valuenow="{{ item.percentage }}"
+										aria-valuemin="0" aria-valuemax="100" style="width:{{ item.percentage }}%;max-width: 100%" ng-class="{'ontrack':item.color==1,'attention':item.color==2,'delayed':item.color==3}">
+										
+									</div>
+									<div class="completed barraDirecionador" style="width:{{ item.percentage }}%;max-width: 100%">
+										<span ng-show="item.percentage>0" ng-hide="item.percentage==0"style="color: #fff;">{{ item.percentage }}%</span>
+										<span ng-show="item.percentage==0" ng-hide="item.percentage>0" style="color: #222;">{{ item.percentage }}%</span>
+										<!--<label>Concluído</label>-->
+									</div>
+									<!--<div ng-hide="item.percentage!=0" class="completed completed_bar not_started" style="width:100%">
+										<span>0%</span>
+										<label>Não iniciado</label>
+									</div>
+									<div ng-if="item.percentage>0" class="completed completed_bar" ng-class="[item.percentage==0 ? 'comp':'asdf']"  ng-hide="item.percentage==100" style="width:{{ 100-item.percentage }}%">
+										<span >{{ 100-item.percentage }}%</span>
+										<label >Em andamento</label>
+									</div>-->
+									<!--<div class="col-sm-2 col-xs-12 progres-perfil" style="padding-right: 0px;padding-left: 0px;">
+	                            <div class="progress_wrap">
+
+	                                <div class="progress" ng-class="{'ontrack':item.color==1,'attention':item.color==2,'delayed':item.color==3}">
+	                                    <div class="progress-bar" role="progressbar" style="width:{{ item.percentage }}%;max-width: 100%" aria-valuenow="{{ item.percentage }}" aria-valuemin="0" aria-valuemax="100" ng-class="{'ontrack':item.color==1,'attention':item.color==2,'delayed':item.color==3}"></div>
+	                                </div>
+	                                <span class="ng-binding" style="padding-left: 0px;">{{ item.percentage }}%</span>
+	                            </div>
+	                        </div>-->
+								</div>
+								
+							</div>
+							<div class="clearfix"></div>
+							<div class="major_content_div">
+								<div class="row" >
+									<div class="col-sm-6">
+										<div class="major_content-sv-view orange cursor-auto">
+											<span style="font-size: 14;font-weight: bold;align-items: center;">{{item.tatics.length}}</span>
+											<span style="text-transform: none;font-size: 14px;">Objetivos</span>
+											<div class="popup_show" ng-hide="item.tatics.length < 1">
+												<h4>Total de Objetivos</h4>
+												<div class="overflow_dv">
+													<div class="objective_table">
+														<div class="objective_row" ng-repeat="tatic in item.tatics | filter:q">
+															<div class="objective_column">
+																<span>Objetivo</span>
+																<label><a href="javascript:void(0)" ng-click="teticoTest()"><i class="fa fa-plus"></i></a>
+																<a ng-href="#!/tatic/{{tatic.id}}" class="tatic_title" style="color: #4c4c4c !important">{{tatic.title}}</a>
+															</label>
+															</div>
+															<div class="objective_column">
+																<span>Responsável</span>
+																<label>{{tatic.user.name}}</label>
+															</div>
+															<div class="objective_column">
+																<span>Time</span>
+																<label>{{tatic.team.name}}</label>
+															</div>
+															<div class="objective_column">
+																<span>Progresso</span>
+																<label>{{tatic.percentage}}%</label>
+															</div>
+															<div class="objective_column" ng-if="user.admin=='true'" >
+																<span>&nbsp;</span>
+														<!--		<label class="delete-icon"><a href="javascript:void(0)" ng-click="DeleteTatic(tatic.id,0)"><i class="fa fa-trash" aria-hidden="true"></i></a></label>-->
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="major_content-sv-view green cursor-auto">
+											<span style="font-size: 14;font-weight: bold;align-items: center;">{{item.keys.length}}</span>
+											<span style="text-transform: none;font-size: 14px;">Key Results</span>
+											<!--<div class="overlay"></div>-->
+											<div class="popup_show" ng-hide="item.keys.length < 1">
+												<h4>Resultados Chave</h4>
+												<div class="overflow_dv">
+												<div class="objective_table">
+													<div class="objective_row" ng-repeat="key in item.keys | filter:q">
+														<div class="objective_column">
+															<span>Objetivo</span>
+															<label><a href="javascript:void(0)"><i class="fa fa-plus"></i></a>{{key.objetivo.title}}</label>
+														</div>
+														<div class="objective_column">
+															<span>Progresso</span>
+															<label>{{ key.objetivo.percentage }}%</label>
+														</div>
+														<div class="objective_column">
+															<span>Nome</span>
+															<label>{{key.title}}</label>
+														</div>
+														<div class="objective_column">
+															<span>Medição</span>
+															<label>{{ (key.Medicao!=null)?key.Medicao:0 }}</label>
+														</div>
+														<div class="objective_column">
+															<span>Meta</span>
+															<a href="javascript:void(0)" class="activity_process">{{ (key.Meta!=null)?key.Meta:0 }}</a>
+														</div>
+													</div>
+												</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- <div class="col-sm-4">
+										<div class="major_content-sv-view yellow">
+											<span style="font-size: 14;font-weight: bold;align-items: center;text-transform: none;">{{item.activities.length}}</span>
+											<span style="text-transform: none;font-size: 14px;">Atividades</span>
+											<div class="popup_show" ng-hide="item.activities.length < 1">
+												<h4>Atividades</h4>
+												<div class="overflow_dv">
+													<div class="objective_table">
+														<div class="objective_row" ng-repeat="activity in item.activities | filter:q">
+															<div class="objective_column">
+																<span>Objetivo</span>
+																<label>{{ activity.objetivo.title }}</label>
+															</div>
+															<div class="objective_column">
+															<span>Resultado Chave</span>
+																<label>{{ activity.keyresult.title }}</label>
+															</div>
+															<div class="objective_column">
+																<span>Atividade</span>
+																<a href="javascript:void(0)" class="activity_process">{{ activity.title }}</a>
+															</div>
+															<div class="objective_column">
+																<span>Progresso</span>
+																<label>{{ activity.percentage }}%</label>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div> -->
+								</div>
+							</div>
+						</div>
+						<div class="bottom_footer"  ng-class="{'estrategico': item.estrategico==1}">
+							<a href="javascript:void(0)" class="left-align">
+								<img src="" ng-if="item.user.xs_image" ng-src="{{ item.user.xs_image }}" class="img-circle" width="30" height="30" alt="{{ item.user.name }}" />
+								<span class="image-replace" ng-if="!item.user.xs_image" ng-style="{ 'color' : (bright(item.color) == false) ? item.color : '' }">{{ initials(item.user.name) }}</span><label>{{ item.user.name }}</label></a>
+			<a style="padding-top: 5px;" href="{{ baseurl }}organograma/{{ item.id }}" class="favorite right-align"><i  ng-class="{'hide': !check(item.id)}"></i><img src="assets/portal/img/ico_org.png" ng-class="{'hide': check(item.id)}" height="31" width="31"></a>
+			<a style="padding-top: 5px; margin-right: 20px;" href="javascript:;" ng-click="key_details(item)" class="favorite right-align"><img src="assets/portal/img/icone_checkin.png" style="border-radius: 145px;"  width="28"></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Modal Novo Global -->
+<div class="modal fade in" id="new-goal">
+	<div class="modal-dialog">
+		<form id="form-goal" class="modal-content">
+			<div class="modal-header bg-primary">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h4 class="modal-title">{{ "VISAO_EMPRESA.NEW_DRIVER" | translate }}</h4>
+			</div>
+			<div class="modal-body">
+				<div class="progress" ng-class="{'hide': users.length}" style="margin-top:17px;">
+					<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+				</div>
+
+				<div class="form hide" ng-class="{'hide': !users.length}">
+					<div class="alert alert-danger text-center hide" ng-class="{'hide': teams.length}">
+						<p>{{ "VISAO_EMPRESA.TO_BEGGIN_GOAL_REGISTER" | translate }} <a href="/times"><strong>{{ "VISAO_EMPRESA.GO_TO_TEAM_EDITION" | translate }}</strong></a></p>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="field-1" class="control-label">{{ "UI.NAME" | translate }}</label>
+								<input name="nome" type="text" class="form-control" id="field-1">
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="field-2" class="control-label">{{ "UI.DESCRIPTION" | translate }}</label>
+								<textarea name="descricao" id="field-2" class="form-control" rows="5"></textarea>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="field-3" class="control-label">{{ "UI.ENCHARGED" | translate }}</label>
+								<select id="field-3" name="usuario" class="select2 usuario" data-allow-clear="true" data-placeholder="{{ 'UI.SELECT_USER' | translate }}">
+									<option value=""></option>
+									<optgroup label="Usuários">
+										<option ng-repeat="user in users" ng-value="{{ user.id }}">{{ user.name }}</option>
+									</optgroup>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="field-5" class="control-label">{{ "VISAO_EMPRESA.CORESPONSIBLES" | translate }}</label>
+								<select id="field-5" multiple="multiple" name="corresponsaveis" class="form-control multi-select users" ng-model="responsibles" ng-options="user.id as user.name for user in users">
+								</select>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="field-6" class="control-label">Tags</label>
+								<input id="field-6" class="input-tags" type="text" value="" data-role="tagsinput" />
+							</div>
+						</div>
+					</div>
+					<div class="row hidden">
+						<div class="col-md-12">
+							<div class="form-group">
+								<div class="row">
+									<label class="col-md-7 control-label" style="margin-top:8px;">{{ "VISAO_EMPRESA.TEAMS_SLASH_WEIGHT" | translate }}</label>
+									<div class="col-md-5">
+										<a id="open-time" class="btn btn-info pull-right"><i class="icon-plus-circled"></i> {{ "TIMES.ADD_TEAM" | translate}}</a>
+										<select id="seleciona-time" name="times" class="select2 times" data-allow-clear="true" data-placeholder="{{ 'TIMES.SELECT_TEAM' | translate}}">
+											<option value=""></option>
+											<optgroup label="Times">
+												<option ng-repeat="team in teams" ng-value="{{ team.id }}">{{ team.name }}</option>
+											</optgroup>
+										</select>
+									</div>
+								</div>
+							</div>
+							 <p class="error-sum text-danger hidden">{{ "VISAO_EMPRESA.THE_SUM_MUST_BE_TEN" | translate }}</p>
+							<div class="row">
+								<div class="col-md-12" ng-if="selectedTeams.length">
+									<div class="row">
+										<label class="col-md-8">{{ "UI.TEAM" | translate }}</label>
+										<div class="col-md-4">
+											<label class="pull-left text-center" style="width:122px;">{{ "UI.WEIGHTS" | translate }}</label>
+											<label class="pull-right" style="width:44px;">{{ "UI.DELETE" | translate }}</label>
+										</div>
+									</div>
+									<hr style="border-width:2px; margin:10px 0;">
+								</div>
+
+								<div class="form-group col-md-12" ng-repeat="team in selectedTeams" style="margin:0;">
+									<div class="row">
+										<label class="col-md-8 control-label" style="font-size:14px; font-weight:400; margin-top:8px;">{{ team.name }}</label>
+										<div class="col-md-4">
+											<div class="input-spinner pull-left">
+												<button type="button" class="btn btn-default" ng-click="numberLess($index)">-</button>
+												<input type="number" name="" class="form-control no-round size-1 number" ng-model="team.value" ng-value="{{ team.value }}" min="1" max="10">
+												<button type="button" class="btn btn-default" ng-click="numberMore($index)">+</button>
+											</div>
+											<button type="button" class="btn btn-red pull-right" ng-click="numberRemove($index)"><i class="entypo-trash"></i></button>
+										</div>
+									</div>
+									<hr style="margin:10px 0;">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--<div class="modal-footer">
+				<button type="button" class="btn btn-white" data-dismiss="modal">{{ "UI.CLOSE" | translate }}</button>
+				<button type="submit" class="btn btn-primary salvar" data-loading-text="<i class='icon-spinner animate-spin'></i> {{ 'UI.SAVING' | translate }}">{{ "UI.SAVE" | translate }}</button>
+			</div>-->
+
+			<div class="modal-footer modalBotoes">
+				<button class="mdc-button mdc-fechar" data-dismiss="modal">Fechar</button>
+				<button type="submit" class="mdc-button mdc-button--raised" data-loading-text="<i class='icon-spinner animate-spin'></i> Salvando">Salvar</button>
+			</div>       
+		</form>
+	</div>
+</div>
+ <!-- Modal Novo Tático -->
+<div class="modal fade in" id="new-tatic">
+	<div class="modal-dialog">
+		<form id="form-tatic" class="modal-content">
+			<div class="modal-header bg-primary">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h4 class="modal-title">{{ "OBJETIVOS.NEW_GOAL" | translate }} </h4>
+			</div>
+			<div class="modal-body">
+				<div class="progress" ng-class="{'hide': users.length && teams.length && newCycles.length}" style="margin-top:17px;">
+					<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+				</div>
+
+				<div class="form">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="field-1" class="control-label">{{ "UI.NAME" | translate }}</label>
+								<input name="nome" type="text" class="form-control" id="field-1">
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="field-2" class="control-label">{{ "UI.DESCRIPTION" | translate }}</label>
+								<textarea name="descricao" id="field-2" class="form-control" rows="5"></textarea>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4" style="padding-right:0;">
+							<div class="form-group">
+								<label for="field-3" class="control-label">{{ "UI.ENCHARGED" | translate }}</label>
+								<select id="field-3" name="usuario" class="select2 usuario" data-allow-clear="true" data-placeholder="{{ 'UI.SELECT_USER' | translate }}">
+									<option value=""></option>
+									<optgroup label="Usuários">
+										<option ng-repeat="user in users" ng-value="{{ user.id }}">{{ user.name }}</option>
+									</optgroup>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-4" style="padding-right:0;">
+							<div class="form-group">
+								<label for="field-4" class="control-label">Time</label>
+								<select id="field-4" name="time" class="select2 times" data-allow-clear="true" data-placeholder="{{ 'TIMES.SELECT_TEAM' | translate }}">
+									<option value=""></option>
+									<optgroup label="Times">
+										<option ng-repeat="team in teams" ng-value="{{ team.id }}">{{ team.name }}</option>
+									</optgroup>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group">
+								<label for="field-5" class="control-label">Peso</label>
+								 <div class="input-spinner">
+									<button type="button" class="btn btn-info" ng-click="numberLessNew()">-</button>
+									<input id="field-5" type="number" name="peso" class="form-control size-1 input-lg" ng-model="newWeight" value="{{ newWeight }}" min="1" max="10" style="width:120px;">
+									<button type="button" class="btn btn-info" ng-click="numberMoreNew()">+</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="field-6" class="control-label">{{ "VISAO_EMPRESA.CONTRIBUITORS" | translate }}</label>
+								<select id="field-6" multiple="multiple" name="corresponsaveis" class="form-control multi-select users" ng-model="usersModel" ng-options="user.id as user.name for user in users">
+								</select>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="field-7" class="control-label">Tags</label>
+								<input id="field-7" class="input-tags" type="text" value="" data-role="tagsinput" />
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="field-8" class="control-label">{{ "UI.QUARTERS" | translate }}</label>
+								<select id="field-8" multiple="multiple" name="ciclos" class="form-control multi-select cycles" ng-model="cyclesModel" ng-options="cycle.id as cycle.name for cycle in newCycles">
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-white" data-dismiss="modal">{{ "UI.CLOSE" | translate }}</button>
+				<button type="submit" class="btn btn-primary salvar" data-loading-text="<i class='icon-spinner animate-spin'></i> {{ 'UI.SAVING' | translate }}">{{ "UI.SAVE" | translate }}</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="modal fade in" id="detail-keys">
+	<div class="modal-dialog" style="max-width: 900px;width: auto;">
+		<div class="modal-header bg-primary">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h4 class="modal-title" style="display: inline-block;">{{ detailTitle }}</h4>
+			<div style="display: inline-block; float: right; padding-right: 30px;width: 25%;">
+	            <select class="select2" id="selectedCiclo" data-placeholder="Selecione um Ciclo">
+	                <option value="{{ciclo.id_ciclo}}" ng-repeat="ciclo in fcycles">{{ ciclo.filtro }}</option>
+	            </select>
+	        </div>
+		</div>
+		<div class="modal-body" style="height: auto;padding: 10px;">
+			<div class="overflow_dv" style="max-height: 500px;">
+				<div ng-repeat="tatic in filteredList">
+					<div class="ng-objective row v-center" style="cursor: pointer;" ng-click = "linkToObjectivePage(tatic.id)" style="border:0px;"> 
+						<div class="col-sm-1 col-xs-12">
+	                        <img height="23" width="23" src="assets/portal/img/ico_o2.png">
+	                    </div>
+
+	                    <div class="col-sm-8 col-xs-12 text-ellips">
+	                    
+		                    <p class="" style="margin-bottom:0px;">
+		        	            {{tatic.title}}
+		                    </p>
+		                
+			            </div>
+			            <div class="col-sm-2 col-xs-12 text-ellips">
+		                    <p style="margin-bottom:0px;">
+		        	            
+		                    </p>
+			            </div>
+			             <!--<div class="col-sm-2 col-xs-12 team text-center" style="padding-right: 0px !important;padding-left: 0px !important;">
+			                <p style="margin-bottom: 0px !important;">	
+			                    <span>{{tatic.team.name}}</span>
+			                </p>
+			            </div>-->
+
+			            <div class="col-sm-2 col-xs-12 progres-perfil prog" style="padding-right: 0px;padding-left: 0px;">
+			                <div class="progress_wrap">
+
+			                    <div class="progress" ng-class="{'ontrack-container':tatic.color == 1,'attention-container':tatic.color == 2,'delayed-container':tatic.color == 3}">
+			                        <div class="progress-bar" role="progressbar" style="width: {{tatic.percentage}}%;" aria-valuenow="{{ tatic.percentage}}" aria-valuemin="0" aria-valuemax="100" ng-class="{'ontrack':tatic.color == 1,'attention':tatic.color == 2,'delayed':tatic.color == 3}"></div>
+			                    </div>
+			                    <span class="ng-binding" style="padding-left: 0px;">{{tatic.percentage}}%</span>
+			                </div>
+			            </div>
+		            </div>
+		            <div ng-if="tatic.keyresults.length > 0">
+		            	<div ng-repeat="keyresult in tatic.keyresults">
+			            	<div class="ng-objective row v-center" style="background: #fff"> 
+			            		<div class="col-sm-1 col-xs-12">
+	                       		<img height="23" width="23" src="assets/portal/img/ico_kr2.png">
+	                    		</div>
+			                    <div class="col-sm-4 col-xs-12 text-ellips">
+				                    <p style="margin-bottom:0px;" title="{{keyresult.title}}">
+				        	            {{keyresult.title}}
+				                    </p>
+					            </div>
+					            <!--<div class="col-sm-1 col-xs-12 text-ellips">
+				                    <p style="margin-bottom:0px;">
+				        	            {{keyresult.last_date}}
+				                    </p>
+					            </div>-->
+					            <div class="col-sm-1 col-xs-12 text-ellips" style="text-align: center">
+				                    <p style="margin-bottom:0px;">
+				        	            {{keyresult.percentage}}%
+				                    </p>
+					            </div>
+					             <div class="col-sm-3 col-xs-12 team text-center" style="padding-right: 0px !important;padding-left: 0px !important;">
+					                <p ng-if="!keyresult.editing" style="margin-bottom: 0px !important;">
+					                    <span style="border: 1px solid #dadce0;">Meta: {{(keyresult.medicaoFormatted!=null)?keyresult.medicaoFormatted:0}} de {{(keyresult.metaFormatted!=null)?keyresult.metaFormatted:0}}</span>
+					                </p>
+					                <div ng-if="keyresult.editing" style="display: -webkit-inline-box;">
+					                	<input type="number" id="detail_medicao_{{keyresult.id}}" value="{{keyresult.Medicao}}" style="width: 45%; text-align: center;border:1px solid #dadce0; border-radius: 30px;"></input>
+					                	<span style="padding: 0 10px 10px">de {{(keyresult.metaFormatted!=null)?keyresult.metaFormatted:0}}</span>
+					                </div>
+					            </div>
+
+					            <div class="col-sm-3 col-xs-12" ng-class="{'detail_editable':keyresult.editing}" style="display: -webkit-inline-box; margin-top: 3px;">
+					                <label class="percepcao_red" ng-class="{'selected':keyresult.percepcao == 0}" ng-click="selectPercepcao(keyresult, 0)"></label>
+					                <label class="percepcao_yellow" ng-class="{'selected':keyresult.percepcao == 1}" style="margin-left: 5px;" ng-click="selectPercepcao(keyresult, 1)"></label>
+					                <label class="percepcao_green" ng-class="{'selected':keyresult.percepcao == 2}" style="margin-left: 5px;" ng-click="selectPercepcao(keyresult, 2)"></label>
+					                <div style="margin-left: 30px;margin-top: 5px;">
+						                <span class="icon" ng-click="editDetailKeyResult(keyresult)">
+	                                        
+	                                        <a class="adicionar-btnx" style="margin-top: -5px !important;cursor: pointer;padding-top: 0px;" ng-show="keyresult.editing">Salvar</a>
+	                                        <a ng-show="!keyresult.editing" class="linkatividade" style="cursor: pointer;padding-top: 5px;"><i class="icon-edit"></i></a>
+
+	                                    </span>
+                                	</div>
+					            </div>
+				            </div>
+			            </div>
+		            </div>
+		        </div>
+				<!-- <div class="objective_table">
+					<div class="objective_row">
+						<div class="percepcao_column">
+						</div>
+						<div class="detail_column">
+							<span>Objetivo</span>
+						</div>
+						<div class="detail_column">
+							<span>Progresso</span>
+						</div>
+						<div class="detail_column">
+							<span>Nome</span>
+						</div>
+						<div class="detail_column">
+							<span>Medição</span>
+						</div>
+						<div class="detail_column">
+							<span>Meta</span>
+						</div>
+					</div>
+					<div class="objective_row" ng-repeat="key in detail_key.keys | filter:q">
+						<div class="percepcao_column" style="padding: 5px 0px;">
+							<label ng-class="{'percepcao_red': key.percepcao==0, 'percepcao_green': key.percepcao==1, 'percepcao_yellow': key.percepcao==2}"></label>
+						</div>
+						<div class="detail_column">
+							<label>{{key.objetivo.title}}</label>
+						</div>
+						<div class="detail_column">
+							<label>{{ key.objetivo.percentage }}%</label>
+						</div>
+						<div class="detail_column">
+							<label>{{key.title}}</label>
+						</div>
+						<div class="detail_column">
+							<label>{{ (key.Medicao!=null)?key.Medicao:0 }}</label>
+						</div>
+						<div class="detail_column">
+							<a href="javascript:void(0)" class="activity_process" style="background: #5fc097;">{{ (key.Meta!=null)?key.Meta:0 }}</a>
+						</div>
+					</div>
+				</div> -->
+			</div>
+		</div>
+		<div class="modal-footer" style="padding-top: 0px;">
+			<button type="button" class="btn btn-white" data-dismiss="modal">{{ "UI.CLOSE" | translate }}</button>
+		</div>
+	</div>
+</div>
+

@@ -1,0 +1,1892 @@
+<style type="text/css">
+	i.fa.fa-user-circle-o {
+	margin: 0 5px 0 0px;
+	color:#000;
+	}
+	section {
+	padding:inherit;
+	}
+	/*li.tav-active-feed {
+	background: #ccc;
+	border-radius: 5px 0 0 5px;
+	margin: 0 0 0 2px;
+	}
+	li.tav-active-feed:last-child {
+	border-radius: 0 5px 5px 0;
+	}
+	li.tav-active-feed:nth-child(2) {
+	border-radius: 0;
+	}
+	.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+	color: #fff !important;
+	background-color: #36b8ec !important;
+	margin: 0;
+	border-radius: 5px 0 0 5px;
+	}*/
+	@media
+	only screen and (max-width: 760px),
+	(min-device-width: 768px) and (max-device-width: 1024px)  {
+	/* Force table to not be like tables anymore */
+	.porfile-competencias-panel table, thead, tbody, th, td, tr {
+	display: block;
+	}
+	/* Hide table headers (but not display: none;, for accessibility) */
+	.porfile-competencias-panel thead tr {
+	position: absolute;
+	top: -9999px;
+	left: -9999px;
+	}
+	.porfile-competencias-panel tr { border: 1px solid #ccc; }
+	.porfile-competencias-panel td {
+	/* Behave  like a "row" */
+	border: none;
+	border-bottom: 1px solid #eee;
+	position: relative;
+	padding-left: 50% !important;
+	}
+	.porfile-competencias-panel td:before {
+	/* Now like a table header */
+	position: absolute;
+	/* Top/left values mimic padding */
+	top: 6px;
+	left: 6px;
+	width: 45%;
+	padding-right: 10px;
+	white-space: nowrap;
+	}
+	/*
+	Label the data
+	*/
+	.porfile-competencias-panel td:nth-of-type(1):before { content: "-"; }
+	.porfile-competencias-panel td:nth-of-type(2):before { content: "Auto-Avaliacao"; }
+	.porfile-competencias-panel td:nth-of-type(3):before { content: "Gestor"; }
+	.porfile-competencias-panel td:nth-of-type(4):before { content: "Media Final"; }
+	}
+</style>
+
+<!-- Gerenciar -->
+<div ng-controller="cycleConfigurationCtrl" class="apprisialreview" >
+
+	<div class="main_section" style="margin-top: 24px;">
+		<div id="carreertab">
+			<!--- Sidebar Menu Section Starts ---->
+			<div ng-class="openSideBarMenu?'sidemenu-section-open-menu':'sidemenu-section-closed-menu'">
+				<form id="cycle_config_modal_form">
+					<div class="close-sec" ng-click="closeSidebar()">
+						<figure class="close-icon">
+							<img src="{{baseUrl}}assets/portal/img/close.png" alt="close"/>
+						</figure>
+					</div>
+					<div class="inner-section">
+						<div class="sales-representative">
+							<figure>
+								<img ng-if="userData.xs_image" ng-src="{{ userData.xs_image }}" class="img-circle ng-scope">
+							</figure>
+							<div class="sales-name">
+								{{ userData.name }}
+							</div>
+						</div>
+						<div class="bottom-border">
+							<div class="progress">
+							  <div class="progress-bar progress-bar-striped " role="progressbar" aria-valuenow="{{ ((totalReviews/inCompleteReviews)*100)| number : 0 }}" aria-valuemin="0" aria-valuemax="100" style="width:{{ ((totalReviews/inCompleteReviews)*100) | number : 0}}%">
+							  {{ ((totalReviews/inCompleteReviews)*100) | number : 0 }}%
+							  </div>
+							</div>
+							<div class="reivew">
+								<span class="views">Avaliações Planejadas</span>
+								<span class="views-number">{{ totalReviews }}/{{ inCompleteReviews }}</span>
+							</div>
+						</div>
+						<div class="self-review-wrapper" >
+							<div class="first-box" ng-if="selfviewAvalicao == 1">
+								<div class="view-edit">
+									<span>Autoavaliacao</span>
+								</div>
+								<div class="clearfix"></div>
+								<div class="viewers-image">
+									<figure>
+										<img ng-if="userData.xs_image" ng-src="{{ userData.xs_image }}" class="img-circle ng-scope">
+									</figure>
+									<span>{{ userData.name | capitalize }}</span>
+									<div class="right-view" ng-show="!selfReviewSectionEdit">
+										<i class="fa fa-check greencolor" ng-if="self_apprisial.respondido==1" aria-hidden="true" ></i>
+									</div>
+								</div>
+							</div>
+							<div class="first-box">
+								<div class="view-edit sidebar">
+									<span>Gestor</span>
+									<span>
+									<a href="javascript:void(0)" ng-click="editManagers()" ng-if="!managerSectionEdit && currenttabreview==1">
+									<span ng-if="!managerSectionEdit">Editar</span>
+									</a>
+									<a href="javascript:void(0)" ng-click="closeEditManagers()" ng-if="managerSectionEdit && currenttabreview==1">
+									<span ng-if="managerSectionEdit">Finalizada</span>
+									</a>
+									</span>
+								</div>
+								<div class="clearfix"></div>
+								<div class="form-group" ng-if="managerSectionEdit">
+									<input type="hidden" ng-model="selectedUserId">
+									<label for="cycle_config_gestor" class="control-label"></label>
+									<select ng-model="select_gestor" id="cycle_config_gestor" name="gestor[]" ng-change="selectGestors(select_gestor)" multiple>
+										<option value=""></option>
+										<option ng-repeat="gestor in gestors" value="{{ gestor.id }}">{{ gestor.name }}</option>
+									</select>
+								</div>
+								<div class="viewers-image" ng-repeat="manager in SelectedGestors">
+									<figure>
+										<img ng-if="manager.xs_image" ng-src="{{ manager.xs_image }}" class="img-circle ng-scope">
+									</figure>
+									<span>{{ manager.name  | capitalize }}</span>
+									<div class="right-view" ng-if="managerSectionEdit">
+										<i class="fa fa-close" aria-hidden="true" ng-click="removeGestor($index,manager.id_usuario)"></i>
+									</div>
+									<div class="right-view" ng-if="!managerSectionEdit">
+										<i class="fa fa-check greencolor" ng-if="manager.respondido==1" aria-hidden="true" ></i>
+									</div>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+							
+							<div class="first-box">
+								<div ng-if="cycle_details.revisao_gestor==1">
+									<div class="view-edit sidebar" >
+										<span>Equipe</span>
+										<span>
+										<a ng-if="loggeduser_details.admin==true || loggeduser_details.gestor==1 || loggeduser_details.user_reviewer==1" href="javascript:void(0)" ng-click="editEquipes()" ng-if="!equipeSectionEdit && currenttabreview==1"><span ng-if="!equipeSectionEdit">Editar</span> </a>
+										<a href="javascript:void(0)" ng-click="closeEditEquipes()" ng-if="equipeSectionEdit && currenttabreview==1">
+										<span ng-if="equipeSectionEdit">Finalizada</span>
+										</a>
+										</span>
+									</div>
+									<div class="clearfix"></div>
+									<div class="form-group" ng-if="equipeSectionEdit">
+										<input type="hidden" ng-model="selectedUserId">
+										<label for="cycle_config_equipe" class="control-label"></label>
+										<select ng-model="select_equipe" id="cycle_config_equipe" name="equipe[]" ng-change="selectEquipes(select_equipe)" multiple>
+											<option value=""></option>
+											<option ng-repeat="gestor in gestors" value="{{ gestor.id }}">{{ gestor.name }}</option>
+										</select>
+									</div>
+									<div class="viewers-image" ng-repeat="equipe in SelectedEquipes">
+										<figure>
+											<img ng-if="equipe.xs_image" ng-src="{{ equipe.xs_image }}" class="img-circle ng-scope">
+										</figure>
+										<span>{{ equipe.name | capitalize }}</span>
+										<div class="right-view" ng-if="equipeSectionEdit">
+											<i class="fa fa-close" aria-hidden="true" ng-click="removeEquipe($index,equipe.id_usuario)"></i>
+										</div>
+										<div class="right-view" ng-if="!equipeSectionEdit">
+											<i class="fa fa-check greencolor" ng-if="equipe.respondido==1" aria-hidden="true" ></i>
+										</div>
+									</div>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+							
+							<div class="first-box">
+								<div ng-if="cycle_details.revisao_pares==1">
+									<div class="view-edit sidebar" >
+										<span> Par</span>
+										<span>
+										<a href="javascript:void(0)" ng-click="editReviewers()" ng-if="!reviwersSectionEdit && currenttabreview==1">
+										<span ng-if="!reviwersSectionEdit">Editar</span>
+										</a>
+										<a href="javascript:void(0)" ng-click="closeEditReviewers()" ng-if="reviwersSectionEdit && currenttabreview==1">
+										<span ng-if="reviwersSectionEdit">Finalizar</span>
+										</a>
+										</span>
+									</div>
+									<div class="clearfix"></div>
+									<div class="form-group" ng-show="reviwersSectionEdit">
+										<label for="all_users" class="control-label"></label>
+										<select ng-model="select_pares" id="all_users" name="user" ng-change="selectPares(select_pares)" multiple>
+											<option value=""></option>
+											<option ng-repeat="user in all_users" value="{{ user.id }}">{{ user.name }}</option>
+										</select>
+									</div>
+									<div class="viewers-image" ng-repeat="pares in SelectedPares">
+										<figure>
+											<img ng-if="pares.xs_image" ng-src="{{ pares.xs_image }}" class="img-circle ng-scope">
+										</figure>
+										<span>{{ pares.name | capitalize }}</span>
+										<div class="right-view" ng-show="reviwersSectionEdit">
+											<i class="fa fa-close" aria-hidden="true" ng-click="removePares($index,pares.id_usuario)"></i>
+										</div>
+										<div class="right-view" ng-if="!reviwersSectionEdit">
+											<i class="fa fa-check greencolor" ng-if="pares.respondido==1" aria-hidden="true" ></i>
+										</div>
+									</div>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+								
+							</div>
+								<div class="btn_sidebar_fix">
+								<button ng-if="currenttabreview==1" type="button" ng-click="addGestorsAndParesForCycle()" class="btn btn-success sidebar-save saveopnedsidebar">Finalizar</button>
+								</div>
+						</div>
+					</div>
+				</form>
+			<!-- Sidebar Menu Section Ends -->
+			<!-- Sidebar Menu Section For Feedbacks and Skills -->
+			<div ng-class="openSkillsSideBarMenu?'sidemenu-section-open-menu':'sidemenu-section-closed-menu'">
+					<div class="close-sec" ng-click="closeSkillsSidebar()">
+						<figure class="close-icon">
+							<img src="{{baseUrl}}assets/portal/img/close.png" alt="close"/>
+						</figure>
+					</div>
+					<div class="inner-section">
+						<div class="">
+							<div class="first-box">
+								<div class="dblock self_inner_tab_sec">
+								  <div class="dblock_body no-padding">
+										<div class="babs-2-pabel">
+											<div class="tab tab-feedback-panel" role="tabpanel">
+												<div class="tabs-cntr">
+													<ul class="nav nav-tabs nav-tabs-feeds feedback_sidebar_tab" role="tablist">
+														<li role="presentation" class="tav-active-feed active" ng-click="ChooseGoalsAndFeedbacks('goals_section')"><a href="javascript:void(0)" aria-controls="home" role="tab" data-toggle="tab">Objetivos</a></li>
+														<li class="tav-active-feed" role="presentation" ng-click="ChooseGoalsAndFeedbacks('feedback_section')"><a href="javascript:void(0)" aria-controls="profile" role="tab" data-toggle="tab">Feedbacks</a></li>
+													</ul>
+												</div>
+												<div class="tab-content tabs feedbacktabs">
+													<div role="tabpanel" class="tab-pane fade in active" ng-show="goals_section">
+													   <div class="feed-bg apprisialgoal" ng-repeat="goal in usergoals" ng-if="usergoals.length>0">
+															<a target="_blank" href="{{baseUrl}}planejamento#!/tatic/{{goal.id_objetivo}}" class="overlay_link"></a>
+															<div class="heading_left v-middle">
+																<div class="user_img_dv" ng-if="goal.responsaveldata.image">
+																	 <img src=""  ng-src="{{ goal.responsaveldata.xs_image }}" class="img-circle" alt="{{ initials(goal.responsaveldata.name) }}" height="40" width="40"/>
+																</div>
+																<div class="user_img_nam" ng-if="!goal.responsaveldata.image">{{ initials(goal.responsaveldata.name) }}</div>
+																<label>{{ goal.responsaveldata.name }}</label>
+															</div>
+															<div class="clearfix"></div>
+															<div class="h1">
+																{{goal.nome}}
+															</div>
+															<div class="clearfix"></div>
+															<div class="progress_wrap full-width">
+																<span class="ng-binding">{{goal.percentual}}%</span>
+																<div class="progress">
+																	<div class="progress-bar" role="progressbar" style="width: {{goal.percentual}}%;" aria-valuenow="7" aria-valuemin="0" aria-valuemax="100" ng-class="{'ontrack':goal.color==1,'attention':goal.color==2,'delayed':goal.color==3}"></div>
+																</div>
+															</div>
+													   </div>
+													   <div class="feed-bg" ng-if="!usergoals.length">
+															<div class="h1">{{ "MEU_PERFIL.NO_OBJECTIVES_FOR_CICLE"| translate }}</div>
+													   </div>
+													</div>
+													<div role="tabpanel" class="tab-pane active in fade" ng-show="feedback_section">
+														<div class="feedbcsections feedbcsectionsapprisial no-float feedbacktype_{{recieved.tipo_feedback}}" ng-show="feedback_recieved_apprasel.length >0" ng-repeat="recieved in feedback_recieved_apprasel">
+															<div class="heading_dv_name mb0">
+																<div class="heading_left v-middle">
+																	<div class="user_img_dv" ng-if="recieved.feedbackdata.image">
+																		 <img src=""  ng-src="{{ recieved.feedbackdata.xs_image }}" class="img-circle" alt="{{ initials(recieved.name) }}" height="40" width="40"/>
+																	</div>
+																	<div class="user_img_nam" ng-if="!recieved.feedbackdata.image">{{ initials(recieved.nome_usuario) }}</div>
+																	<label>{{ recieved.nome_usuario }}</label>
+																</div>
+																<div class="heading_left v-middle" ng-if="recieved.private_notes == 1">
+																	<label>Anotação</label>
+																</div>
+															</div>
+															<div class="description_tag ng-binding no-float">{{ recieved.resposta }}</div>
+															<div class="feedbacktypegood " ng-if="recieved.tipo_feedback=='r'">Reconhecimento</div>
+															<div class="feedbacktypebad " ng-if="recieved.tipo_feedback=='m'">Oportunidade de Melhoria</div>
+														</div>
+														<div class="" ng-if="!feedback_recieved_apprasel.length">
+															<div class="media media-tab-line" >
+																<div class="media-body">
+																	<p class="media-heading" style="text-align:center;">{{ "UI.NO_RECORDS_FOUND" | translate }}</p>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>	
+							</div>
+						</div>
+					</div>
+			</div>
+			<!-- Sidebar Menu Section For Feedbacks and Skills Ends -->
+			<div class="col-sm-12">
+				<div class="">
+					<div class="">
+						<!--<ul class="nav nav-tabs">
+							<li ng-class="{'active': tabtype=='CycleConfig'}" ng-if="tabtype!='CycleReviews'">
+								<a href="{{baseUrl}}cycleconfiguration/#!{{ id }}/#CycleConfig" data-toggle="tab">Ajustes e acompanhamento ciclo</a>
+							</li>
+							<li ng-class="{'active': tabtype=='CycleReview' || tabtype=='CycleReviews'}" ng-if="tabtype!='CycleReviews'">
+								<a href="{{baseUrl}}cycleconfiguration/#!{{ id }}/#CycleReview" ng-click="getcyclereviewuserforprofile()" data-toggle="tab">Execução de avaliações</a>
+							</li>
+							<li ng-class="{'active': tabtype=='CycleReviews'}" ng-if="tabtype=='CycleReviews'">
+								<a href="{{baseUrl}}cycleconfiguration/#!{{ id }}/#CycleReview" ng-click="getcyclereviewuserforprofile()" data-toggle="tab">Execução de avaliações</a>
+							</li>
+						</ul>-->
+						<div class="tab-content">
+							
+				{{nocycleavailable}}
+							<div class="tab-pane fade in " ng-class="{'active': tabtype=='CycleConfig'}" id="CycleConfig" ng-if="tabtype!='CycleReviews'">	
+								<div class="row">
+									<div class="col-sm-12">
+										<div class="form_add" id = "div-1">
+											<form id="form-search" ng-submit="filterAvailicaoUsers()">
+												<div class="row">
+													<div class="col-sm-12">
+														<div class="filter_form_view view_dsds">
+															<div class="row">
+																<div class="col-sm-4">
+																	<label>Nome Usuário</label>
+																	<div class="clearfix"></div>
+																	<div class="filters_view" >
+																		<input type="text" class="form-control" name="search_reviewees" id="search_by_name" ng-model="search_by_name" placeholder="digite para pesquisar">
+																	</div>
+																</div>
+																<div class="col-sm-4">
+																	<label>Situação</label>
+																	<div class="clearfix"></div>
+																	<div class="filters_view" >
+																		<select name="search_by_status" ng-model="search_by_status" class="form-control" id="search_by_status">
+																			<option value="">Todos</option>
+																			<option value="1">Pendente</option>
+																			<option value="2">em Andamento</option>
+																			<option value="3">Finalizado</option>
+																		</select>
+																	</div>
+																</div>
+																<div class="col-sm-4">
+																	<label>Time</label>
+																	<div class="clearfix"></div>
+																	<div class="filters_view" >
+																		<select id="select_team_filter" class="form-control" ng-model="select_team_filter">
+																			<option value="">Todos</option>
+																			<option ng-repeat="team in teams" value="{{team.id}}">{{team.name}}</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+														</div>
+															<div class="row">
+																<div class="col-md-3">
+																	<div class="clr_filters">
+																		<button type="submit" class="apply_filter">Aplicar Filtro</button>
+																		<a href="javascript:void(0)" class="clean_filter" ng-click="filterAvailicaoUsersByCycleSelection()">Restabelecer</a>
+																	</div>
+																</div>
+															</div>
+															<div class="row" ng-show="loggeduser_details.admin=='true' || loggeduser_details.user_reviewer=='1'">
+																<div class="col-md-4">
+																	<div class="form-group">
+																		<label class="input-label">Adicione Usuários ao Ciclo</label>
+																		<select id="saveExtraUsers" name="saveExtraUsers[]" ng-model="selectbar" multiple>
+																			<option value=""></option>
+																			<option ng-repeat="user in remaininUsers" value="{{user.id}}" >{{user.name}}</option>
+																		</select>
+																	</div>
+																</div>
+																<div class="col-md-1 ">
+																	<button class="btn btn-success downshift" ng-click="saveExtraUsersCycle()">Salvar</button>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</form>
+										</div>
+									</div>
+								
+								<div class="row">
+									<div class="col-md-12">
+										<div class="progress">
+										  <div class="progress-bar progress-bar-striped " role="progressbar" aria-valuenow="{{ complete_reviews_per }}" aria-valuemin="0" aria-valuemax="100" style="width:{{ complete_reviews_per }}%">
+										  {{ complete_reviews_per }}%
+										  </div>
+										</div>
+										<ul class="review-option-list">
+											<li>
+												<a href="javascript:void(0)">Completos: {{ completed_reviews }}({{ complete_reviews_per }}%)</a>
+											</li>
+											<li>
+												<a href="javascript:void(0)">Incompletos: {{ no_answer_reviews }}({{ no_answer_reviews_per }}%)</a>
+											</li>
+											<li>
+												<a href="javascript:void(0)">Sem respostas: {{ not_started_reviews }}({{ not_started_reviews_per }}%)</a>
+											</li>
+										</ul>
+									</div>
+								</div>
+								<hr>
+			
+								
+								
+								<div class="row tab-pane fade in active" ng-if="checkrespond==1" style="margin:34px">
+									<div class="alert alert-info"><i class="fa fa-info-circle"></i> Este ciclo foi concluído.</div>
+								</div>
+								<div class="tabbable-line"ng-if="checkrespond==0">
+									<ul class="nav nav-tabs" style="text-align:left;">
+										<li class="active" ng-click="getreviewes()">
+											<a href="{{baseUrl}}{{ id }}/#Reviewees" data-toggle="tab">Avaliados</a>
+										</li>
+										<li class="" ng-click="getreviewers()" >
+											<a href="{{baseUrl}}{{ id }}/#Reviewers" data-toggle="tab">Avaliadores</a>
+										</li>
+									</ul>
+									<div class="tab-content">
+										<div class="tab-pane fade in active" id="Reviewees">
+											<div class="row">
+												<div class="col-md-12">
+													<button ng-if="cycle_detail.revisao_pares==1" type="button" class="btn btn-success" ng-click="updateRevisaoUsersAutorizado()">Liberar para Avaliação</button>
+													<br ng-if="cycle_detail.revisao_pares==1">
+													<br ng-if="cycle_detail.revisao_pares==1">
+													<span class="informationtouser col-md-12">* Clicando sobre o nome do usuário você pode editar informações do ciclo.</span>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-12">
+													<form id="ravisao_availicao_table_form" name="ravisao_availicao_table_form">
+														<div class="dblock no-shadow">
+															<div class="dblock_body carrier_block">
+																<div class="carrier_panel clearfix hover-cls">
+																	<div class="elofy_table_row db_obj">
+																		<div class="col-md-1" ng-if="cycle_detail.revisao_pares==1">
+																			<div class="model_bod">
+																				<div class="model_ch">
+																					<div class="model_che">
+																						<input type="checkbox" ng-click="selectAll()" ng-model="select_all" id="select_all">
+																						<label for="select_all"></label>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																		<div ng-class="{'col-md-2': cycle_detail.revisao_pares==1 , 'col-md-3': cycle_detail.revisao_pares==0 }">
+																			<div class="feed_profile"><strong>Nome</strong></div>
+																		</div>
+																		<div class="col-md-2" ng-if="cycle_detail.revisao_pares==1"><strong>Time</strong></div>
+																		<div class="col-md-2"  ng-if="cycle_detail.revisao_pares==1"><strong>Seleção de Par</strong></div>
+																		<div ng-class="{'col-md-2': cycle_detail.revisao_pares==1 , 'col-md-4': cycle_detail.revisao_pares==0 }"><strong>Situação</strong></div>
+																		<div ng-class="{'col-md-3': cycle_detail.revisao_pares==1 , 'col-md-3': cycle_detail.revisao_pares==0 }">
+																			<div class="right-feed-col">
+																				<div class="feed-time"><strong>Progresso</strong></div>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="clearfix"></div>
+																</div>
+																<div class="carrier_panel clearfix hover-cls" ng-if="cycleUsers.length>0" ng-repeat="cycleUser in cycleUsers">
+																	<div class="elofy_table_row db_obj">
+																		<div class="col-md-1" ng-if="cycle_detail.revisao_pares==1">
+																			<div class="model_bod">
+																				<div class="model_ch">
+																					<div class="model_che">
+																						<input type="checkbox" name="row_checkbox[]" value="{{ cycleUser.id_usuario }}" ng-checked="checkall" ng-model="row_checkbox" class="row_checkbox" id="row_checkbox_{{ $index }}">
+																						<label for="row_checkbox_{{ $index }}"></label>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																		<div ng-class="{'col-md-2': cycle_detail.revisao_pares==1 , 'col-md-3': cycle_detail.revisao_pares==0 }" ng-click="openSidebar(cycle_detail.id_revisao_ciclo,cycleUser.id_usuario,cycleUser.complete_reviews,cycleUser.total_reviews)">
+																			<div class="feed_profile">
+																				<div class="feed-user_thumb">
+																					<figure>
+																						<img ng-if="cycleUser.xs_image" ng-src="{{ cycleUser.xs_image }}" class="img-circle ng-scope">
+																					</figure>
+																					<span class="usr_names ng-binding">{{ cycleUser.nome_usuario }} </span>
+																				</div>
+																			</div>
+																		</div>
+																		<div ng-if="cycle_detail.revisao_pares==1" ng-class="{'col-md-2': cycle_detail.revisao_pares==1 , 'col-md-3': cycle_detail.revisao_pares==0 }" ng-click="openSidebar(cycle_detail.id_revisao_ciclo,cycleUser.id_usuario,cycleUser.complete_reviews,cycleUser.total_reviews)">
+																			<div class="feed_profile">
+																				<div class="feed-user_thumb">
+																					<figure>
+																						<img ng-if="cycleUser.xs_image" ng-src="{{ cycleUser.xs_image }}" class="img-circle ng-scope">
+																					</figure>
+																					<span class="usr_names ng-binding">{{ cycleUser.nome_unidade }} </span>
+																				</div>
+																			</div>
+																		</div>
+																		<div ng-if="cycle_detail.revisao_pares==1" class="col-md-2" ng-click="openSidebar(cycle_detail.id_revisao_ciclo,cycleUser.id_usuario,cycleUser.complete_reviews,cycleUser.total_reviews)">
+																			<span class="finalizado-btn clr-green" ng-if="cycleUser.autorizado==1">Completa</span>
+																			<span class="finalizado-btn clr-yellow" ng-if="cycleUser.autorizado==0">Pendente</span>
+																			
+																		</div>
+																		<div ng-class="{'col-md-2': cycle_detail.revisao_pares==1 , 'col-md-4': cycle_detail.revisao_pares==0 }" ng-click="openSidebar(cycle_detail.id_revisao_ciclo,cycleUser.id_usuario,cycleUser.complete_reviews,cycleUser.total_reviews)">
+																			<span class="finalizado-btn clr-green" ng-if="cycleUser.complete_status==3">Finalizado</span>
+																			<span class="finalizado-btn clr-yellow" ng-if="cycleUser.complete_status==1">Pendente</span>
+																			<span class="finalizado-btn clr-yellow" ng-if="cycleUser.complete_status==2">em Andamento</span>
+																		</div>
+																		<div ng-class="{'col-md-4': cycle_detail.revisao_pares==1 , 'col-md-4': cycle_detail.revisao_pares==0 }">
+																			<div class="right-feed-col" ng-click="openSidebar(cycle_detail.id_revisao_ciclo,cycleUser.id_usuario,cycleUser.complete_reviews,cycleUser.total_reviews)">
+																				<div class="feed-time">{{ cycleUser.complete_reviews }}/{{ cycleUser.total_reviews }} Avaliações Recebidas </div>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="clearfix"></div>
+																</div>
+																<h3 ng-show="cycleUsers.length<=0">Nenhum resultado encontrado.</h3>
+															</div>
+														</div>
+													</form>
+												</div>
+											</div>
+										</div>
+										<div class="tab-pane fade in " id="Reviewers">
+											<div class="tab-pane fade in " id="Reviewerstab">
+												<div class="row">
+														<span class="informationtouser col-md-6" style="    display: inline-block;
+    margin: 0px;
+    padding-left: 40px;">* Clicando sobre do usuário você pode editar informações do ciclo.</span>
+														<span class="informationtouser col-md-6" style="    display: inline-block;
+    margin: 0px;
+    padding-left: 40px;
+    padding-right: 37px;
+    text-align: right;"><button class="finalizado-btn clr-green" ng-click="sendEmail(cycle_detail.id_revisao_ciclo)" ng-if="!reviwersSectionEdit" id="send_email_all" style="width:auto; margin-right: 20px;">
+																				<span style="line-height: 26px;">Enviar e-mail para todos</span>
+																				</button></span>
+												</div>
+												<div class="row">
+													<div class="col-md-12">
+														<form id="ravisao_availicao_table_form" name="ravisao_availicao_table_form">
+															<div class="dblock no-shadow">
+																<div class="dblock_body carrier_block">
+																	<div class="carrier_panel clearfix hover-cls">
+																		<div class="elofy_table_row db_obj">
+																			<div class="col-md-3">
+																				<div class="feed_profile"><strong>Nome</strong></div>
+																			</div>
+																			<div class="col-md-2"><strong>Time</strong></div>
+																			<div class="col-md-2"><strong>Situação</strong></div>
+																			<div class="col-md-3">
+																				<div class="right-feed-col">
+																					<div class="feed-time"><strong>Progresso</strong></div>
+																				</div>
+																			</div>
+																		</div>
+																		<div class="clearfix"></div>
+																	</div>
+																	<div class="carrier_panel clearfix hover-cls" ng-if="cycleUsers.length>0" ng-repeat="cycleUser in cycleUsers">
+																		<div class="elofy_table_row db_obj">
+																			<div class="col-md-3" ng-click="openSidebarReviewers(cycle_detail.id_revisao_ciclo,cycleUser.id_usuario,cycleUser.complete_reviews,cycleUser.total_reviews,cycleUser.id_tipo_avaliacao)">
+																				<div class="feed_profile">
+																					<div class="feed-user_thumb">
+																						<figure>
+																							<img ng-if="cycleUser.xs_image" ng-src="{{ cycleUser.xs_image }}" class="img-circle ng-scope">
+																						</figure>
+																						<span class="usr_names ng-binding">{{ cycleUser.nome_usuario }} </span>
+																					</div>
+																				</div>
+																			</div>
+																			<div class="col-md-2" ng-click="openSidebarReviewers(cycle_detail.id_revisao_ciclo,cycleUser.id_usuario,cycleUser.complete_reviews,cycleUser.total_reviews)">
+																				<div class="feed_profile">
+																					<div class="feed-user_thumb">
+																						<span class="usr_names ng-binding">{{ cycleUser.nome_unidade }} </span>
+																					</div>
+																				</div>
+																			</div>
+																			<div class="col-md-2" ng-click="openSidebarReviewers(cycle_detail.id_revisao_ciclo,cycleUser.id_usuario,cycleUser.complete_reviews,cycleUser.total_reviews)">
+																				<span class="finalizado-btn clr-green" ng-if="cycleUser.complete_status==3">Finalizado</span>
+																				<span class="finalizado-btn clr-yellow" ng-if="cycleUser.complete_status==1">Pendente</span>
+																				<span class="finalizado-btn clr-yellow" ng-if="cycleUser.complete_status==2">em Andamento</span>
+																			</div>
+																			<div class="col-md-5">
+																				<div class="right-feed-col" ng-click="openSidebarReviewers(cycle_detail.id_revisao_ciclo,cycleUser.id_usuario,cycleUser.complete_reviews,cycleUser.total_reviews)">
+																					<div class="feed-time">{{ cycleUser.complete_reviews }}/{{ cycleUser.total_reviews }} Avaliações Planejadas </div>
+																				</div>
+																				&nbsp;&nbsp;<button class="finalizado-btn clr-green" style="float: 	right;" ng-click="sendEmail(cycle_detail.id_revisao_ciclo, cycleUser.id_usuario)" ng-if="!reviwersSectionEdit" id="send_email_{{cycle_detail.id_revisao_ciclo}}_{{cycleUser.id_usuario}}">
+																				<span >Enviar E-mail</span>
+																				</button>
+																			</div>
+																			
+																		</div>
+																		<div class="clearfix"></div>
+																	</div>
+																	<h3 ng-show="cycleUsers.length<=0">Nenhum resultado encontrado.</h3>
+																</div>
+															</div>
+														</form>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="tab-pane fade in" ng-class="{'active': tabtype=='CycleReview' || tabtype=='CycleReviewOnly' || tabtype=='CycleReviews'}" id="CycleReview">
+								<div class="row">
+									<div class="col-sm-12">
+										<div ng-show="reviewtab==1">
+											<div class="dblock" ng-if="revisaos.length">
+												<div class="dblock_head" style="background-color: #0553df;border-radius: 5px;border-bottom-right-radius: 0px;border-bottom-left-radius: 0px;">
+													<h2 class="dheading" style="color: #fff;">
+														<span>Escolha seus pares</span>
+													</h2>
+												</div>
+												<div class="col-sm-12" style="padding: 10px 15px;">A etapa de escolha de pares é muito importante.  Uma vez selecionados o sistema enviará uma notificação por e-mail e essa operação so poderá ser desfeita pelo usuário Administrador.</div>
+												<div class="row" style="padding:15px;">
+													<div class="col-sm-3">
+														<div class="form-group">
+					                                    <label class="input-label">Escolha Pares para avaliar você abaixo</label>
+					                                        <select id="addUsersForCycle" name="addUsersForCycle[]" ng-change="onChangeUserForCycle()" ng-model="selectedPeers">
+					                                            <option ng-repeat="user in usersToAdd | filter : {added : '!'}" value="{{user.id}}">{{user.name}}</option>
+					                                        </select>
+					                                        <span class="select-single-multiple-tag" ng-repeat="selected in usersToAdd | filter : { added : true}" ng-click="selected.added = null"><label>{{selected.name}}</label><i class="fa fa-remove"></i></span>
+					                                	</div>
+					                                </div>
+													<div class="col-md-3">
+														<div class="already_selected_pares">Pares selecionados:</div>
+														<div ng-if="selectedUsersForCycle.length>0" class="selectedPares">
+															<span ng-repeat="selectedUser in selectedUsersForCycle" class="selectedParesspan"><span ng-if="$index>0">, </span>{{selectedUser.nome_usuario}}</span>
+														</div>
+														<div ng-if="selectedUsersForCycle.length<=0" class="selectedPares">
+															<h4>Ninguém selecionado.</h4>
+														</div>
+													</div>
+													<div class="col-md-2">
+														<div class="already_selected_pares">Número de Pares esperado</div>
+															<div class="selectedPares">
+																<h4>{{minUsersCount}}</h4>
+															</div>
+													</div>
+													<div class="col-md-2">
+														<div class="already_selected_pares">Número Pares Máximo</div>
+															<div class="selectedPares">
+																<h4>{{maxUsersCount}}</h4>
+															</div>
+													</div>
+													<div class="col-md-2">
+														<!-- <button id="save-peer" class="btn btn-success" style="margin-top: 15px;" ng-click="saveUsersForCycle()">Salvar</button> -->
+														<button class="mdc-button mdc-button--raised" ng-click="saveUsersForCycle()" style="margin-top: 15px;">
+															<span class="mdc-button__label">Salvar</span>
+														</button>
+													</div>
+												</div>
+											</div>
+										
+											<div class="dblock" ng-class="{'disable-content':disableIndex < 0}" ng-repeat="(key, teams) in users_teams"  ng-if="teams.length>0">
+												<div class="dblock_head" ng-if="teams.length>0" >
+													<h2 class="dheading">
+														<span ng-if="key == 'type1'"><strong>{{ 'AVALIACAO_DE_DESEMPENHO.SELF_EVALUATION' | translate }}</strong></span>
+														<span ng-if="key == 'type2'"><strong>{{ 'AVALIACAO_DE_DESEMPENHO.MANAGER_EVALUATION' | translate }}</strong></span>
+														<span ng-if="key == 'type3' && teams.length>0"><strong>Avaliação como Par</strong></span>
+														<span ng-if="key == 'type4' && teams.length>0"><strong>Avaliação como Equipe</strong></span>
+													</h2>
+												</div>
+												<!--user-dtls End-->
+												<div id="table_wrapper" ng-if="teams.length>0"  class="dataTables_wrapper no-footer th-style bottom-space">
+													<table id="table" class="table table-hover dataTable no-footer no-border" role="grid" style="border-bottom: 0px;">
+														<thead>
+															<tr role="row" ng-if="teams.length>0">
+																<th>
+																</th>
+																<th ng-repeat="fase in teams[0].fases" ng-if="key == 'type1' && fase.autoavalia==1">{{fase.nome_fase}}</th>
+																<th ng-repeat="fase in teams[0].fases" ng-if="key == 'type3' && fase.pares==1">{{fase.nome_fase}}</th>
+																<th ng-repeat="fase in teams[0].fases" ng-if="key == 'type4' && fase.equipe==1">{{fase.nome_fase}}</th>
+																<th ng-repeat="fase in teams[0].fases" ng-if="key == 'type2' && fase.gestor==1">{{fase.nome_fase}}</th>
+																<th>{{ 'MEU_PERFIL.UPDATE_DATE' | translate }}</th>
+																<th class="action-btn"> </th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr ng-repeat="user in teams" class="{{teams.length}} cycle_inner_table media_table" ng-if="teams.length>0">
+																<td>
+																	<img ng-src="{{ user.xs_image }}" class="img-circle" width="30" height="30">
+																	{{ user.nome_usuario }} 
+																</td>	
+																<td ng-repeat="fase in user.fases" ng-if="key == 'type1' && fase.autoavalia==1"  class="mb-fases">
+																
+																	<i class="fa fa-check" ng-if="fase.componente=='V' && user.valores==1" ></i>
+																	<i class="fa fa-check" ng-if="fase.componente=='C' && user.competencias==1" ></i>
+																	<i class="fa fa-check" ng-if="fase.componente=='T' && user.potencial==1" ></i>
+																	<i class="fa fa-check" ng-if="fase.componente=='S' && user.survey==1" ></i>
+																	<i class="fa fa-check" ng-if="fase.componente=='O' && user.resultados==1" ></i>
+																	
+																	<i class="fa fa-close" ng-if="fase.componente=='V' && user.valores==0" ></i>
+																	<i class="fa fa-close" ng-if="fase.componente=='C' && user.competencias==0" ></i>
+																	<i class="fa fa-close" ng-if="fase.componente=='T' && user.potencial==0" ></i>
+																	<i class="fa fa-close" ng-if="fase.componente=='S' && user.survey==0" ></i>
+																	<i class="fa fa-close" ng-if="fase.componente=='O' && user.resultados==0" ></i>
+																	
+																</td>
+																<td ng-repeat="fase in user.fases" ng-if="key == 'type3' && fase.pares==1"  class="mb-fases">
+																
+																	<i class="fa fa-check" ng-if="fase.componente=='V' && user.valores==1" ></i>
+																	<i class="fa fa-check" ng-if="fase.componente=='C' && user.competencias==1" ></i>
+																	<i class="fa fa-check" ng-if="fase.componente=='T' && user.potencial==1" ></i>
+																	<i class="fa fa-check" ng-if="fase.componente=='S' && user.survey==1" ></i>
+																	<i class="fa fa-check" ng-if="fase.componente=='O' && user.resultados==1" ></i>
+																	
+																	<i class="fa fa-close" ng-if="fase.componente=='V' && user.valores==0" ></i>
+																	<i class="fa fa-close" ng-if="fase.componente=='C' && user.competencias==0" ></i>
+																	<i class="fa fa-close" ng-if="fase.componente=='T' && user.potencial==0" ></i>
+																	<i class="fa fa-close" ng-if="fase.componente=='S' && user.survey==0" ></i>
+																	<i class="fa fa-close" ng-if="fase.componente=='O' && user.resultados==0" ></i>
+																	
+																</td>
+																<td ng-repeat="fase in user.fases" ng-if="key == 'type4' && fase.equipe==1"  class="mb-fases">
+																
+																	<i class="fa fa-check" ng-if="fase.componente=='V' && user.valores==1" ></i>
+																	<i class="fa fa-check" ng-if="fase.componente=='C' && user.competencias==1" ></i>
+																	<i class="fa fa-check" ng-if="fase.componente=='T' && user.potencial==1" ></i>
+																	<i class="fa fa-check" ng-if="fase.componente=='S' && user.survey==1" ></i>
+																	<i class="fa fa-check" ng-if="fase.componente=='O' && user.resultados==1" ></i>
+																	
+																	<i class="fa fa-close" ng-if="fase.componente=='V' && user.valores==0" ></i>
+																	<i class="fa fa-close" ng-if="fase.componente=='C' && user.competencias==0" ></i>
+																	<i class="fa fa-close" ng-if="fase.componente=='T' && user.potencial==0" ></i>
+																	<i class="fa fa-close" ng-if="fase.componente=='S' && user.survey==0" ></i>
+																	<i class="fa fa-close" ng-if="fase.componente=='O' && user.resultados==0" ></i>
+																	
+																</td>
+																<td ng-repeat="fase in user.fases" ng-if="key == 'type2' && fase.gestor==1"  class="mb-fases">
+																
+																	<i class="fa fa-check" ng-if="fase.componente=='V' && user.valores==1" ></i>
+																	<i class="fa fa-check" ng-if="fase.componente=='C' && user.competencias==1" ></i>
+																	<i class="fa fa-check" ng-if="fase.componente=='T' && user.potencial==1" ></i>
+																	<i class="fa fa-check" ng-if="fase.componente=='S' && user.survey==1" ></i>
+																	<i class="fa fa-check" ng-if="fase.componente=='O' && user.resultados==1" ></i>
+																	
+																	<i class="fa fa-close" ng-if="fase.componente=='V' && user.valores==0" ></i>
+																	<i class="fa fa-close" ng-if="fase.componente=='C' && user.competencias==0" ></i>
+																	<i class="fa fa-close" ng-if="fase.componente=='T' && user.potencial==0" ></i>
+																	<i class="fa fa-close" ng-if="fase.componente=='S' && user.survey==0" ></i>
+																	<i class="fa fa-close" ng-if="fase.componente=='O' && user.resultados==0" ></i>
+																	
+																</td>
+																<td>{{last.datadeatualizacao | amUtc | amDateFormat:'DD/MM/YYYY'}}</td>
+																<td class="action-btn">
+																	<!-- <a href="javascript:void(0)" ng-if="cycle_detail.liberado==1 && user.respondido==0 && user.bloqueado ==0" class="startappraisal" ng-click="reviewTab2(user.id_usuario,user.avaliacoa_id,cycle_detail.id_revisao_ciclo,key,cycle_detail.numero_pares)">Iniciar</a> -->
+
+																	<button class="mdc-button mdc-button--unelevated mdc-button--dense" ng-if="cycle_detail.liberado==1 && user.respondido==0 && user.bloqueado ==0" ng-click="reviewTab2(user.id_usuario,user.avaliacoa_id,cycle_detail.id_revisao_ciclo,key,cycle_detail.numero_pares,user.self)">
+																		<span class="mdc-button__label">Iniciar</span>
+																	</button>
+																	<button class="mdc-button mdc-button--outlined mdc-button--dense mdc-theme--secondary mdc-ripple-surface--accent" ng-if="cycle_detail.liberado==1 && user.respondido==1 && user.bloqueado ==0" ng-click="reviewTab2(user.id_usuario,user.avaliacoa_id,cycle_detail.id_revisao_ciclo,key,cycle_detail.numero_pares,user.self)">
+																		<i class="mdc-button__icon material-icons">done</i>
+																		<span class="mdc-button__label">Revisar</span>
+																	</button>
+																	<!-- <a href="javascript:void(0);" style="cursor:pointer;" ng-if="cycle_detail.liberado==1 && user.respondido==1 && user.bloqueado ==0" class="finishappraisal" ng-click="reviewTab2(user.id_usuario,user.avaliacoa_id,cycle_detail.id_revisao_ciclo,key,cycle_detail.numero_pares)"><i class="fa fa-check"></i> Revisar</a> -->
+																</td>
+															</tr>
+															<tr ng-if="teams.length=='0'">
+																<td colspan="7">
+																	Não foram encontrados registros.
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+										<div ng-if="reviewtab==2">
+											<div class="dblock avancar-btn" ng-show="resultotab==2">
+												<!-- <button class="mdc-button mdc-button--unelevated" ng-click="getcyclereviewuserforprofile();myCycleReview();">
+													<i class="material-icons mdc-button__icon">navigate_before</i>
+													<span class="mdc-button__label">Sair</span>
+												</button> -->
+												<button class="mdc-button mdc-button--outlined mdc-fechar" ng-click="prevTab($step)">
+													<i class="material-icons mdc-button__icon">navigate_before</i>
+													<span class="mdc-button__label">Voltar</span>
+												</button>
+												<div class="show-view_headings2 mrg-0">
+													&nbsp;
+													<span class="bread_crumps main_inner_heading" ng-repeat="fase in fasesData" ng-if="avaliacoescycledetails.id_tipo_avaliacao==1 &&  fase.autoavalia==1">
+														{{ fase.nome_fase }} 
+														<span ng-hide="$index > fasesData.length-2">></span>
+													</span>
+													<span class="bread_crumps main_inner_heading" ng-repeat="fase in fasesData" ng-if="avaliacoescycledetails.id_tipo_avaliacao==3 &&  fase.pares==1">
+														{{ fase.nome_fase }} 
+														<span ng-hide="$index > fasesData.length-2">></span>
+													</span>
+													<span class="bread_crumps main_inner_heading" ng-repeat="fase in fasesData" ng-if="avaliacoescycledetails.id_tipo_avaliacao==4 &&  fase.equipe==1">
+														{{ fase.nome_fase }} 
+														<span ng-hide="$index > fasesData.length-2">></span>
+													</span>
+													<span class="bread_crumps main_inner_heading" ng-repeat="fase in fasesData" ng-if="avaliacoescycledetails.id_tipo_avaliacao==2 &&  fase.gestor==1">
+														{{ fase.nome_fase }} 
+														<span ng-hide="$index > fasesData.length-2">></span>
+													</span>
+												</div>
+												<!-- <a href="javascript:void(0);" class="backr " ng-click="getcyclereviewuserforprofile();myCycleReview();">
+												<i class="fa fa-reply"></i> Sair 
+												</a> -->
+												
+												<!-- <a href="javascript:void(0);" class="avancar previous_btn" ng-click="prevTab($step)">
+												 {{ 'UI.BACK' | translate }} 
+												</a> -->
+												<div>
+													
+													<button class="mdc-button mdc-button--outlined" ng-click="nextTab($step)" ng-if="$step < fasesData.length-1">
+														<span class="mdc-button__label">Avançar</span>
+														<i class="material-icons mdc-button__icon">navigate_next</i>
+													</button>
+													<button class="mdc-button mdc-button--raised" ng-click="nextTab($step)" ng-if="$step == fasesData.length-1">
+														<span class="mdc-button__label">Finalizar</span>
+														<i class="mdc-button__icon material-icons">done</i>
+													</button>
+											</div>
+												<!-- <a id="apprisialnext" href="javascript:void(0);" ng-class="{'greenbackground':$step == fasesData.length-1}" class="apprisialnext next_btn" ng-click="nextTab($step)"><span ng-if="$step < fasesData.length-1">Avançar</span><span ng-if="$step == fasesData.length-1">Finalizar</span></a> -->
+											</div>
+											<div class="dblock">
+												<div class="user-dtls no-border">
+													<figure>
+														<a ng-if="!searchuser.xs_image" href="javascript:void(0);" class="user-image-wrap"><span class="user-image-replace ng-binding ng-scope">{{ initials(searchuser.name) }}</span></a>
+														<img ng-if="searchuser.xs_image" ng-src="{{ searchuser.xs_image }}" class="img-circle ng-scope" width="40" height="40" alt="{{ searchuser.name }}">
+													</figure>
+													<div class="user-label">{{searchuser.name}}</div>
+													<div class="job-fnc">{{ 'MEU_PERFIL.ROLE_LABEL' | translate }} <span>{{searchuser.cargo}}</span></div>
+													<div class="job-date">{{ 'UI.EMAIL_LABEL' | translate }} <span>{{searchuser.email}}</span></div>
+													<div class="team-name">{{ 'MEU_PERFIL.TEAM_NAME_LABEL' | translate }} <span>{{searchuser.team}}</span></div>
+													<div ng-show="cycle_detail.more_info=='1'" class="pull-right" ng-include="'goalsAndFeedbackHeading'"></div>
+													<!-- <div class="row" ng-if="cycledetails.escolhe_par=='1' && cycleUserType=='type1'">
+														<hr>
+														<div class="col-md-4">
+															<div class="form-group">
+																<label class="input-label">Adicione Usuários ao Ciclo</label>
+																<select id="addExtraPares" name="addExtraPares[]" multiple data-limit="{{ numero_pares }}">
+																	<option value=""></option>
+																	<option ng-repeat="user in remaininUsers" value="{{user.id}}" >{{user.name}}</option>
+																</select>
+															</div>
+															<button class="btn btn-success" ng-click="saveExtraPares(searchuser.id)">Salvar</button>
+														</div>
+														<div class="col-md-8">
+															<div class="already_selected_pares">Escolha Pares para avaliar você!</div>
+															<div ng-if="selectedParesUsers.length>0" class="selectedPares">
+																<span ng-repeat="selectedUser in selectedParesUsers" class="selectedParesspan"><span ng-if="$index>0">, </span>{{selectedUser.nome_usuario}}</span>
+															</div>
+															<div ng-if="selectedParesUsers.length<=0" class="selectedPares">
+																<h4>Ninguém selecionado.</h4>
+															</div>
+														</div>
+													</div> -->
+												</div>
+											</div>
+											<!--dblock End-->
+											<div class="" style="margin-bottom: 25px;" ng-if="currentfase.descricao_fase == NULL">
+													{{ currentfase.descricao_fase }}
+											</div>
+
+											<!-- COMENTÁRIOS FASE -->
+
+											<!-- RESULTADO = O -->
+											<div class="dblock" style="margin-bottom: 25px;border-color:#ff60cf;" ng-show="activecomponent =='O' && apprisialquestion[0].questions[0].abertura != NULL">
+												<div class="user-dtls no-border">
+													<i class="fa fa-lightbulb-o fa-2x" style="color:#ff60cf;margin=left: 10px;"></i>
+													<span class="detail-label" style="font-size: 15px;margin-left: 10px;line-height: 20px;font-weight:normal;">
+														{{ apprisialquestion[0].questions[0].abertura }}
+													</span>
+												</div>
+											</div>
+
+											<!-- COMPETÊNCIAS = C -->
+											<div class="dblock" style="margin-bottom: 25px;border-color:#ff60cf;" ng-show="activecomponent =='C' && apprisialcompetencias[0].categorywisedata[0].competencias[0].abertura != NULL">
+												<div class="user-dtls no-border">
+													<i class="fa fa-lightbulb-o fa-2x" style="color:#ff60cf;margin=left: 10px;"></i>
+													<span class="detail-label" style="font-size: 15px;margin-left: 10px;line-height: 20px;font-weight:normal;">
+														{{ apprisialcompetencias[0].categorywisedata[0].competencias[0].abertura }}
+													</span>
+												</div>
+											</div>
+
+											<!-- POTENCIAL = T -->
+											<div class="dblock" style="margin-bottom: 25px;border-color:#ff60cf;" ng-show="activecomponent =='T' && apprisialpotencialsquestion[0].questions[0].abertura != NULL">
+												<div class="user-dtls no-border">
+													<i class="fa fa-lightbulb-o fa-2x" style="color:#ff60cf;margin=left: 10px;"></i>
+													<span class="detail-label" style="font-size: 15px;margin-left: 10px;line-height: 20px;font-weight:normal;">
+														{{ apprisialpotencialsquestion[0].questions[0].abertura }}
+													</span>
+												</div>
+											</div>
+
+											<!-- VALORES = V -->
+											<div class="dblock" style="margin-bottom: 25px;border-color:#ff60cf;" ng-show="activecomponent =='V' && apprisialvalores[0].abertura != NULL">
+												<div class="user-dtls no-border">
+													<i class="fa fa-lightbulb-o fa-2x" style="color:#ff60cf;margin=left: 10px;"></i>
+													<span class="detail-label" style="font-size: 15px;margin-left: 10px;line-height: 20px;font-weight:normal;">
+														{{ apprisialvalores[0].abertura }}
+													</span>
+												</div>
+											</div>
+
+											<!-- FEEDBACK = S -->
+											<div class="dblock" style="margin-bottom: 25px;border-color:#ff60cf;" ng-show="activecomponent =='S' && apprisialsurveysquestion[0].questions[0].abertura != NULL">
+												<div class="user-dtls no-border">
+													<i class="fa fa-lightbulb-o fa-2x" style="color:#ff60cf;margin=left: 10px;"></i>
+													<span class="detail-label" style="font-size: 15px;margin-left: 10px;line-height: 20px;font-weight:normal;">
+														{{ apprisialsurveysquestion[0].questions[0].abertura }}
+													</span>
+												</div>
+											</div>
+				
+											<!-- COMENTÁRIOS FASE -->
+
+											<div id="StartApra" class="row">
+												<div class="col-sm-12" ng-show="activecomponent=='V'">
+													<form id="values_skills" >
+														<div class="dblock eql-height" >
+															<div class="dblock_head">
+																<h2 class="dheading"> {{currentfase.nome_fase}}</h2>
+																
+															</div>
+															<div class="rst-section-result">
+																
+																<div id="valoresTb3">
+																	<div id="newvalores">
+																		<div class="vlr-wrapper valores form_section" >
+																			<div class="question-section" ng-repeat="valore in apprisialvalores">
+																				<div class="valore_quest_main_sec">
+																					<div class="row">
+																						<div class="col-sm-12">
+																							<div class="innerpage-sec">
+																								<div class="question-section">
+																									<span class="small-head">{{ valore.name }}</span>
+																								</div>
+																							</div>
+																						</div>
+																						<div class="elo_cate col-sm-12" ng-class="col-sm-12">
+																							<div class="innerpage-sec">
+																								<div class="question-section">
+																									<div class="quest_descript" ng-bind-html="valore.description">
+																									</div>
+																								</div>
+																							</div>
+																						</div>
+																						<div class="col-sm-12">
+																							{{questionerio={id:valore.id, id_pergunta:valore.id, score:valore.score, descricao:valore.descricao};""}}
+																							<div class="cyclecompetencias_questions" ng-include="'dinamic_ruler'"></div>
+																							<div ng-if="cycleUserType == 'type2' && flagSelf == 1">
+																								<div style="display: -webkit-inline-box;">
+																									<span class="gray-italic">Autoavaliação</span>
+																									<span ng-repeat="scale_step in cycledetails.scale_object[0].values" ng-if="valore.selfScore >= scale_step.limite_inicial && valore.selfScore <= scale_step.limite_final"  style="color: #f8b352;">{{scale_step.label}}</span>
+																								</div>
+																								<div ng-if="valore.comentario == 1" style="padding-top: 10px;">
+																									<!-- <label class="gray-italic"> Resposta do colaborador</label> -->
+										 															<textarea readonly class="form-control gray-content" name=""  value="" >{{valore.selfDescricao}}</textarea>
+																								</div>
+																							</div>
+																						</div>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</form>
+												</div>
+
+												<div class="col-sm-12" ng-show="activecomponent=='C'">
+													<form id="competencias_skills" >
+														<div class="dblock eql-height" >
+															<div class="dblock_head">
+																<h2 class="dheading">{{currentfase.nome_fase}}</h2>
+															</div>
+															<div class="rst-section-result">
+																<div id="competencias">
+																	<div id="newskil">
+																		<div class="elo_section">
+																			<div class="categorie1_sec" ng-repeat="competencias_row in apprisialcompetencias">
+																				<div class="">
+																				
+																					<div ng-repeat="categorywisedata_row in competencias_row.categorywisedata">
+																						<h4 ng-if="categorywisedata_row.data.name !='' ">{{categorywisedata_row.data.name}}</h4>
+																						<div ng-repeat="competencia in categorywisedata_row.competencias" class="competenciaQuestRow">																							
+																						
+																							<div class="col-sm-12 row">
+																								<div class="innerpage-sec">
+																									<div class="question-section">
+																										<span class="small-head">{{ competencia.nome_competencia }}</span>
+																									</div>
+																								</div>
+																							</div>
+
+																							<div class="innerpage-sec" ng-class="col-sm-12">
+																							<div class="question-section" ng-if="competencia.descricao_competencia != 'null'">
+																								<div class="quest_descript mdc-typography--body2" ng-bind-html="competencia.descricao_competencia">
+																								</div>
+																							</div>
+																							<div class="question-section" ng-if="competencia.descricao_competencia == 'null'">
+																									<div class="quest_descript mdc-typography--body2">
+																										<p>&nbsp;</p><p>&nbsp;</p>
+																									</div>
+																								</div>
+																							</div>
+
+																							<!-- DETALHE MAIS INFORMAÇÕES DA COMPETÊNCIA -->
+																							<div class="competencia-details" ng-show="competenciaValue(competencia)" ng-if="competencia.informacoes_competencia == 1">
+																								<img src="{{baseUrl}}assets/portal/img/ico_info.png" alt="info"/>
+																								<span class="detail-label">
+																									Clique aqui para ver todos detalhes sobre esta competência
+																								</span>
+																								<span class="icon" ng-click="openCompentenciaDetails(competencia)">
+									                                                                <i ng-class="{'icon-angle-up': !competencia.detailOpened, 'icon-angle-down': competencia.detailOpened}"></i>
+									                                                            </span>
+																							</div>
+																						
+																							<div class="">
+																							<div class="competencia-details-content" ng-show="competencia.detailOpened">
+																								<div class="col-md-4">
+																								<!-- <div class="detail-section">
+																									<h3 class="mdc-typography--headline3" style="border:none;margin: 0px;    display: flex;
+																									flex-direction: row;
+																									align-items: center;
+																									justify-content: flex-start;"><i class="material-icons mdc-fechar">favorite</i> Desejáveis</h3>
+																									<P class="mdc-typography--body2" style="font-weight: normal !important;" >{{competencia.comportamento_esperado}}</P>		
+																								</div> -->
+																								<div class="detail-section">
+																									<h3 class="mdc-typography--headline3" style="border:none;margin: 0px;    display: flex;
+																									flex-direction: row;
+																									align-items: center;
+																									justify-content: flex-start;"><i class="material-icons mdc-fechar">favorite</i> Desejáveis</h3>
+																									<div class="mdc-typography--body2" ng-bind-html="competencia.comportamento_esperado"  style="font-weight: normal !important;"></div>
+																								</div>
+																								</div>
+																								<div class="col-md-4">
+																								<div class="detail-section">
+																									<h3 class="mdc-typography--headline3" style="border:none;margin: 0px;    display: flex;
+																									flex-direction: row;
+																									align-items: center;
+																									justify-content: flex-start;"><i class="material-icons mdc-fechar">thumb_up</i> O que queremos</h3>
+																									<div class="mdc-typography--body2" ng-bind-html="competencia.atitudes_positivas"  style="font-weight: normal !important;"></div>
+																								</div>
+																							</div>
+																								<div class="col-md-4">
+																								<div class="detail-section">
+																										
+																									<h3 class="mdc-typography--headline3" style="border:none;margin: 0px;    display: flex;
+																									flex-direction: row;
+																									align-items: center;
+																									justify-content: flex-start;"><i class="material-icons mdc-fechar">thumb_down</i> O que não queremos</h3>
+																									<div class="mdc-typography--body2" ng-bind-html="competencia.atitudes_negativas"  style="font-weight: normal !important;"></div>	
+																								</div>
+																							</div>
+																							</div>
+																						</div>
+																							<div class="col-sm-12 row" ng-class="col-sm-12" rows="1">
+																								{{questionerio={id:competencia.id_competencia, id_pergunta:competencia.id_competencia, score:competencia.score, descricao:competencia.descricao};""}}
+																								<div class="cyclecompetencias_questions"ng-include="'dinamic_ruler'"></div>
+																								<div ng-if="cycleUserType == 'type2' && flagSelf == 1">
+																									<div style="display: -webkit-inline-box;">
+																										<span class="gray-italic">Autoavaliação</span>
+																										<span ng-repeat="scale_step in cycledetails.scale_object[0].values" ng-if="competencia.selfScore >= scale_step.limite_inicial && competencia.selfScore <= scale_step.limite_final" style="color: #f8b352;">{{scale_step.label}}</span>
+																									</div>
+																									<div ng-if="competencia.comentario == 1" style="padding-top: 10px;">
+																										<!-- <label class="gray-italic"> Resposta do colaborador</label> -->
+											 															<textarea readonly class="form-control gray-content" name=""  value="" style="margin-bottom: 44px;">{{competencia.selfDescricao}}</textarea>
+																									</div>
+																								</div>
+																							</div>
+																							<div class="clearfix"></div>
+																						</div>
+																						<div class="clearfix"></div>
+																					</div>
+																				</div>
+																				<div class="clearfix"></div>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</form>
+												</div>
+												<div class="col-sm-12" ng-show="activecomponent=='O'">
+													<form id="resaltados_form" >
+														<div class="dblock eql-height" >
+															<div class="dblock_head">
+																<h2 class="dheading">{{currentfase.nome_fase}}</h2>
+																
+															</div>
+															<div class="rst-section-result">
+																<div class="q_panel open_question" ng-repeat="category in apprisialquestion"  ng-if="apprisialquestion.length>0">
+																	<div class="per_head" >
+																		<div class="survey_q elof_heading categorie1_sec" ng-click="showHideQuestionCategories($event,category.data.id)">
+																			<h4 ng-if="category.data.id!=''">{{ category.data.name }}</h4>
+																		</div>
+																	</div>
+																	
+																	<div style="margin-bottom: 0px;" class="q_panel_data"  ng-repeat="questionerio in category.questions" ng-if="category.questions.length>0">
+																		<input type ='hidden' name="okr[{{questionerio.id_pergunta}}]" id='okr' value ='{{questionerio.okr}}'>
+																		<div class="col-sm-12">
+																			<div>
+																				<div class="col-sm-12 row" ng-if="questionerio.type=='q'" ng-include="'questnariotextQuestion'" ></div>
+																				<div class="row" ng-if="questionerio.type=='a'" ng-include="'questnariomultipleAnswer'"></div>
+
+																				<div ng-if="questionerio.type=='e' && user.empresa.contrato_metas==1" class="elofy_table_row grouping-header white-font apprisial" style="margin-top: 5px;">
+																					<div class="Dvtab_colums_dv clm_main grouping-content">
+															                            <label>MÍNIMO</label>
+															                        </div>
+															                        <div class="Dvtab_colums_dv clm_main grouping-content">
+															                            <label>TARGET</label>
+															                        </div>
+															                        <div class="Dvtab_colums_dv clm_main grouping-content">
+															                            <label>MÁXIMO</label>
+															                        </div>
+															                        <div class="Dvtab_colums_dv clm_main grouping-content">
+															                            <label>UNIDADE</label>
+															                        </div>
+															                        <div class="Dvtab_colums_dv clm_main grouping-content">
+															                            <label>PESO</label>
+															                        </div>
+															                        <div class="Dvtab_colums_dv clm_main grouping-content">
+															                            <label>ATUAL</label>
+															                        </div>
+															                        <div ng-if="questionerio.inferior != -1" class="Dvtab_colums_dv clm_main grouping-content">
+															                            <label>ANEXO</label>
+															                        </div>
+																				</div>
+																				<div ng-if="questionerio.type=='e' && user.empresa.contrato_metas==1" class="elofy_table_row grouping-header bold-font keys apprisial" style="margin-bottom: 10px;">
+																					<div class="Dvtab_colums_dv clm_main grouping-content">
+															                            <label ng-if="questionerio.acomp != 1">{{questionerio.inferior}}&nbsp;</label>
+															                            <label ng-if="questionerio.acomp == 1">{{ questionerio.minimo_date | amUtc | amDateFormat:'DD/MM/YYYY' }}</label>
+															                        </div>
+															                        <div class="Dvtab_colums_dv clm_main grouping-content">
+															                            <label ng-if="questionerio.acomp != 1">{{questionerio.goal}}&nbsp;</label>
+															                            <label ng-if="questionerio.acomp == 1">{{ questionerio.target_date | amUtc | amDateFormat:'DD/MM/YYYY' }}</label>
+															                        </div>
+															                        <div class="Dvtab_colums_dv clm_main grouping-content">
+															                            <label ng-if="questionerio.acomp != 1">{{questionerio.superior}}&nbsp;</label>
+															                            <label ng-if="questionerio.acomp == 1">{{ questionerio.maximo_date | amUtc | amDateFormat:'DD/MM/YYYY' }}</label>
+															                        </div>
+															                        <div class="Dvtab_colums_dv clm_main grouping-content">
+															                            <label>{{questionerio.measurement}}</label>
+															                        </div>
+															                        <div class="Dvtab_colums_dv clm_main grouping-content peso">
+															                            <label>{{questionerio.weight}}</label>
+															                        </div>
+															                        <div class="Dvtab_colums_dv clm_main grouping-content peso">
+															                            <label>{{questionerio.atual}}</label>
+															                        </div>
+															                        <div class="Dvtab_colums_dv clm_main grouping-content" ng-if="questionerio.inferior != -1" >
+															                            <button class="mdc-icon-button material-icons mdc-theme--secondary"  ng-click="modalHistoric(questionerio.id_pergunta)" style="z-index: 999;">cloud_download</button>
+															                        </div>
+																				</div>
+																				<div ng-if="questionerio.type!='q' && questionerio.type!='a'"  ng-class="col-sm-12">
+																					<h2 class="srv_question quest_heading phase_questions">{{questionerio.question}}</h2>
+																				</div>
+																				<div  ng-if="questionerio.type!='q' && questionerio.type!='a'" ng-class="col-sm-12 row">
+																					<div class="cyclecompetencias_questions" ng-include="'dinamic_ruler'"></div>
+																				</div>
+																				<div  ng-if="questionerio.type=='q' || questionerio.type=='a'" ng-class="col-sm-12 row">
+
+																					<div ng-if="cycledetails.escala==1" class="cyclecompetencias_questions" ng-include="'valoreapprisialfivestar'"></div>
+																					<div ng-if="cycledetails.escala==2" class="cyclecompetencias_questions" ng-include="'valoreapprisialtenstar'"></div>
+																					<div ng-if="cycledetails.escala==3" class="cyclecompetencias_questions" ng-include="'valoreapprisialevolucaoAnswer'"></div>
+																					<div ng-if="cycledetails.escala==4" class="cyclecompetencias_questions" ng-include="'valoreapprisialevolucaofiveAnswer'"></div>
+																				</div>
+																				<div class="clearfix"></div>
+																			</div>
+																			<div class="col-sm-12 row" ng-if="cycleUserType == 'type2' && flagSelf == 1">
+																				<div ng-if="questionerio.type == 'a'">
+																					<span class="gray-italic">Autoavaliação</span>
+																					<span ng-repeat="answer in questionerio.options" ng-if="answer.id == questionerio.selfScore" style="color: #f8b352;">{{answer.answer}}</span>
+																				</div>
+																				<div ng-if="questionerio.type == 'e'">
+																					<span class="gray-italic">Autoavaliação</span>
+																					<span ng-repeat="scale_step in cycledetails.scale_object[0].values" ng-if="questionerio.selfScore >= scale_step.limite_inicial && questionerio.selfScore <= scale_step.limite_final" style="color: #f8b352;">{{scale_step.label}}</span>
+																				</div>
+																				<div ng-if="questionerio.type == 'c'">
+																					<span class="gray-italic">Autoavaliação</span>
+																					<span ng-repeat="scale_step in cycledetails.scale_object[0].values" ng-if="questionerio.selfScore >= scale_step.limite_inicial && questionerio.selfScore <= scale_step.limite_final" style="color: #f8b352;">{{scale_step.label}}</span>
+																				</div>
+																				<div ng-if="questionerio.type == 'q'" ng-include="'questnariotextSelfQuestion'">
+																				</div>
+																				<div ng-if="questionerio.comentario == 1 && questionerio.type != 'q'">
+																					 <span class="gray-italic" ng-show="questionerio.type != 'a' && questionerio.type != 'e' && questionerio.type != 'c'">Autoavaliação</span>
+																					<span ng-repeat="scale_step in cycledetails.scale_object[0].values" ng-if="questionerio.selfScore >= scale_step.limite_inicial && questionerio.selfScore <= scale_step.limite_final" style="color: #f8b352;">{{scale_step.label}}</span>
+																					<!-- <label class="gray-italic"> Resposta do colaborador</label> -->
+																						<textarea readonly class="form-control gray-content" name=""  value="" >{{questionerio.selfDescricao}}</textarea>
+																				</div>
+																				</div>
+																			</div>
+																		</div>
+																		<div class="clearfix"></div>
+																	</div>
+																	<!--q_panel_data END-->
+																</div>
+															</div>
+														</div>
+													</form>
+												</div>
+												<div class="col-sm-12" ng-show="activecomponent=='T'">
+													<form id="potencial_form" >
+														<div class="dblock eql-height" >
+															<div class="dblock_head">
+																<h2 class="dheading">{{currentfase.nome_fase}}</h2>
+																
+															</div>
+															<div class="rst-section-result">
+																<div class="q_panel open_question" ng-repeat="category in apprisialpotencialsquestion"  ng-if="apprisialpotencialsquestion.length>0">
+																	<div  class="survey_q non-cate-sec categorie1_sec" ng-click="showHideQuestionCategories($event,category.data.id)">
+																		<h4 ng-if="category.data.id!=''">{{ category.data.name }}</h4>
+																	</div>
+																	<div class="q_panel_data"  ng-repeat="questionerio in category.questions" ng-if="category.questions.length>0" style="margin-bottom: 20px;"> 
+																						
+
+
+																		<div class="col-sm-12">
+																			<div>
+																				<div ng-class="col-sm-12" ng-if="questionerio.type=='q' &&  (questionerio.restricao == 1 && questionerio.id_tipo_avaliacao ==2)    " >
+																					<h2 class="srv_question">{{questionerio.question}}</h2>
+																				</div>
+																				<div class="row" ng-if="questionerio.type=='q' &&  !(questionerio.restricao == 1 && questionerio.id_tipo_avaliacao ==2)    " ng-include="'questnariotextQuestion'" ></div>
+
+
+																				<div class="row" ng-if="questionerio.type=='a' " ng-include="'questnariomultipleAnswer'"></div>
+
+																				<div ng-if="questionerio.type!='q' && questionerio.type!='a'   " >
+																				<div class="innerpage-sec question-section" ng-bind-html="questionerio.question"></div>
+																					
+																				</div>
+																				<div ng-if="questionerio.type!='q' && questionerio.type!='a'" class="col-sm-12 row">
+																					<div class="cyclecompetencias_questions" ng-include="'dinamic_ruler'"></div>
+
+																				</div>
+																				<div ng-if="questionerio.type=='q' || questionerio.type=='a'  " class="col-sm-12 row" >
+
+																					<div ng-if="cycledetails.escala==1" class="cyclecompetencias_questions" ng-include="'valoreapprisialfivestar'"></div>
+																					<div ng-if="cycledetails.escala==2" class="cyclecompetencias_questions" ng-include="'valoreapprisialtenstar'"></div>
+																					<div ng-if="cycledetails.escala==3" class="cyclecompetencias_questions" ng-include="'valoreapprisialevolucaoAnswer'"></div>
+																					<div ng-if="cycledetails.escala==4" class="cyclecompetencias_questions" ng-include="'valoreapprisialevolucaofiveAnswer'"></div>
+																				</div>
+																			</div>
+																			<div ng-if="cycleUserType == 'type2' && flagSelf == 1">
+																				<div ng-if="questionerio.type == 'a'">
+																					<span class="gray-italic">Autoavaliação</span>
+																					<span ng-repeat="answer in questionerio.options" ng-if="answer.id == questionerio.selfScore" style="color: #f8b352;">{{answer.answer}}</span>
+																				</div>
+																				<div ng-if="questionerio.type == 'e'">
+																					<span class="gray-italic">Autoavaliação</span>
+																					<span ng-repeat="scale_step in cycledetails.scale_object[0].values" ng-if="questionerio.selfScore >= scale_step.limite_inicial && questionerio.selfScore <= scale_step.limite_final" style="color: #f8b352;">{{scale_step.label}}</span>
+																				</div>
+																				<div ng-if="questionerio.type == 'c'">
+																					<span class="gray-italic">Autoavaliação</span>
+																					<span ng-repeat="scale_step in cycledetails.scale_object[0].values" ng-if="questionerio.selfScore >= scale_step.limite_inicial && questionerio.selfScore <= scale_step.limite_final" style="color: #f8b352;">{{scale_step.label}}</span>
+																				</div>
+																				<div ng-if="questionerio.type == 'q'" ng-include="'questnariotextSelfQuestion'">
+																				</div>
+																				<div ng-if="questionerio.comentario == 1 && questionerio.type != 'q'" style="padding-top: 10px;">
+																					<span class="gray-italic">Autoavaliação</span>
+																					<span ng-repeat="scale_step in cycledetails.scale_object[0].values" ng-if="questionerio.selfScore >= scale_step.limite_inicial && questionerio.selfScore <= scale_step.limite_final" style="color: #f8b352;">{{scale_step.label}}</span>
+																					<!-- <label class="gray-italic"> Resposta do colaborador</label> -->
+						 															<textarea readonly class="form-control gray-content" name=""  value="" >{{questionerio.selfDescricao}}</textarea>
+																				</div>
+																			</div>
+
+																		</div>
+																		<div class="clearfix"></div>
+																	</div>
+																	<!--q_panel_data END-->
+																</div>
+															</div>
+														</div>
+													</form>
+												</div>
+												<div class="col-sm-12" ng-show="activecomponent=='S'">
+													<form id="apprisialsurvey_form" >
+														<div class="dblock eql-height" >
+															<div class="dblock_head">
+																<h2 class="dheading">{{currentfase.nome_fase}}</h2>
+																
+															</div>
+															<div class="rst-section-result">
+																<div class="q_panel open_question" ng-repeat="category in apprisialsurveysquestion"  ng-if="apprisialsurveysquestion.length>0">
+																	<div class="survey_q non-cate-sec categorie1_sec" ng-click="showHideQuestionCategories($event,category.data.id)">
+																		<h4 ng-if="category.data.id!=''" >{{ category.data.name }}</h4>
+																	</div>
+																	<div class="q_panel_data"  ng-repeat="questionerio in category.questions" ng-if="category.questions.length>0" style="margin-bottom: 20px;">
+																		<div class="col-sm-12 row">
+																			<div>
+																				<div class="col-sm-12 row" ng-if="questionerio.type=='q'" ng-include="'questnariotextQuestion'" ></div>
+																				<div class="row" ng-if="questionerio.type=='a'" ng-include="'questnariomultipleAnswer'"></div>
+
+																				<div ng-if="questionerio.type!='q' && questionerio.type!='a'"  ng-class="col-sm-12">
+																					<h2 class="srv_question quest_heading phase_questions">{{questionerio.question}}</h2>
+																				</div>
+																				<div ng-if="questionerio.type!='q' && questionerio.type!='a'" ng-class="col-sm-12 row">
+																					<div class="cyclecompetencias_questions" ng-include="'dinamic_ruler'"></div>
+
+																				</div>
+																				<div ng-if="questionerio.type=='q' || questionerio.type=='a'" ng-class="col-sm-12 row">
+
+																					<div ng-if="cycledetails.escala==1" class="cyclecompetencias_questions" ng-include="'valoreapprisialfivestar'"></div>
+																					<div ng-if="cycledetails.escala==2" class="cyclecompetencias_questions" ng-include="'valoreapprisialtenstar'"></div>
+																					<div ng-if="cycledetails.escala==3" class="cyclecompetencias_questions" ng-include="'valoreapprisialevolucaoAnswer'"></div>
+																					<div ng-if="cycledetails.escala==4" class="cyclecompetencias_questions" ng-include="'valoreapprisialevolucaofiveAnswer'"></div>
+																				</div>
+																				<div class="clearfix"></div>
+																			</div>
+																			<div ng-if="cycleUserType == 'type2' && flagSelf == 1">
+																				<div ng-if="questionerio.type == 'a'">
+																					<span class="gray-italic">Autoavaliação</span>
+																					<span ng-repeat="answer in questionerio.options" ng-if="answer.id == questionerio.selfScore" style="color: #f8b352;">{{answer.answer}}</span>
+																				</div>
+																				<div ng-if="questionerio.type == 'e'">
+																					<span class="gray-italic">Autoavaliação</span>
+																					<span ng-repeat="scale_step in cycledetails.scale_object[0].values" ng-if="questionerio.selfScore >= scale_step.limite_inicial && questionerio.selfScore <= scale_step.limite_final" style="color: #f8b352;">{{scale_step.label}}</span>
+																				</div>
+																				<div ng-if="questionerio.type == 'c'">
+																					<span class="gray-italic">Autoavaliação</span>
+																					<span ng-repeat="scale_step in cycledetails.scale_object[0].values" ng-if="questionerio.selfScore >= scale_step.limite_inicial && questionerio.selfScore <= scale_step.limite_final" style="color: #f8b352;">{{scale_step.label}}</span>
+																				</div>
+																				<div ng-if="questionerio.type == 'q'" ng-include="'questnariotextSelfQuestion'">
+																				</div>
+																				<div ng-if="questionerio.comentario == 1 && questionerio.type != 'q'" style="padding-top: 10px;">
+																					<span class="gray-italic">Autoavaliação</span>
+																					<span ng-repeat="scale_step in cycledetails.scale_object[0].values" ng-if="questionerio.selfScore >= scale_step.limite_inicial && questionerio.selfScore <= scale_step.limite_final" style="color: #f8b352;">{{scale_step.label}}</span>
+																					<!-- <label class="gray-italic"> Resposta do colaborador</label> -->
+																						<textarea readonly class="form-control gray-content" name=""  value="" >{{questionerio.selfDescricao}}</textarea>
+																				</div>
+																			</div>
+																		</div>
+																		<div class="clearfix"></div>
+																	</div>																	<!--q_panel_data END-->
+																</div>
+															</div>
+														</div>
+													</form>
+												</div>
+												<div class="col-sm-12" ng-show="resultotab==5">
+													<div class="dblock ">
+														<div class="rst-section no-border pdg15">
+															<div class="sml-text">{{ "MEU_PERFIL.FINAL_SCORE" | translate }}</div>
+														</div>
+														<div class="rst-section-result scroll-height" id="competenciasTb" >
+															<div class="espaco">{{ "MEU_PERFIL.EVALUATE_EXPECTATIONS" | translate }}</div>
+															<form id="pdi_form" method="post">
+																<div class="section_view section_avail-panel">
+																	<div class="avaliacao-panel">
+																		<div class="ratting-panel">
+																			<label class="btn btn-success ratting btn-success-act" ><i class="fa fa-star"></i></span>
+																			<input name="geral" type="radio" autocomplete="off" value="1" ng-checked='avalicao.geral==1' required>
+																			</label>
+																			<span>{{ "MEU_PERFIL.UNSATISFACTORY" | translate }}</span>
+																		</div>
+																		<div class="ratting-panel">
+																			<label class="btn btn-success ratting btn-success-act" ng-class="{'active':avalicao.geral==2}"><i class="fa fa-star"></i></span>
+																			<input name="geral" type="radio" autocomplete="off" value="2" ng-checked='avalicao.geral==2' required>
+																			</label>
+																			<span>{{ "MEU_PERFIL.NEEDS_TO_IMPROVE" | translate }}</span>
+																		</div>
+																		<div class="ratting-panel">
+																			<label class="btn btn-success ratting btn-success-act" ng-class="{'active':avalicao.geral==3}"><i class="fa fa-star"></i></span>
+																			<input name="geral" type="radio" autocomplete="off" value="3" ng-checked='avalicao.geral==3' required>
+																			</label>
+																			<span>{{ "MEU_PERFIL.MEETS" | translate }}</span>
+																		</div>
+																		<div class="ratting-panel">
+																			<label class="btn btn-success ratting btn-success-act" ng-class="{'active':avalicao.geral==4}"><i class="fa fa-star"></i></span>
+																			<input name="geral" type="radio" autocomplete="off" value="4" ng-checked='avalicao.geral==4' required>
+																			</label>
+																			<span>{{ "MEU_PERFIL.MEETS_VERY_WELL" | translate }}</span>
+																		</div>
+																		<div class="ratting-panel">
+																			<label class="btn btn-success ratting btn-success-act" ng-class="{'active':avalicao.geral==5}"><i class="fa fa-star"></i></span>
+																			<input name="geral" type="radio" autocomplete="off" value="5" ng-checked='avalicao.geral==5' required>
+																			</label>
+																			<span>{{ "MEU_PERFIL.EXCEPTIONAL" | translate }}</span>
+																		</div>
+																		<div class="pdi-textarea">
+																			<h3>Use este espaço para descrever uma pouco mais sobre o colaborador.</h3>
+																			<div class="form_add_row answer-box">
+																				<textarea placeholder="{{ 'MEU_PERFIL.WRITE_YOUR_OBS' | translate }}" name="avaliacao_quali" id="avaliacao_quali"  >{{avalicao.avaliacao_quali}}</textarea>
+																			</div>
+																		</div>
+																		<div class="rg-wrapper bottom-mrg" id="slideControlvalores">
+																			<div class="rg-label">{{ 'MEU_PERFIL.VALUES' | translate }}</div>
+																			<div class="range-sliders">
+																				<input type="text" class="slideControl" ng-model="valore_value" value="{{valore_value}}" name="valorefinal" id="valorefinal"  maxlength="3" />
+																			</div>
+																		</div>
+																		<div class="rg-wrapper" id="slideControlDesempenho">
+																			<div class="rg-label">{{ 'MEU_PERFIL.PERFORMANCE' | translate }}</div>
+																			<div class="range-sliders">
+																				<input type="text" ng-model="desempenho_value" value="{{desempenho_value}}" class="slideControl" name="desempenhofinal" id="desempenhofinal" maxlength="3" />
+																			</div>
+																		</div>
+																		<div class="final-rst" id="final_performance">
+																			<div class="final-prf">{{ 'MEU_PERFIL.FINAL_PERFORMANCE_GRADE_LABEL' | translate }}</div>
+																			<div class="final-figure" >{{performance}}</div>
+																		</div>
+																	</div>
+																</div>
+														</div>
+													</div>
+													<!--dblock End-->
+												</div>
+
+												<div class="dblock avancar-btn" style="border:none;" ng-show="resultotab==2">
+													<!-- <a id="apprisialnext" href="javascript:void(0);"  ng-class="{'greenbackground':$step == fasesData.length-1}" class="apprisialnext" ng-click="nextTab($step);" onclick="topFunctionApraisal()"><span ng-if="$step < fasesData.length-1">Avançar</span><span ng-if="$step == fasesData.length-1">Finalizar</span></a> -->
+	
+													<button class="mdc-button mdc-button--outlined mdc-fechar" ng-click="prevTab($step)">
+															<i class="material-icons mdc-button__icon">navigate_before</i>
+															<span class="mdc-button__label">Voltar</span>
+													</button>
+													
+													<button class="mdc-button mdc-button--outlined" ng-click="nextTab($step)" ng-if="$step < fasesData.length-1" onclick="topFunctionApraisal()">
+														<span class="mdc-button__label">Avançar</span>
+														<i class="material-icons mdc-button__icon">navigate_next</i>
+													</button>
+													<button class="mdc-button mdc-button--raised" ng-click="nextTab($step)" ng-if="$step == fasesData.length-1" onclick="topFunctionApraisal()">
+															<span class="mdc-button__label">Finalizar</span>
+															<i class="mdc-button__icon material-icons">done</i>
+													</button>
+												</div>
+											</div>
+											
+											
+										</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<section>
+		<div class="view_dv_top">
+			<div class="clearfix"></div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="employee_detail_bar">
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Templates for apprisials -->
+	<script type="text/ng-template" id="questnariotextQuestion">
+		<div ng-class="col-sm-12">
+			<h2 class="srv_question">{{questionerio.question}}</h2>
+		</div>
+		<div ng-class="col-sm-12">
+			<div class="answer-box main_message_box categorie_inner_sec_ans">
+				<textarea class="form-control" name="description[{{questionerio.id_pergunta}}]" placeholder="Utilize este espaço para feedback sempre que achar necessário. A infomação ficará visível para o avaliado." class="mb0">{{questionerio.descricao}}</textarea>
+			</div>
+			<!--like-count-box-wrapper END-->
+		</div>
+	</script>
+	<script type="text/ng-template" id="questnariotextSelfQuestion">
+		<div>
+			<label class="gray-italic">Autoavaliação</label>
+			<textarea readonly class="form-control gray-content" name=""  value="" >{{questionerio.selfDescricao}}</textarea>
+		</div>
+	</script>
+	<script type="text/ng-template" id="questnariomultipleAnswer">
+		<div ng-class="col-sm-12">
+			<div class="inner_categ_sec question-section" ng-bind-html="questionerio.question"></div>
+		</div>
+		
+		<div ng-class="col-sm-12">
+			<div class="allquestions">
+				<div class="custom-btn-group btn-group phase_custom_right_section" data-toggle="buttons">
+					<label ng-repeat="answer in questionerio.options" class="btn btn-clr{{$index+1}}" ng-class="{'active': questionerio.score == answer.id}" data-placement="top" data-toggle="tooltip" title="{{ questionerio.options[$index].descricao }}" data-original-title="{{answer.answer}}">
+						<input required name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==answer.id" autocomplete="off" autocomplete="off" title={{answer.descricao}} ng-value="answer.id" id="rad_apprisial_{{questionerio.id_pergunta}}_{{answer.id}}"  ng-click="getStarValue(questionerio.id_pergunta,answer.id)">
+						<div class="hvr_item">{{ questionerio.options[$index].answer }}</div>
+					</label>
+				</div>
+				<div class="hide rederror error_message">Por favor informe um valor..</div>
+			</div>
+			<div class="annswer_box cycleescala{{cycledetails.escala}}" ng-show="questionerio.comentario==1">
+				<label>  </label>
+				<textarea class="form-control" placeholder="Utilize este espaço para feedback sempre que achar necessário. A infomação ficará visível para o avaliado." name="description[{{questionerio.id_pergunta}}]"  value="{{questionerio.descricao}}">{{questionerio.descricao}}</textarea>
+			</div>
+			<!--like-count-box-wrapper END-->
+		</div>
+	</script>
+	<script type="text/ng-template" id="questnariostarRating">
+		<div ng-class="col-sm-12">
+			<h2 class="srv_question quest_heading phase_questions">{{questionerio.question}}</h2>
+		</div>
+		<div ng-class="col-sm-12 row>
+			<div ng-if="cycledetails.escala==1" class="cyclecompetencias_questions" ng-include="'valoreapprisialfivestar'"></div>
+			<div ng-if="cycledetails.escala==2" class="cyclecompetencias_questions" ng-include="'valoreapprisialtenstar'"></div>
+			<div ng-if="cycledetails.escala==3" class="cyclecompetencias_questions" ng-include="'valoreapprisialevolucaoAnswer'"></div>
+			<div ng-if="cycledetails.escala==4" class="cyclecompetencias_questions" ng-include="'valoreapprisialevolucaofiveAnswer'"></div>
+		</div>
+		<div class="clearfix"></div>
+	</script>
+	<script type="text/ng-template" id="questnarioFavorStarRating">
+		<div ng-class="col-sm-12">
+			<h2 class="srv_question quest_heading phase_questions">{{questionerio.question}}</h2>
+		</div>
+		<div ng-class="col-sm-12 row">
+			<div ng-if="cycledetails.escala==1" class="cyclecompetencias_questions" ng-include="'valoreapprisialfivestar'"></div>
+			<div ng-if="cycledetails.escala==2" class="cyclecompetencias_questions" ng-include="'valoreapprisialtenstar'"></div>
+			<div ng-if="cycledetails.escala==3" class="cyclecompetencias_questions" ng-include="'valoreapprisialevolucaoAnswer'"></div>
+			<div ng-if="cycledetails.escala==4" class="cyclecompetencias_questions" ng-include="'valoreapprisialevolucaofiveAnswer'"></div>
+		</div>
+	</script>
+	<script type="text/ng-template" id="questnarioevolucaoAnswer">
+		<div ng-class="col-sm-12">
+			<h2 class="srv_question quest_heading phase_questions">{{questionerio.question}}</h2>
+		</div>
+		<div ng-class="col-sm-12 row">
+			<div ng-if="cycledetails.escala==1" class="cyclecompetencias_questions" ng-include="'valoreapprisialfivestar'"></div>
+			<div ng-if="cycledetails.escala==2" class="cyclecompetencias_questions" ng-include="'valoreapprisialtenstar'"></div>
+			<div ng-if="cycledetails.escala==3" class="cyclecompetencias_questions" ng-include="'valoreapprisialevolucaoAnswer'"></div>
+			<div ng-if="cycledetails.escala==4" class="cyclecompetencias_questions" ng-include="'valoreapprisialevolucaofiveAnswer'"></div>
+		</div>
+	</script>
+	<script type="text/ng-template" id="questnarioheartRating">
+		<div ng-class="col-sm-12">
+			<h2 class="srv_question quest_heading phase_questions">{{questionerio.question}}</h2>
+		</div>
+		<div ng-class="col-sm-12 row">
+			<div ng-if="cycledetails.escala==1" class="cyclecompetencias_questions" ng-include="'valoreapprisialfivestar'"></div>
+			<div ng-if="cycledetails.escala==2" class="cyclecompetencias_questions" ng-include="'valoreapprisialtenstar'"></div>
+			<div ng-if="cycledetails.escala==3" class="cyclecompetencias_questions" ng-include="'valoreapprisialevolucaoAnswer'"></div>
+			<div ng-if="cycledetails.escala==4" class="cyclecompetencias_questions" ng-include="'valoreapprisialevolucaofiveAnswer'"></div>
+		</div>
+	</script>
+	
+	<script type="text/ng-template" id="valoreapprisialfivestar">
+		<div class="">
+			<div class="fiver_star_rating_comment_box">
+		<div class="like-count-box-wrapper q_data"> <span>Não satisfeito</span>
+		<div class="allquestions">
+		  <div class="custom_label_dv q_rating">
+			<div class="custom_radio_lable">
+				<label for="rad_apprisial_{{questionerio.id_pergunta}}_1">
+					<input name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==1"  autocomplete="off" value="1" id="rad_apprisial_{{questionerio.id_pergunta}}_1"  ng-click="getStarValue(questionerio.id_pergunta,1)">
+					<span class="span_{{questionerio.id_pergunta}}_1" ng-class="{'also-checked': questionerio.score >= 1}">&nbsp;</span>
+				</label>
+			</div>
+		  </div>
+		  <div class="custom_label_dv q_rating">
+			<div class="custom_radio_lable">
+			  <label for="rad_apprisial_{{questionerio.id_pergunta}}_2">
+				<input name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==2" autocomplete="off" value="2" id="rad_apprisial_{{questionerio.id_pergunta}}_2"  ng-click="getStarValue(questionerio.id_pergunta,2)">
+				<span class="span_{{questionerio.id_pergunta}}_2" ng-class="{'also-checked': questionerio.score >= 2}">&nbsp;</span>
+			</label>
+			</div>
+		  </div>
+		  <div class="custom_label_dv q_rating">
+			<div class="custom_radio_lable">
+			  <label for="rad_apprisial_{{questionerio.id_pergunta}}_3">
+						<input name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==3" autocomplete="off" value="3" id="rad_apprisial_{{questionerio.id_pergunta}}_3"  ng-click="getStarValue(questionerio.id_pergunta,3)">
+						<span class="span_{{questionerio.id_pergunta}}_3" ng-class="{'also-checked': questionerio.score >= 3}">&nbsp;</span>
+					</label>
+			</div>
+		  </div>
+		  <div class="custom_label_dv q_rating">
+			<div class="custom_radio_lable">
+			 <label for="rad_apprisial_{{questionerio.id_pergunta}}_4">
+						<input name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==4" autocomplete="off" value="4" id="rad_apprisial_{{questionerio.id_pergunta}}_4"  ng-click="getStarValue(questionerio.id_pergunta,4)">
+						<span class="span_{{questionerio.id_pergunta}}_4" ng-class="{'also-checked': questionerio.score >= 4}">&nbsp;</span>
+					</label>
+			</div>
+		  </div>
+		  <div class="custom_label_dv  q_rating">
+			<div class="custom_radio_lable">
+			  <label for="rad_apprisial_{{questionerio.id_pergunta}}_5">
+				<input name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==5" autocomplete="off" value="5" id="rad_apprisial_{{questionerio.id_pergunta}}_5"  ng-click="getStarValue(questionerio.id_pergunta,5)">
+				<span class="span_{{questionerio.id_pergunta}}_5" ng-class="{'also-checked': questionerio.score >= 5}">&nbsp;</span>
+			</label>
+			</div>
+		  </div>
+			<div class="hide rederror error_message">Por favor informe um valor..</div>
+		</div>
+		  <span>Extremamente satisfeito</span> </div>
+		<!--like-count-box-wrapper END-->
+		<div class="annswer_box cycleescala{{cycledetails.escala}}" >
+		<label> </label>
+		 <textarea class="form-control" placeholder="Utilize este espaço para feedback sempre que achar necessário. A infomação ficará visível para o avaliado." name="description[{{questionerio.id_pergunta}}]"  value="{{questionerio.descricao}}">{{questionerio.descricao}}</textarea>
+		 </div>
+		 </div>
+		 
+		</div>
+	</script>
+	<script type="text/ng-template" id="valoreapprisialtenstar">
+		<div class="">
+			<div class="review_comment_box">
+		<div class="like-count-box-wrapper q_data valorestar_include review_star_box reviewquestionerio in category.questions_star_box"> <span>Não satisfeito</span>
+		<div class="allquestions">
+		  <div class="custom_label_dv q_rating">
+			<div class="custom_radio_lable">
+				<label for="rad_apprisial_{{questionerio.id_pergunta}}_1">
+					<input name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==1" autocomplete="off" value="1" id="rad_apprisial_{{questionerio.id_pergunta}}_1"  ng-click="getStarValue(questionerio.id_pergunta,1)">
+					<span class="span_{{questionerio.id_pergunta}}_1" ng-class="{'also-checked': questionerio.score >= 1}">&nbsp;</span>
+				</label>
+			</div>
+		  </div>
+		  <div class="custom_label_dv q_rating">
+			<div class="custom_radio_lable">
+			  <label for="rad_apprisial_{{questionerio.id_pergunta}}_2">
+				<input name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==2" autocomplete="off" value="2" id="rad_apprisial_{{questionerio.id_pergunta}}_2"  ng-click="getStarValue(questionerio.id_pergunta,2)">
+				<span class="span_{{questionerio.id_pergunta}}_2" ng-class="{'also-checked': questionerio.score >= 2}">&nbsp;</span>
+			</label>
+			</div>
+		  </div>
+		  <div class="custom_label_dv q_rating">
+			<div class="custom_radio_lable">
+			  <label for="rad_apprisial_{{questionerio.id_pergunta}}_3">
+						<input name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==3" autocomplete="off" value="3" id="rad_apprisial_{{questionerio.id_pergunta}}_3"  ng-click="getStarValue(questionerio.id_pergunta,3)">
+						<span class="span_{{questionerio.id_pergunta}}_3" ng-class="{'also-checked': questionerio.score >= 3}">&nbsp;</span>
+					</label>
+			</div>
+		  </div>
+		  <div class="custom_label_dv q_rating">
+			<div class="custom_radio_lable">
+			 <label for="rad_apprisial_{{questionerio.id_pergunta}}_4">
+						<input name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==4" autocomplete="off" value="4" id="rad_apprisial_{{questionerio.id_pergunta}}_4"  ng-click="getStarValue(questionerio.id_pergunta,4)">
+						<span class="span_{{questionerio.id_pergunta}}_4" ng-class="{'also-checked': questionerio.score >= 4}">&nbsp;</span>
+					</label>
+			</div>
+		  </div>
+		  <div class="custom_label_dv  q_rating">
+			<div class="custom_radio_lable">
+			  <label for="rad_apprisial_{{questionerio.id_pergunta}}_5">
+				<input name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==5" autocomplete="off" value="5" id="rad_apprisial_{{questionerio.id_pergunta}}_5"  ng-click="getStarValue(questionerio.id_pergunta,5)">
+				<span class="span_{{questionerio.id_pergunta}}_5" ng-class="{'also-checked': questionerio.score >= 5}">&nbsp;</span>
+			</label>
+			</div>
+		  </div>
+		  <div class="custom_label_dv q_rating">
+			<div class="custom_radio_lable">
+			  <label for="rad_apprisial_{{questionerio.id_pergunta}}_6">
+						<input name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==6" autocomplete="off" value="6" id="rad_apprisial_{{questionerio.id_pergunta}}_6"  ng-click="getStarValue(questionerio.id_pergunta,6)">
+						<span class="span_{{questionerio.id_pergunta}}_6" ng-class="{'also-checked': questionerio.score >= 6}">&nbsp;</span>
+					</label>
+			</div>
+		  </div>
+		  <div class="custom_label_dv q_rating">
+			<div class="custom_radio_lable">
+			  <label for="rad_apprisial_{{questionerio.id_pergunta}}_7">
+						<input name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==7" autocomplete="off" value="7" id="rad_apprisial_{{questionerio.id_pergunta}}_7"  ng-click="getStarValue(questionerio.id_pergunta,7)">
+						<span class="span_{{questionerio.id_pergunta}}_7" ng-class="{'also-checked': questionerio.score >= 7}">&nbsp;</span>
+					</label>
+			</div>
+		  </div>
+		  <div class="custom_label_dv q_rating" >
+			<div class="custom_radio_lable">
+			  <label for="rad_apprisial_{{questionerio.id_pergunta}}_8">
+						<input name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==8" autocomplete="off" value="8" id="rad_apprisial_{{questionerio.id_pergunta}}_8"  ng-click="getStarValue(questionerio.id_pergunta,8)">
+						<span class="span_{{questionerio.id_pergunta}}_8" ng-class="{'also-checked': questionerio.score >= 8}">&nbsp;</span>
+					</label>
+			</div>
+		  </div>
+		  <div class="custom_label_dv q_rating" >
+			<div class="custom_radio_lable">
+			  <label for="rad_apprisial_{{questionerio.id_pergunta}}_9">
+						<input name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==9" autocomplete="off" value="9" id="rad_apprisial_{{questionerio.id_pergunta}}_9"  ng-click="getStarValue(questionerio.id_pergunta,9)">
+						<span class="span_{{questionerio.id_pergunta}}_9" ng-class="{'also-checked': questionerio.score >= 9}">&nbsp;</span>
+					</label>
+			</div>
+		  </div>
+		   <div class="custom_label_dv q_rating" >
+			<div class="custom_radio_lable">
+			  <label for="rad_apprisial_{{questionerio.id_pergunta}}_10">
+						<input name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==10" autocomplete="off" value="10" id="rad_apprisial_{{questionerio.id_pergunta}}_10"  ng-click="getStarValue(questionerio.id_pergunta,10)">
+						<span class="span_{{questionerio.id_pergunta}}_10" ng-class="{'also-checked': questionerio.score >= 10}">&nbsp;</span>
+					</label>
+			</div>
+		  </div>
+			<div class="hide rederror error_message">Por favor informe um valor..</div>
+		</div>
+		  <span>Extremamente satisfeito</span> 
+		<!--like-count-box-wrapper END-->
+		
+		<div class="annswer_box cycleescala{{cycledetails.escala}}" >
+		<label> </label>
+		 <textarea class="form-control" placeholder="Utilize este espaço para feedback sempre que achar necessário. A infomação ficará visível para o avaliado." name="description[{{questionerio.id_pergunta}}]"  value="{{questionerio.descricao}}">{{questionerio.descricao}}</textarea>
+		 </div>
+		 </div>
+		 </div>
+		</div>
+	</script>
+	<script>
+			document.getElementById('dinamic_ruler').className = "btn-clr{{$index"
+			</script>
+	<script type="text/ng-template" id="dinamic_ruler">
+
+		<div class="">
+		
+		<div class="phase_admin_sec clearfix">
+		<div class="allquestions">
+		<div class="custom-btn-group btn-group phase_custom_right_section" data-toggle="buttons">
+		<label ng-repeat="scale_step in cycledetails.scale_object[0].values" class="btn btn-clr{{$index+1}}" ng-class="{'active': questionerio.score >= scale_step.limite_inicial && questionerio.score <= scale_step.limite_final}" data-placement="top" data-toggle="tooltip" title="{{scale_step.descricao}}" data-original-title="Abaixo do esperado" style="" ng-click="reguaSelect(questionerio, scale_step)">
+		<input name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]"  type="radio" ng-checked="questionerio.score >= scale_step.limite_inicial && questionerio.score <= scale_step.limite_final" autocomplete="off" value="{{scale_step.score}}" id="rad_apprisial_{{questionerio.id_pergunta}}_{{$index+1}}"  ng-click="getStarValue(questionerio.id_pergunta,1)" >
+		 <div class="hvr_item">{{scale_step.label}}</div>
+		 <div ng-if="cycledetails.scale_object[0].range == 1" style="color: #222 !important;padding-top: 10px;font-size: 14px;">{{scale_step.limite_inicial}} - {{scale_step.limite_final}}</div>
+		 </label>  
+		<div style="padding-left: 20px; width: 100px;" ng-if="cycledetails.scale_object[0].valor == 1">
+			<input type="number" style="height: 45px !important;" name="apprisialanswers[regua_answer][{{questionerio.id_pergunta}}][value]" id="regua_apprisial_{{questionerio.id_pergunta}}" step="0.01" value="{{questionerio.score}}" ng-focus="reguaFocus(questionerio)">
+		</div>
+		</div>  
+			<div class="hide rederror error_message">Por favor informe um valor..</div>
+		</div>  
+<!-- 		{{cycledetails.scale_object[0].values}}
+ -->		<div class="annswer_box cycleescala{{cycledetails.escala}}">
+		<label ng-if="questionerio.comentario==1 || competencia.comentario ==1 || valore.comentario==1"> </label>
+		 <textarea placeholder="Utilize este espaço para feedback sempre que achar necessário. A infomação ficará visível para o avaliado." ng-show="questionerio.comentario==1 || competencia.comentario ==1 || valore.comentario==1"  class="form-control" name="description[{{questionerio.id_pergunta}}]"  value="{{questionerio.descricao}}">{{questionerio.descricao}}</textarea>
+		 </div>
+		
+
+		<!--like-count-box-wrapper END-->
+		 
+		</div>
+		
+		</div>
+		
+	</script>
+	
+	<script type="text/ng-template" id="valoreapprisialevolucaoAnswer">
+		<div class="">
+		
+		<div class="phase_admin_sec clearfix">
+		<div class="allquestions">
+		<div class="custom-btn-group btn-group phase_custom_right_section" data-toggle="buttons">
+		<label class="btn btn-clr1" ng-class="{'active': questionerio.score== 1}" data-placement="top" data-toggle="tooltip" data-original-title="Abaixo do esperado">
+		<input name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==1" autocomplete="off" value="1" id="rad_apprisial_{{questionerio.id_pergunta}}_1"  ng-click="getStarValue(questionerio.id_pergunta,1)">
+		 <div class="hvr_item">{{ 'CONFIGURACAO_CICLO.VALOREAPPRISIALEVOLUCAOANSWER.VALOR_01' | translate }}</div>
+		 </label>  
+		   
+		<label class="btn btn-clr2" ng-class="{'active': questionerio.score== 2}" data-placement="top" data-toggle="tooltip" data-original-title="precisa melhorar">
+		<input name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==2" autocomplete="off" value="2" id="rad_apprisial_{{questionerio.id_pergunta}}_2"  ng-click="getStarValue(questionerio.id_pergunta,2)">
+ 	
+		  <div class="hvr_item">{{ 'CONFIGURACAO_CICLO.VALOREAPPRISIALEVOLUCAOANSWER.VALOR_02' | translate }}</div>		
+		 </label>
+		 
+		 <label class="btn btn-clr3"  ng-class="{'active': questionerio.score== 3}" data-placement="top" data-toggle="tooltip" data-original-title="dentro do esperado">
+		<input name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==3" autocomplete="off" value="3" id="rad_apprisial_{{questionerio.id_pergunta}}_3"  ng-click="getStarValue(questionerio.id_pergunta,3)">
+ 
+		  <div class="hvr_item">{{ 'CONFIGURACAO_CICLO.VALOREAPPRISIALEVOLUCAOANSWER.VALOR_03' | translate }}</div>
+		 </label>
+		 
+		<label class="btn btn-clr4"  ng-class="{'active': questionerio.score== 4}" data-placement="top" data-toggle="tooltip" data-original-title="acima do esperado">
+		<input name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==4" autocomplete="off" value="4" id="rad_apprisial_{{questionerio.id_pergunta}}_4"  ng-click="getStarValue(questionerio.id_pergunta,4)">
+		  <span class="glyphicon glyphicon-ok"></span>
+		  <div class="hvr_item">{{ 'CONFIGURACAO_CICLO.VALOREAPPRISIALEVOLUCAOANSWER.VALOR_04' | translate }}</div>
+		 </label>
+		
+		</div>  
+			<div class="hide rederror error_message">Por favor informe um valor..</div>
+		</div>  
+		<div class="annswer_box cycleescala{{cycledetails.escala}}" >
+		<label>  </label>
+		 <textarea class="form-control" placeholder="Utilize este espaço para feedback sempre que achar necessário. A infomação ficará visível para o avaliado." name="description[{{questionerio.id_pergunta}}]"  value="{{questionerio.descricao}}">{{questionerio.descricao}}</textarea>
+
+		 </div>
+		<!--like-count-box-wrapper END-->
+		 
+		</div>
+		
+		</div>
+		
+	</script>
+	
+	<script type="text/ng-template" id="valoreapprisialevolucaofiveAnswer">
+		<div class="">
+		
+		<div class="phase_admin_sec clearfix">
+		<div class="allquestions">
+		<div class="custom-btn-group btn-group phase_custom_right_section" data-toggle="buttons">
+		<label class="btn favorabiltype-btn-clr1" ng-class="{'active': questionerio.score== 1}" data-placement="top" data-toggle="tooltip" data-original-title="Abaixo do esperado">
+		<input required name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==1" autocomplete="off" value="1" id="rad_apprisial_{{questionerio.id_pergunta}}_1"  ng-click="getStarValue(questionerio.id_pergunta,1)">
+		<span class="glyphicon glyphicon-ok"></span>
+		 <div class="hvr_item">{{ 'CONFIGURACAO_CICLO.VALOREAPPRISIALEVOLUCAOFIVEANSWER.VALOR_01' | translate }}</div>
+		 </label>  
+		   
+		<label class="btn favorabiltype-btn-clr2" ng-class="{'active': questionerio.score== 2}" data-placement="top" data-toggle="tooltip" data-original-title="precisa melhorar">
+		<input required  name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==2" autocomplete="off" value="2" id="rad_apprisial_{{questionerio.id_pergunta}}_2"  ng-click="getStarValue(questionerio.id_pergunta,2)">
+ 	
+		  <div class="hvr_item">{{ 'CONFIGURACAO_CICLO.VALOREAPPRISIALEVOLUCAOFIVEANSWER.VALOR_02' | translate }}</div>		
+		 </label>
+		 
+		 <label class="btn favorabiltype-btn-clr3"  ng-class="{'active': questionerio.score== 3}" data-placement="top" data-toggle="tooltip" data-original-title="dentro do esperado">
+		<input required  name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==3" autocomplete="off" value="3" id="rad_apprisial_{{questionerio.id_pergunta}}_3"  ng-click="getStarValue(questionerio.id_pergunta,3)">
+ 
+		  <div class="hvr_item">{{ 'CONFIGURACAO_CICLO.VALOREAPPRISIALEVOLUCAOFIVEANSWER.VALOR_03' | translate }}</div>
+		 </label>
+		 
+		<label class="btn favorabiltype-btn-clr4"  ng-class="{'active': questionerio.score== 4}" data-placement="top" data-toggle="tooltip" data-original-title="acima do esperado">
+		<input required  name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==4" autocomplete="off" value="4" id="rad_apprisial_{{questionerio.id_pergunta}}_4"  ng-click="getStarValue(questionerio.id_pergunta,4)">
+		  <span class="glyphicon glyphicon-ok"></span>
+		  <div class="hvr_item">{{ 'CONFIGURACAO_CICLO.VALOREAPPRISIALEVOLUCAOFIVEANSWER.VALOR_04' | translate }}</div>
+		 </label>
+		
+		<label class="btn favorabiltype-btn-clr5"  ng-class="{'active': questionerio.score== 5}" data-placement="top" data-toggle="tooltip" data-original-title="acima do esperado">
+		<input required name="apprisialanswers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" ng-checked="questionerio.score==5" autocomplete="off" value="5" id="rad_apprisial_{{questionerio.id_pergunta}}_5"  ng-click="getStarValue(questionerio.id_pergunta,5)">
+		  <span class="glyphicon glyphicon-ok"></span>
+		  <div class="hvr_item">{{ 'CONFIGURACAO_CICLO.VALOREAPPRISIALEVOLUCAOFIVEANSWER.VALOR_05' | translate }}</div>
+		 </label>
+			<div class="hide rederror error_message">Por favor informe um valor.</div>
+		</div>  
+		</div>  
+		<div class="annswer_box cycleescala{{cycledetails.escala}}" >
+		<label>  </label>
+		 <textarea class="form-control" placeholder="Utilize este espaço para feedback sempre que achar necessário. A infomação ficará visível para o avaliado." name="description[{{questionerio.id_pergunta}}]"  value="{{questionerio.descricao}}">{{questionerio.descricao}}</textarea>
+		 </div>
+		<!--like-count-box-wrapper END-->
+		</div>
+		</div>
+	</script>
+	<script type="text/ng-template" id="goalsAndFeedbackHeading">
+			<!-- <div class="goals_feedback_heading mb-fases" ng-click="openGoalsFeedbackSidebar()">
+			Detalhes do avaliado
+			</div> -->
+		<button class="mdc-button mdc-button--outlined" ng-click="openGoalsFeedbackSidebar()">
+			<i class="material-icons mdc-button__icon">info</i>
+			<span class="mdc-button__label">Detalhes</span>
+		</button>
+	</script>
+	<script type="text/javascript">
+		function topFunctionApraisal() {
+       document.body.scrollTop = 0; // For Safari
+       document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+      }
+	</script>
+	<!-- modal history -->
+	<div class="modal fade in" id="modal-key-history">
+	    <div class="modal-dialog" style="width: 1000px;">
+	        <form id="form-key-history" class="modal-content">
+	            <div class="modal-header bg-primary">
+	                <button type="button" class="close" data-dismiss="modal">×</button>
+	                <h4 class="modal-title">Histórico de Anexos</h4>
+	            </div>
+	            <div class="modal-body">
+	                <div class="col-md-12" style="overflow-y: auto; max-height: 400px;">
+	                    <div class="table_body">
+	                        <div class="tbale_dv">
+	                            <div class="table_row_cil table-header" style="background: #0654df">
+	                                <div class="table_cell_cil text-left">
+	                                    <span class="text-left" style="text-align:left; color: white;">Data </span>
+	                                </div>
+	                                <div class="table_cell_cil text-left">
+	                                    <span class="text-left" style="text-align:left; color: white;">Descrição  </span>
+	                                </div>
+	                                <div class="table_cell_cil text-left">
+	                                    <span class="text-left" style="text-align:left; color: white;">Download  </span>
+	                                </div>
+	                            </div>
+	                            <div class="table_row_cil table-data users-group-item" ng-repeat="contratoData in contratosData">
+	                                <div class="table_cell_cil text-left font-lig">
+	                                    <span style="text-align:left">{{ contratoData.data | amUtc | amDateFormat:'DD/MM/YYYY' }}</span>
+	                                </div>
+	                                <div class="table_cell_cil text-left font-lig disable-content">
+	                                    <textarea class="form-control">{{contratoData.description}}</textarea>
+	                                </div>
+	                                <div class="table_cell_cil font-lig">
+	                                    <button ng-if="contratoData.anexo != null" class="mdc-icon-button material-icons mdc-theme--secondary" ng-click="downloadContrato(contratoData)">cloud_download</button>
+	                                </div>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	            <div class="modal-footer modalBotoes">
+	                <button class="mdc-button mdc-fechar" data-dismiss="modal">Fechar</button>
+	            </div>
+	        </form>
+	    </div>
+	</div>
+	<!-- modal history end -->
+</div>
+

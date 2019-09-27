@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_protocolo_questionario_respostas` CHANGE `rating_score` `rating_score` INT(11) NULL DEFAULT NULL;

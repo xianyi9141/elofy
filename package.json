@@ -1,0 +1,24 @@
+{
+  "name": "Elofy",
+  "title": "Elofy",
+  "version": "0.0.1",
+  "description": "",
+  "main": "",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "Blackace",
+  "license": "",
+  "devDependencies": {
+    "grunt": "*",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-cssmin": "^2.2.0",
+    "grunt-contrib-less": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-spritesmith": "*",
+    "jit-grunt": "*",
+    "time-grunt": "*"
+  }
+}

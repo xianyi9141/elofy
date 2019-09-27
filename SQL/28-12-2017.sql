@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_protocolo_avaliacao_valores` CHANGE `id_valore` `id_valores` INT(11) NOT NULL;

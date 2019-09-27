@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_usuario` ADD `user_typo` INT(1) NULL DEFAULT NULL AFTER `gestor`;

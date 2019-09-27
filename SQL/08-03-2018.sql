@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_resultados_chave` CHANGE `peso` `peso` DOUBLE NOT NULL;

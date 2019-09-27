@@ -1,0 +1,1 @@
+update ttl_revisao_ciclo_avaliacoes_fase set score  =  (select percentual from ttl_pergunta_resposta where id_pergunta_resposta = score) where score >5

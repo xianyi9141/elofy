@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_empresa` ADD `crossfeed` INT(11) NOT NULL DEFAULT '1' AFTER `okr`;

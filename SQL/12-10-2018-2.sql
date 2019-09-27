@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_categoria_competencias` ADD `ativo` INT(1) NOT NULL DEFAULT '1' AFTER `peso`;

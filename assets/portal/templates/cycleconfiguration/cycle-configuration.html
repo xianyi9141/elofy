@@ -1,0 +1,55 @@
+<!--
+    @raptor view for pesquisa menu add
+-->
+<style>
+    .progress_wrap,  .progress-title{
+        width:155px;
+    }
+    .progress_wrap span{
+        width: auto;
+    }
+    .progress{
+        margin-bottom: 0;
+    }
+</style>
+
+<div ng-controller="cycleConfigurationCtrl">
+    <h2 class="new_heading_dv">
+        Configuração de Ciclo
+    </h2>
+    <hr>
+    <div class="dblock">
+        <div class="dblock_head">
+            <h2 class="dheading">Revisões de Ciclo</h2>
+            <a href="{{baseUrl}}cycleconfiguration/-1" class="addmore" onclick="" >+ Adicionar novo Ciclo</a>
+        </div>
+
+        <div class="tbale_dv">
+            <div class="table_row_cil hder">
+                <div class="table_cell_cil text-left">
+                    <span>Nome do Ciclo de Revisão
+                    </span>
+                </div>
+                <div class="table_cell_cil">
+                    <span>Ativo/inativo</span>
+                </div>
+                <div class="table_cell_cil cycleaction">
+                    <span>Ação</span>
+                </div>
+            </div>
+            <div class="table_row_cil" ng-repeat="cycles in cycleConfigList">
+                <div class="table_cell_cil" class="text-left">
+                    <span>{{ cycles.nome_ciclo }}</span>
+                </div>
+				 <div class="table_cell_cil" ng-if="cycles.ativo == 0"><span>Inativo</span></div>
+				 <div class="table_cell_cil" ng-if="cycles.ativo == 1"><span>Ativo</span></div>
+                <div class="table_cell_cil">
+                    <div class="div_action" ng-class="{'inactive_link': cycles.ativo==0}">
+                        <a href="{{baseUrl}}cycleconfiguration/{{cycles.id_revisao_ciclo}}">Editar</a>
+                        <a ng-if="cycles.ativo==1"href="{{baseUrl}}cycleconfiguration#!/{{cycles.id_revisao_ciclo}}/CycleConfig">Gerenciar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

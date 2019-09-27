@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_acomp_kr` ADD `periodicidade` CHAR(1) NULL DEFAULT NULL AFTER `medicao_realizada`, ADD `manutencao` INT(11) NULL DEFAULT NULL AFTER `periodicidade`, ADD `desempenho` DOUBLE NULL DEFAULT NULL AFTER `manutencao`;

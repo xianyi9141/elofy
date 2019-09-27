@@ -1,0 +1,2 @@
+ALTER TABLE `ttl_integracoes` ADD `username` VARCHAR(250) NULL DEFAULT NULL AFTER `comando_sql`, ADD `password` VARCHAR(250) NULL DEFAULT NULL AFTER `username`;
+ALTER TABLE `ttl_resultados_chave` ADD `last_run` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `frequencia_int`;

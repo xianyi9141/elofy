@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_competencias` ADD `reviewed` INT(11) NULL DEFAULT '0' AFTER `ativo`;

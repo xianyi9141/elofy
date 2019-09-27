@@ -1,0 +1,115 @@
+header {
+        position: fixed;
+        top: -60px;
+        left: 0px;
+        right: 0px;
+        height: 50px;
+}
+footer {
+          position: fixed; 
+          bottom: -60px; 
+          left: 0px; 
+          right: 0px;
+          height: 50px; 
+      }
+@page { margin-top: 70px;}
+.banner {
+  /*padding-top: 25px;*/
+  padding-left: 50px;
+  width: 100%;
+}
+.banner img {
+  height: 50px;
+  max-width: 220px;
+  float:left;
+}
+.footer {
+  padding-top: -25px;
+  width: 100%;
+}
+.footer img {
+  width: 200px;
+}
+.title {
+  background-color: white;
+}
+.title_name {
+  font-size: 18px;
+}
+.title_subname {
+  font-size: 18px;
+}
+/* margin, padding css */
+.no_margin {
+  margin: 0px !important;
+}
+.no_padding {
+  padding: 0px !important;
+}
+.margin-top-20 {
+  padding-top: 20px !important;
+}
+.margin-top-5 {
+  padding-top: 5px !important;
+}
+.margin-top-40 {
+  padding-top: 40px !important;
+}
+.margin-bottom-20 {
+  padding-bottom: 20px !important;
+}
+.margin-bottom-10 {
+  margin-bottom: 10px !important;
+}
+.border-bottom-8 {
+  border-bottom: 8px solid khaki;
+}
+.border-bottom-4 {
+  border-bottom: 4px solid BlanchedAlmond;
+}
+.border-bottom-last {
+  border-bottom: 8px solid indigo;
+}
+.margin-top-100 {
+  margin-top: 100px;
+}
+.margin-top-10 {
+  margin-top: 10px;
+}
+/* Table CSS */
+.tb_title {
+  font-size: 18px;
+  font-weight: bold;
+}
+.sub_title {
+  font-size: 12px;
+  width: 28%;
+}
+.description {
+  font-size: 11px;
+}
+.column_header {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.p_center {
+  text-align: center;
+}
+.count {
+  font-size: 12px;
+  width: 5%;
+}
+.table th,
+.table td {
+  padding: 0px !important;
+}
+
+.table tr td p {
+  margin: 0px !important;
+  word-break: break-word;
+}
+
+.sub_name {
+  font-size: 13px;
+}

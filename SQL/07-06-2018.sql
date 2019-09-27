@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_empresa` ADD `profile_logo` VARCHAR(255) NULL DEFAULT NULL AFTER `logo_empresa`;

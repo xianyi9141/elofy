@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_protocolo_avaliacao` CHANGE `resultados` `performance` DOUBLE NULL DEFAULT NULL;

@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_revisao_ciclo` ADD `more_info` INT(1) NOT NULL DEFAULT '0' AFTER `escolhe_par`;

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta charset="utf-8">
+
+
+<link rel="stylesheet" type="text/css" href="portal/css/bootstrap.css"></link>
+<link rel="stylesheet" type="text/css" href="portal/css/bootstrap-wysihtml5.css"></link>
+
+<style type="text/css" media="screen">
+	.btn.jumbo {
+		font-size: 20px;
+		font-weight: normal;
+		padding: 14px 24px;
+		margin-right: 10px;
+		-webkit-border-radius: 6px;
+		-moz-border-radius: 6px;
+		border-radius: 6px;
+	}
+</style>
+
+
+</head>
+<body>
+<div class="container">
+	<div class="hero-unit" style="margin-top:40px">
+		<textarea class="textarea" placeholder="Enter text ..." style="width: 810px; height: 200px"></textarea>
+	</div>
+</div>
+
+
+<script src="portal/js/wysihtml5-0.3.0.js"></script>
+<script src="portal/js/jquery-1.11.3.min.js"></script>
+<script src="portal/js/bootstrap.js"></script>
+<script src="portal/js/bootstrap-wysihtml5.js"></script>
+
+<script>
+
+	var myCustomTemplates = {
+	  image: function(locale) {
+		  return "<li>" +
+			"<div class='bootstrap-wysihtml5-insert-image-modal modal hide fade'>" +
+			"<div class='modal-header'>" +
+			"<a class='close' data-dismiss='modal'>&times;</a>" +
+			"<h3>Adicionar Arquivo</h3>" +
+			"</div>" +
+			"<div class='modal-body'>" +
+			"<div class='chooser_wrapper'>" +
+			"<input name='file' type='file'>" +
+			"</div>" +
+			"</div>" +
+			"<div class='modal-footer'>" +
+			"<a href='#' class='btn' data-dismiss='modal'>" + locale.image.cancel + "</a>" +
+			"<a href='#' class='btn btn-primary' data-dismiss='modal'>Enviar</a>" +
+			"</div>" +
+			"</div>" +
+			"<a class='btn' data-wysihtml5-command='insertImage' title='" + locale.image.insert + "'><i class='icon-download'></i></a>" +
+			"</li>";
+	  }
+	};
+	
+	$('.textarea').wysihtml5({
+	  toolbar: {
+		"image": true //Button to insert an image. Default true,
+	  },
+	  "font-styles": false, //Font styling, e.g. h1, h2, etc. Default true
+	  customTemplates: myCustomTemplates
+	});
+	
+	
+	
+	
+
+</script>
+
+</body>
+</html>

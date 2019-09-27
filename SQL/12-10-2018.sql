@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_categoria_competencias` ADD `gestor` INT(1) NULL DEFAULT NULL AFTER `descricao_categoria`, ADD `time` INT(1) NULL DEFAULT NULL AFTER `gestor`, ADD `peso` INT(11) NOT NULL DEFAULT '1' AFTER `time`;

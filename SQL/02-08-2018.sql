@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_usuario` ADD `access_crossfeeds` INT(11) NOT NULL DEFAULT '0' AFTER `gerado_integracao`;

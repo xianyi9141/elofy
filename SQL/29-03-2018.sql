@@ -1,0 +1,2 @@
+INSERT INTO `ttl_email_templates` (`id`, `name`, `subject`, `action`, `constants`, `body`, `created_at`, `updated_at`) VALUES
+(65, 'Checkin add', 'Novo checkin de ({USER_NAME}) added', 'checkin_added', '{USER_NAME},{QUESTIONS},{GOALS}', '<p style="font-size:16px; font-weight:bold; font-family:arial; color:#000; text-align: center;">{USER_NAME} added a new checkin</p>{QUESTIONS}{GOALS}', '2014-09-02 00:00:00', '2015-12-24 16:25:46');

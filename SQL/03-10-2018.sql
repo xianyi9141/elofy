@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_usuario` ADD `access_delete_direcionar` INT(11) NOT NULL DEFAULT '0' AFTER `access_crossfeeds`;

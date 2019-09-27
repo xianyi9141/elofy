@@ -1,0 +1,115 @@
+<div ng-controller="CompetenciasCtrl" id="usuarios">
+    <h2 class="page-title">
+        Competencias <span class="text-muted">({{ competencias.length }})</span>
+    </h2>
+	<div class="box with-margins nested-list dd full_width_list">
+		<div id="side-form" class="sidebar_position_relative">
+            <form id="form-category-competencia">
+				<div class="form ">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="nome_categoria" class="control-label">Nome</label>
+										<input id="id_competencia" name="id_competencia" type="hidden" class="form-control" value="{{ competenciaData.id_competencia }}">
+										<input id="nome_competencia" name="nome_competencia" type="text" class="form-control" value="{{ competenciaData.nome_competencia }}">
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="id_categoria_competencia" class="control-label">Category</label>
+										<select class="form-control" name="id_categoria_competencia" id="id_categoria_competencia">
+											<option value=""></option>
+											<option value="{{ category.id_categoria_competencias }}" ng-repeat="category in categories" ng-selected="category.id_categoria_competencias==SelectedCategory">{{ category.nome_categoria }}</option>
+										</select>	
+									</div>
+								</div>
+								
+							</div>
+							<div class="row">
+								<div class="col-md-3">
+									<div class="form-group">
+										<label for="ativo" class="control-label">Tipo</label>
+										<select class="form-control" name="ativo" id="ativo">
+											<option value="1">Activo</option>
+											<option value="0">Inativo</option>
+										</select>	
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="form-group">
+										<label for="teams" class="control-label">Tipo Competencia</label>
+										<select class="form-control" name="tipo_competencia" id="tipo_competencia">
+											<option value=""></option>
+											<option value="t" ng-selected="SelectedTipoCompetencia=='t'">Tecnica</option>
+											<option value="p" ng-selected="SelectedTipoCompetencia=='p'">Pessoal</option>
+											<option value="l" ng-selected="SelectedTipoCompetencia=='l'">Lideranca</option>
+										</select>	
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="teams" class="control-label">Teams</label>
+										<select class="form-control" name="id_team[]" id="id_team" multiple>
+											<option value="{{ team.id }}" ng-selected="showSelectedTeams(team.id)" ng-repeat="team in teams">{{ team.name }}</option>
+										</select>	
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group">
+										<label for="descricao" class="control-label">Descricao</label>
+										<textarea id="descricao" name="descricao" class="form-control">{{ competenciaData.descricao }}</textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-1">
+							<button type="submit" class="btn btn-success salvar" data-loading-text="<i class='icon-spinner animate-spin'></i> Salvando">Salvar</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+    <div id="list" class="nested-list dd with-margins box full_width_list">
+		<div class="box-header">
+            <h4>Editar Competencia</h4>
+            <div class="buttons">
+                <form style="display:inline-block; vertical-align:top;">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Competencia por nome" ng-model="query">
+                        <span class="input-group-btn">
+                            <button type="button"><i class="entypo-search"></i></button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="thead">
+			<table>
+				<thead>
+					<td width="20%">Nome</td>
+					<td width="20%">Categoria</td>
+					<td width="40%">Descricao</td>
+					<td width="20%"></td>
+				</thead>
+			</table>
+        </div>
+        <table class="content">
+            <tr ng-if="competencias.length>0" ng-repeat="competencia in competencias | filter:query">
+                <td width="20%">{{ competencia.nome_competencia }}</td>
+                <td width="20%">{{ competencia.nome_categoria }}</td>
+                <td width="40%">{{ competencia.descricao }}</td>
+                <td width="20%">
+					<a href="javascript:void(0)" ng-click="editCompetencia(competencia.id_competencia);scroollToTop()"><i class="icon-edit"></i></a>
+					<a href="javascript:void(0)" ng-click="deleteCompetencia(competencia.id_competencia);"><i class="icon-trash"></i></a>
+				</td>
+            </tr>
+        </table>
+    </div>
+</div>

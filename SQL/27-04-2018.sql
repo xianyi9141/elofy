@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_resultados_chave` ADD `type` INT(11) NULL DEFAULT NULL AFTER `tipo_calculo`;

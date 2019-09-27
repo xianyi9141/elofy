@@ -1,0 +1,1 @@
+ALTER TABLE ttl_objetivos ADD lido INT(1) NOT NULL DEFAULT '0'

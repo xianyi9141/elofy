@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_usuario` ADD `email_google` VARCHAR(255) NULL DEFAULT NULL AFTER `device_token`, ADD `email_linkedin` VARCHAR(255) NULL DEFAULT NULL AFTER `email_google`, ADD `email_slack` VARCHAR(255) NULL DEFAULT NULL AFTER `email_linkedin`;

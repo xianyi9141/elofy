@@ -1,0 +1,207 @@
+/*activites style*/
+
+.div_activity {
+  margin: 0px;
+  font-family: 'segoe ui';
+}
+
+.dblock .info_label {
+    margin-top:15px; 
+    padding-left: 20px;
+    margin-bottom: 10px;
+}
+
+.activity_box{
+    display: flex;
+    border: 1px solid #eee;    
+    padding: 5px 30px;
+    /*width: 70% !important;*/
+}
+.activity_box:hover{
+    /*cursor: pointer;*/
+}
+.activity_box img {
+    width: 60px; height: 60px;position: relative;top: 4px;left: -5px;
+}
+
+.box-content{
+    position: relative;
+    top: 8px;
+}
+
+.box-content h1{
+    margin: 0px;
+    line-height: 110%;
+    color: #000;
+}
+
+.box-content p{
+    margin: -8px 0 20px;   
+}
+
+/* perfil.php */
+.removehover:hover {
+    background: rgba(3, 169, 244, 0) !important;
+}
+
+.activities_filter a.clean_filter, .activities_filter button.button_filter {
+    font-size: 12px;
+    padding: 4px 10px; 
+}
+
+/* progress modal */
+.progress_left_corner {
+    display: flex;
+}
+
+.progress_left_corner img {
+    margin-top: 7px;
+}
+
+.progress_title_content {
+    position: relative;
+    padding-left: 5px;
+}
+.progress_title_content h4 {
+    font-weight: bold;
+}
+.cs-margin-top-2 {
+    margin-top: 2px;
+}
+.cs-margin-top-4 {
+    margin-top: -4px;
+}
+.cs-margin-top-10 {
+    margin-top: 10px;
+}
+.cs-margin-top-25 {
+    margin-top: 25px;
+}
+.cs-margin-left-3 {
+    margin-left: 3px;
+}
+.cs-padding-top-13 {
+    padding-top: 13px;
+}
+.cs-padding-con {
+    padding-top: 8px;
+    padding-left: 0px;
+    padding-right: 34px;
+}
+.cs-padding-right-0 {
+    padding-right: 0px;
+}
+
+.progress_title_content span {
+    color: grey;
+    font-size: 12px;
+}
+.progress-checkbox {
+    color: black;
+}
+
+.progress-slider .slider {
+    width: 100% !important;
+    margin: 0px !important;
+}
+
+.comment-box-header .mentions-input-box {
+    padding: 0 0px 0 15px !important;
+    width: 77% !important;
+    height: 80px !important;
+}
+.comment-box-header .mentions-input-box textarea {
+    height: 80px !important;
+}
+.comment-box-header button {
+    margin-right:12px !important;
+    width: 20% !important;
+    height: 35px !important;
+    margin-top: 18px;
+    background-color: #03a9f4;
+}
+.comment-box-container {
+    overflow-y: auto;
+    max-height: 140px;
+    height: 140px;
+}
+.comment-box-comments {
+    padding-left: 0px;
+    padding-right: 30px;
+}
+.comment-box-comments .comment-user {
+    font-size: 15px;
+    font-weight: bold;
+}
+.comment-box-comments .comment-content {
+    word-break: break-word;
+    font-size: 13px;
+    color: gray;
+}
+.comment-box-date {
+    padding-left: 0px;
+    text-align: center;
+}
+.comment-box-img img {
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    margin-top: 5px;
+}
+
+.modal_header_title {
+    float: left;
+}
+
+.disabled-content {
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+.comment-box-header-tatic button {
+    width: 170px !important;
+    height: 35px !important;
+    margin-top: 18px;
+    background-color: #03a9f4;
+}
+
+.comment-box-header-tatic textarea {
+    height: 80px !important;
+}
+
+.form-quill .ql-container {
+    height: 150px;
+}
+
+@media (max-width: 767px) {
+.comment-box-header button {
+    margin-right: 12px !important;
+    width: 95% !important;
+}
+}
+
+.ng-timeline-block .select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.ng-timeline-block .select-wrapper img {
+    position: absolute;
+    top: 7px;
+    height: 20px;
+    width: auto;
+    z-index: 1;
+    left: 8px;
+}
+
+.ng-timeline-block .finalized {
+    position: relative; 
+    border: 2px solid #0cd591; 
+    fill: #2fc114;
+}
+
+.ng-timeline-block .not-finalized {
+    position: relative; 
+    border: 2px solid #b7bfc6; 
+    fill: #848f99;
+}

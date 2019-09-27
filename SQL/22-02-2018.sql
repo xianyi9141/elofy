@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_empresa_times` CHANGE `atualizacao` `atualizacao` INT(11) NULL DEFAULT '7';

@@ -1,0 +1,447 @@
+        <div class="hide" ng-class="{'hide': !details}">
+            <!-- Detalhe Global -->
+            <div>
+                <h2 class="button title">
+                    <a href="javascript:history.back()"  class="btn btn-white"><i class="icon-left-3"></i></a>
+                    <span ng-if="!editingTitle">{{ details.title }}</span>
+                    <form ng-if="editingTitle" ng-submit="submitTitle()">
+                        <div class="input-group" style="width:100%;">
+                            <input id="editTitle" type="text" class="form-control" placeholder="Título" ng-value="details.title">
+                            <span class="input-group-btn">
+                                <button class="btn btn-info" type="submit">Salvar</button>
+                            </span>
+                        </div>
+                    </form>
+                    <a href="" ng-if="(!editingTitle) && (user.goal_register==1 || user.user_reviewer==1 || user.admin=='true')" class="btn btn-info" ng-click="editTitle()"><i class="icon-edit"></i> Editar nome</a>
+                </h2>
+
+                <hr>
+
+                <div class="box">
+
+                    <div class="header-bar row">
+                        <div class="col-md-2">
+                            <h5 class="title">{{ details.year }}</h5>
+                            <span class="label label-primary">Global</span>
+                        </div>
+                        <div class="col-md-4">
+                            <dl class="users dl-horizontal">
+                                <dt><h5 class="title">Responsáveis:</h5></dt>
+                                <dd style="margin: 0 0 0 9px; padding: 0 0 0 20px;">
+                                    <div class="images">
+                                        <div class="dropdown">
+                                            <a href="" class="dropdown-toggle" id="link-user" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                <img src="" ng-if="details.user.xs_image" ng-src="{{ details.user.xs_image }}" class="img-circle" width="30" height="30" alt="{{ details.user.name }}" />
+                                                <span class="image-replace" ng-if="!details.user.xs_image">{{ initials(details.user.name) }}</span>
+                                                <span class="hover"><i class="icon-pencil"></i></span>
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                <form ng-submit="searchUser()" class="ng-pristine ng-valid">
+                                                    <div class="input-group" style="width:100%;">
+                                                        <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="Pesquisar Usuários" ng-model="selectedUser">
+                                                        <span class="input-group-btn">
+                                                            <button type="submit"><i class="icon-search"></i></button>
+                                                        </span>
+                                                    </div>
+                                                </form>
+                                                <p>Selecionar Responsável:</p>
+                                                <hr>
+                                                <div class="scroll">
+                                                    <a href="" class="link" ng-class="{'selected': user.id == details.user.id}" ng-click="editUser(user.id)" ng-repeat="user in users | filter:filterUser">
+                                                        <img src="" ng-if="user.image" ng-src="{{ user.image }}" class="img-circle" width="30" height="30" alt="{{ user.name }}" />
+                                                        <span class="image-replace" ng-if="!user.image">{{ initials(user.name) }}</span>
+                                                        <span class="text">{{ user.name }}</span>
+                                                        <i class="icon-ok" ng-if="user.id == details.user.id"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <span class="bar" ng-if="details.users.length"></span>
+
+                                        <a href=""  class="contr" ng-repeat="user in details.users | limitTo:3" ng-click="removeResponsible(user.id)" >
+                                            <img src="" ng-if="user.image" ng-src="{{ user.image }}" class="img-circle" width="30" height="30" alt="{{ user.name }}" />
+                                            <span class="image-replace" ng-if="!user.image">{{ initials(user.name) }}</span>
+                                            <span class="hover red" ng-if="user.goal_register==1 || user.user_reviewer==1 || user.admin=='true'"><i class="icon-trash"></i></span>
+                                        </a>
+
+                                        <div class="dropdown" ng-if="details.users.length > 3">
+                                            <a href="" class="dropdown-toggle" id="link-responsibles" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                <span class="image-replace">mais {{details.users.length-3}}</span>
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                <p style="margin-top:0;">Corresponsáveis:</p>
+                                                <hr>
+                                                <div class="scroll">
+                                                    <span class="link" ng-repeat="user in details.users | limitTo: (3 - details.users.length)">
+                                                        <img src="" ng-if="user.image" ng-src="{{ user.image }}" class="img-circle" width="30" height="30" alt="{{ user.name }}" />
+                                                        <span class="image-replace" ng-if="!user.image">{{ initials(user.name) }}</span>
+                                                        <span class="text">{{ user.name }}</span>
+                                                        <a href="" class="red" ng-if="user.goal_register==1 || user.user_reviewer==1 || user.admin=='true'" ng-click="removeResponsible(user.id)"><i class="icon-trash"></i></a>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <span class="bar"></span>
+
+                                        <div class="dropdown">
+                                            <a href="" class="dropdown-toggle" id="link-add-responsibles" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" ng-if="user.goal_register==1 || user.user_reviewer==1 || user.admin=='true'">
+                                                <span class="image-replace"><i class="icon-user-plus"></i></span>
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                <form ng-submit="searchResponsibles()" class="ng-pristine ng-valid">
+                                                    <div class="input-group" style="width:100%;">
+                                                        <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="Pesquisar Usuários" ng-model="selectedResponsibles">
+                                                        <span class="input-group-btn">
+                                                            <button type="submit"><i class="icon-search"></i></button>
+                                                        </span>
+                                                    </div>
+                                                </form>
+                                                <p>Adicionar Corresponsável:</p>
+                                                <hr>
+                                                <div class="scroll">
+                                                    <a href="" class="link" ng-class="{'selected': checkId(user.id)}" ng-repeat="user in users | filter:filterResponsibles" ng-click="addResponsible(user.id)">
+                                                        <img src="" ng-if="user.image" ng-src="{{ user.image }}" class="img-circle" width="30" height="30" alt="{{ user.name }}" />
+                                                        <span class="image-replace" ng-if="!user.image">{{ initials(user.name) }}</span>
+                                                        <span class="text">{{ user.name }}</span>
+                                                        <i class="icon-ok" ng-if="checkId(user.id)"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-4">
+                            <dl class="tags dl-horizontal">
+                                <dt class="text-primary"><h5 class="title">Tags:</h5></dt>
+                                <dd>
+                                    <span class="label label-primary" ng-repeat="tag in details.tags">{{ tag.name }}<a href="" ng-if="user.goal_register==1|| user.user_reviewer==1 || user.admin=='true'" ng-click="removeTag(tag.id)"><i class="icon-cancel"></i></a></span>
+                                    <span class="bar"></span>
+
+                                    <div class="dropdown addTag" ng-if="user.goal_register==1 || user.user_reviewer==1 || user.admin=='true'">
+                                        <a href="" class="label label-info dropdown-toggle" id="link-tags" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            <i class="icon-tags"></i>
+                                        </a>
+                                        <div class="dropdown-menu right">
+                                            <form class="form-inline" ng-submit="submitTag()">
+                                                <div class="form-group">
+                                                    <input id="newTag" type="text" class="form-control search-all-tags" placeholder="Adicionar Tag" style="width:206px;">
+                                                </div>
+                                                <button type="submit" class="btn btn-info" style="margin-left:5px;">OK</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-2 title-buttons">
+                            <span class="pull-right icons" ng-if="user.goal_register==1 || user.user_reviewer==1 || user.admin=='true'">
+                                <a class="label label-primary" ng-click="editTeams()" style="vertical-align:top;"><i class="icon-group"></i></a>
+                                <span class="bar"></span>
+                                <div id="changeColor" class="dropdown" style="display:inline-block; vertical-align:top;">
+                                    <a class="label label-primary dropdown-toggle" id="link-color" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><i class="icon-brush"></i></a>
+                                    <div class="dropdown-menu right">
+                                        <form class="form-inline" ng-submit="submitColor()">
+                                            <div class="form-group">
+                                                <input id="newColor" type="text" class="form-control colorpicker-edit" placeholder="Cor:" ng-value="details.color" style="width:206px;">
+                                            </div>
+                                            <button type="submit" class="btn btn-info changeColor" style="margin-left:5px;" data-loading-text="<i class='icon-spinner animate-spin'></i>"><i class="icon-edit"></i></button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <span class="bar"></span>
+                                <a href="{{ baseurl }}organograma/{{ details.id }}" class="label label-primary" style="vertical-align:top;"><i class="icon-sitemap"></i></a>
+                                <span class="bar"></span>
+                                <a class="label favorite" ng-click="favorite(details.id)" style="padding:1px 0; color:#849ba1; margin-left:16px;"><i class="icon-star" ng-class="{'hide': !check(details.id)}" style="font-size:18px;"></i><i class="icon-star-empty" ng-class="{'hide': check(details.id)}" style="font-size:18px;"></i></a>
+                            </span>
+                        </div>
+                    </div>
+
+                    <hr class="clear">
+
+                    <div class="text edit-description">
+                        <span style="font-size:13px; color:#8a8a8a;">Descrição:</span>
+                        <br>
+                        <br>
+                        <p ng-bind-html="description" ng-if="!editingDescription"></p>
+                        <a href="" ng-if="(!editingDescription) && (user.goal_register==1 || user.user_reviewer==1 || user.admin=='true')" class="edit btn btn-info" ng-click="editDescription()"><i class="icon-edit"></i> Editar descrição</a>
+                        <form ng-if="editingDescription" ng-submit="submitDescription()">
+                            <div class="form-group">
+                                <textarea id="newDescription" name="descricao" class="form-control" rows="12" ng-value="details.description"></textarea>
+                            </div>
+                            <div class="text-right">
+                                <button class="btn btn-info" type="submit">Salvar</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+
+                <div class="home-charts charts">
+                    <div class="row">
+                        <div class="col-md-3" style="padding:0;">
+                            <div class="box">
+                                <h4><b>% Concluido:</b></h4>
+                                <div id="chart-porcentage" style="width:200px; margin:auto;"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="box">
+                                <h4><b>Participação dos Times:</b></h4>
+                                <div id="chart-teams" style="width:400px; margin:auto;"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" style="padding:0;">
+                            <div class="box">
+                                <h4><b>Objetivos por Trimestre:</b></h4>
+                                <div id="chart-objectives" style="width:200px; margin:auto;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="clear">
+                Objetivos <span class="text-muted">({{ filtered.length }})</span>
+            </h2>
+
+            <hr>
+
+            <div id="tatics" class="box padding">
+                <div class="buttons">
+                    <form class="form-inline pull-right" ng-submit="search()">
+                        <div class="form-group">
+                            <label style="line-height:35px; font-size:14px; color:#373e4a; margin:0; vertical-align:top;">Filtrar:</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" style="width:170px;" placeholder="Por nome" ng-model="inputNameModel">
+                        </div>
+                        <div class="form-group" style="width:130px;">
+                            <select class="select-teams" data-native="true" data-text="Times" ng-options="team.id as team.name for team in details.teamsWithTatics" ng-model="selectedTeamModel"></select>
+                        </div>
+                        <div class="form-group" style="width:130px;">
+                            <select class="select-color" data-native="true" data-text="Color" ng-model="selectedColor">
+                                <option value="">Todos</option>
+                                <option value="1">Em dia</option>
+                                <option value="2">Atenção</option>
+                                <option value="3">Atrasados</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="width:140px;">
+                            <select class="select-cycle" data-native="true" data-text="Trimestre" ng-options="cycle.id as cycle.name for cycle in cycles" ng-model="selectedCycleModel"></select>
+                        </div>
+                        <button class="btn btn-primary" type="submit"><i class="entypo-search"></i></button>
+                    </form>
+               		 <div class="list-group" style="padding-top:20px;">
+			               <a ng-href="#!/tatic/{{ tatic.id }}" class="list-group-item" ng-repeat="tatic in details.tatics | filter:inputName | filter: {color: selectedColorObjective} | filter: {team: {id: selectedTeam}} | filter: {cycles: {id: selectedCycle}} as filtered">
+			 				  <div class="list-group-info row">
+			                              <div class="col-md-4">
+			                                  <h4 class="list-group-item-heading">{{ tatic.title }}
+                                               
+                                              </h4>
+			                              </div>
+			                              <div class="col-md-5">
+			                                  <span class="icons"><i class="icon-group"></i> {{ tatic.team.name }}</span>
+			                                  <span class="icons"><i class="icon-cubes"></i> {{ tatic.weight }} Peso</span>
+			                                  <span class="icons"><i class="icon-target"></i> {{ tatic.total_key }} Resultados Chave</span>
+			                              </div>
+			                              <div class="col-md-2 text-center">
+			                                  <h5 ng-class="{'text-pending': tatic.status == 0, 'text-finished': tatic.status == 1, 'text-progress': tatic.status == 2, 'text-closed': tatic.status == 3}">
+                                              <p ng-if="tatic.status==0">Pendente</p>
+                                              <p ng-if="tatic.status==2">Em andamento</p>
+                                              <p ng-if="tatic.status==3">Encerrado</p>
+			                                  <p ng-if="tatic.status==1">Finalizado</p>
+			                                  </h5>
+			                              </div>
+			                              <div class="col-md-1">
+			                                    <span class="top-right-chat">
+                                                <i class="fa fa-comment" style="color: #36c7e8;" ng-if="tatic.comentario_status == 0"></i>
+                                                </span>
+                                                <div class="pull-right" style="padding-right:15px;">
+			                                      <img src="" ng-if="tatic.user.image" ng-src="{{ tatic.user.image }}" class="img-circle" width="30" height="30" title="{{ tatic.user.name }}" />
+			                                      <span class="image-replace" ng-if="!tatic.user.image">{{ initials(tatic.user.name) }}</span>
+			                                  </div>
+                                             
+			                              </div>
+			                          </div>
+			                          <div class="progress progress-bar-default">
+			                            <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{ tatic.percentage }}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{ tatic.percentage }}%;" ng-class="{'ontrack':tatic.color==1,'attention':tatic.color==2,'delayed':tatic.color==3}">
+			                              {{ tatic.percentage }}%
+			                            </div>
+			                          </div>
+			                      </a>
+                </div>
+              </div>
+
+                <hr class="clear">
+
+
+            </div>
+        </div>
+
+
+            <!-- Modal Edit Global Teams -->
+            <div class="modal fade in" id="edit-teams">
+                <div class="modal-dialog">
+                    <form id="form-teams" class="modal-content">
+                        <div class="modal-header bg-primary">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h4 class="modal-title">Editar Times/Pesos</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <label class="col-md-7 control-label" style="margin-top:8px;">Times/Pesos</label>
+                                            <div class="col-md-5">
+                                                <a id="open-time-edit" class="btn btn-primary pull-right">Adicionar Time</a>
+                                                <select id="seleciona-time" name="times" class="select2 times-edit" data-allow-clear="true" data-placeholder="Selecione um time">
+                                                    <option value=""></option>
+                                                    <optgroup label="Times">
+                                                        <option ng-repeat="team in teams" ng-value="{{ team.id }}">{{ team.name }}</option>
+                                                    </optgroup>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                     <p class="error-sum-edit text-danger hidden">A Soma dos valores de todos os times deve totalizar (10).</p>
+                                    <div class="row">
+                                        <div class="col-md-12" ng-if="details.teams.length">
+                                            <div class="row">
+                                                <label class="col-md-8">Times</label>
+                                                <div class="col-md-4">
+                                                    <label class="pull-left text-center" style="width:122px;">Pesos</label>
+                                                    <label class="pull-right" style="width:44px;">Excluir</label>
+                                                </div>
+                                            </div>
+                                            <hr style="border-width:2px; margin:10px 0;">
+                                        </div>
+
+                                        <div class="form-group col-md-12" ng-repeat="team in details.teams">
+                                            <div class="row">
+                                                <label class="col-md-8 control-label" style="font-size:14px; font-weight:400; margin-top:8px;">{{ team.name }}</label>
+                                                <div class="col-md-4">
+                                                    <div class="input-spinner pull-left">
+                                                        <button type="button" class="btn btn-default" ng-click="numberLessEdit($index)">-</button>
+                                                        <input type="number" name="" class="form-control size-1 number-edit" ng-model="team.value" ng-value="{{ team.value }}" min="1" max="10">
+                                                        <button type="button" class="btn btn-default" ng-click="numberMoreEdit($index)">+</button>
+                                                    </div>
+                                                    <button type="button" class="btn btn-red pull-right" ng-click="numberRemoveEdit($index)"><i class="entypo-trash"></i></button>
+                                                </div>
+                                                <hr style="margin:10px 0;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                            <button type="submit" class="btn btn-info salvar" data-loading-text="<i class='icon-spinner animate-spin'></i> Salvando">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Modal Novo Tático -->
+            <div class="modal fade in" id="new-tatic">
+                <div class="modal-dialog">
+                    <form id="form-tatic" class="modal-content">
+                        <div class="modal-header bg-primary">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h4 class="modal-title">Novo Objetivo </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="progress" ng-class="{'hide': users.length && teams.length && newCycles.length}" style="margin-top:17px;">
+                                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                            </div>
+
+                            <div class="form">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="field-1" class="control-label">Nome</label>
+                                            <input name="nome" type="text" class="form-control" id="field-1">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="field-2" class="control-label">Descrição</label>
+                                            <textarea name="descricao" id="field-2" class="form-control" rows="5"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4" style="padding-right:0;">
+                                        <div class="form-group">
+                                            <label for="field-3" class="control-label">Responsável</label>
+                                            <select id="field-3" name="usuario" class="select2 usuario" data-allow-clear="true" data-placeholder="Selecione um Usuário">
+                                                <option value=""></option>
+                                                <optgroup label="Usuários">
+                                                    <option ng-repeat="user in users" ng-value="{{ user.id }}">{{ user.name }}</option>
+                                                </optgroup>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4" style="padding-right:0;">
+                                        <div class="form-group">
+                                            <label for="field-4" class="control-label">Time</label>
+                                            <select id="field-4" name="time" class="select2 times" data-allow-clear="true" data-placeholder="Selecione um Time">
+                                                <option value=""></option>
+                                                <optgroup label="Times">
+                                                    <option ng-repeat="team in teams" ng-value="{{ team.id }}">{{ team.name }}</option>
+                                                </optgroup>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="field-5" class="control-label">Peso</label>
+                                             <div class="input-spinner">
+                                                <button type="button" class="btn btn-info" ng-click="numberLessNew()">-</button>
+                                                <input id="field-5" type="number" name="peso" class="form-control size-1 input-lg" ng-model="newWeight" value="{{ newWeight }}" min="1" max="10" style="width:120px;">
+                                                <button type="button" class="btn btn-info" ng-click="numberMoreNew()">+</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="field-6" class="control-label">Contribuidores</label>
+                                            <select id="field-6" multiple="multiple" name="corresponsaveis" class="form-control multi-select users" ng-model="usersModel" ng-options="user.id as user.name for user in users">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="field-7" class="control-label">Tags</label>
+                                            <input id="field-7" class="input-tags" type="text" value="" data-role="tagsinput" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="field-8" class="control-label">Trimestres</label>
+                                            <select id="field-8" multiple="multiple" name="ciclos" class="form-control multi-select cycles" ng-model="cyclesModel" ng-options="cycle.id as cycle.name for cycle in newCycles">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-white" data-dismiss="modal">Fechar</button>
+                            <button type="submit" class="btn btn-primary salvar" data-loading-text="<i class='icon-spinner animate-spin'></i> Salvando">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>

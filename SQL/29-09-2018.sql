@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_objetivos` ADD `comentario_status` ENUM('0','1') NULL DEFAULT NULL AFTER `id_tipo_atualizacao`;

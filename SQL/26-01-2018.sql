@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_usuario` CHANGE `normal_user` `normal_user` INT(1) NULL DEFAULT '0', CHANGE `goal_register` `goal_register` INT(11) NULL DEFAULT '0', CHANGE `maintenance_user` `maintenance_user` INT(11) NULL DEFAULT '0', CHANGE `user_reviewer` `user_reviewer` INT(11) NULL DEFAULT '0';

@@ -1,0 +1,289 @@
+<div>
+  <hr>
+  <div class="form_add_row">
+    <div class="col-sm-12">
+      <div class="dblock ">
+
+        <div class="dblock_body model_bod">
+          <div class="survey_title">
+                <div class="srv_date">{{survey_questions.created | amUtc | amDateFormat:'DD/MM/YYYY' }}</div>
+                <a href="{{profileurl}}" ng-if="survey_questions.logintype!='survey_logged_in'">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+			<span class="first-word">{{ initialsToOne(survey_questions.survey_name) }}</span> {{ survey_questions.survey_name }}
+			<form id="new_survey_update" ng-submit="submitNewSurvey()" method="post">
+				<input type="hidden" name="questioerio_id" value="{{survey_questions.id_questionerio}}">
+				<input type="hidden" name="id_pesquisa" value="{{survey_questions.id_pesquisa}}">
+				<div class="q_panel open_question" ng-repeat="category in survey_questions.survey"  ng-if="survey_questions.survey.length>0">
+					<div class="survey_q" ng-click="showHideQuestionCategories($event,category.data.id)">{{ category.data.name }}</div>
+					   <div class="q_panel_data"  ng-repeat="questionerio in category.questions" ng-if="category.questions.length>0">
+						<div class="row" ng-if="questionerio.type=='q'  && questionerio.favorabilidade==0" ng-include="'SurveytextQuestion'" ></div>
+						<div class="row" ng-if="questionerio.type=='e'  && questionerio.favorabilidade==0" ng-include="'SurveystarRating'"></div>
+						<div class="row" ng-if="questionerio.type=='c'  && questionerio.favorabilidade==0" ng-include="'SurveyheartRating'"></div>
+						<div class="row" ng-if="questionerio.type=='f' && questionerio.favorabilidade==1" ng-include="'SurveyFavorStarRating'"></div>
+						<div class="row" ng-if="questionerio.type=='o'  && questionerio.favorabilidade==0" ng-include="'SurveymultipleAnswer'"></div>
+						</div> <!--q_panel_data END-->
+				</div>  <!--q_panel END--> 
+				
+				<div class="q_panel_btn form-group" ng-if="survey_questions.survey.length>0">
+					<button type="submit" class="submit_btn" data-loading-text="<i class='icon-spinner animate-spin'></i> Salvando">Enviar</button>
+					<a class="cancelar_btn" href="{{profileurl}}"  ng-if="survey_questions.logintype!='survey_logged_in'" >Cancelar</a>
+				</div>
+				<div class="noq_panel_btn form-group" ng-if="survey_questions.survey.length< 1">
+					<p>Grande trabalho! Nesse momento não existem pesquisas pendentes. <a ng-if="survey_questions.logintype=='survey_logged_in'" href="{{logouturl}}"><i style="font-size: 27px;line-height: 23px;position: relative;top: 5px;margin-right: -9px;" class="icon-logout"></i> {{ "UI.LOGOUT" | translate }}</a>
+					</p>
+				</div>
+			</form>
+
+          <script type="text/ng-template" id="SurveytextQuestion">
+          	<div class="col-md-5 col-sm-5">
+            <h2 class="srv_question">{{questionerio.question}}</h2>
+          </div>
+          <div class="col-md-7 col-sm-7">
+            <div class="answer-box">
+            	<input type="hidden" name="answers[text_answer][{{questionerio.id_pergunta}}][id_questionario]" ng-value="{{questionerio.id_questionario}}">
+				<textarea class="form-control" name="answers[text_answer][{{questionerio.id_pergunta}}][value]" placeholder="Descreva sua resposta aqui" class="mb0"></textarea>
+            </div>
+            <!--like-count-box-wrapper END-->
+          </div>
+		  </script>
+          <script type="text/ng-template" id="SurveymultipleAnswer">
+				<div class="col-md-5 col-sm-5">
+                    <h2 class="srv_question">{{questionerio.question}}</h2>
+                  </div>
+                  <div class="col-md-7 col-sm-7">
+                    <div class="radio-box-wrapper q_data clearfix">
+                      <div class="custom_radio">
+                        <div class="radio_dv" ng-repeat="answer in questionerio.options">
+                        	<input type="radio" name="answers[multiresponse_answer][{{questionerio.id_pergunta}}]"  autocomplete="off" ng-value="answer.id" id="ch_survey_{{ answer.id }}">
+                          <label for="ch_survey_{{ answer.id }}"> {{answer.answer}}</label>
+                        </div>
+                      </div>
+                    </div>
+                    <!--like-count-box-wrapper END-->
+                  </div>
+		  </script>
+          <script type="text/ng-template" id="SurveystarRating">
+
+
+				<div class="col-md-5 col-sm-5">
+                <h2 class="srv_question"><!-- <span class="qno">1.</span> --> {{questionerio.question}}</h2>
+                  </div>
+                  <div class="col-md-7 col-sm-7">
+                  	<input type="hidden" name="answers[rating_answer][{{questionerio.id_pergunta}}][id_questionario]" ng-value="{{questionerio.id_questionario}}">
+                    <div class="like-count-box-wrapper q_data"> <span>Não satisfeito</span>
+                      <div class="custom_label_dv q_rating">
+                        <div class="custom_radio_lable">
+                    		<label for="rad_{{questionerio.id_pergunta}}_1">
+								<input name="answers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="1" id="rad_{{questionerio.id_pergunta}}_1"  ng-click="getStarValue(questionerio.id_pergunta,1)">
+								<span id="span_{{questionerio.id_pergunta}}_1">&nbsp;</span>
+							</label>
+                        </div>
+                      </div>
+                      <div class="custom_label_dv q_rating">
+                        <div class="custom_radio_lable">
+                          <label for="rad_{{questionerio.id_pergunta}}_2">
+							<input name="answers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="2" id="rad_{{questionerio.id_pergunta}}_2"  ng-click="getStarValue(questionerio.id_pergunta,2)">
+							<span id="span_{{questionerio.id_pergunta}}_2">&nbsp;</span>
+						</label>
+                      	</div>
+                  	  </div>
+                      <div class="custom_label_dv q_rating">
+                        <div class="custom_radio_lable">
+	                      <label for="rad_{{questionerio.id_pergunta}}_3">
+									<input name="answers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="3" id="rad_{{questionerio.id_pergunta}}_3"  ng-click="getStarValue(questionerio.id_pergunta,3)">
+									<span id="span_{{questionerio.id_pergunta}}_3">&nbsp;</span>
+								</label>
+                        </div>
+                      </div>
+                      <div class="custom_label_dv q_rating">
+                        <div class="custom_radio_lable">
+                         <label for="rad_{{questionerio.id_pergunta}}_4">
+									<input name="answers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="4" id="rad_{{questionerio.id_pergunta}}_4"  ng-click="getStarValue(questionerio.id_pergunta,4)">
+									<span id="span_{{questionerio.id_pergunta}}_4">&nbsp;</span>
+								</label>
+                        </div>
+                      </div>
+                      <div class="custom_label_dv  q_rating">
+                        <div class="custom_radio_lable">
+                          <label for="rad_{{questionerio.id_pergunta}}_5">
+							<input name="answers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="5" id="rad_{{questionerio.id_pergunta}}_5"  ng-click="getStarValue(questionerio.id_pergunta,5)">
+							<span id="span_{{questionerio.id_pergunta}}_5">&nbsp;</span>
+						</label>
+                        </div>
+                      </div>
+                      <div class="custom_label_dv q_rating" ng-if="questionerio.escala == 10">
+                        <div class="custom_radio_lable">
+                          <label for="rad_{{questionerio.id_pergunta}}_6">
+									<input name="answers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="6" id="rad_{{questionerio.id_pergunta}}_6"  ng-click="getStarValue(questionerio.id_pergunta,6)">
+									<span id="span_{{questionerio.id_pergunta}}_6">&nbsp;</span>
+								</label>
+                        </div>
+                      </div>
+                      <div class="custom_label_dv q_rating" ng-if="questionerio.escala == 10">
+                        <div class="custom_radio_lable">
+                          <label for="rad_{{questionerio.id_pergunta}}_7">
+									<input name="answers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="7" id="rad_{{questionerio.id_pergunta}}_7"  ng-click="getStarValue(questionerio.id_pergunta,7)">
+									<span id="span_{{questionerio.id_pergunta}}_7">&nbsp;</span>
+								</label>
+                        </div>
+                      </div>
+                      <div class="custom_label_dv q_rating" ng-if="questionerio.escala == 10">
+                        <div class="custom_radio_lable">
+                          <label for="rad_{{questionerio.id_pergunta}}_8">
+									<input name="answers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="8" id="rad_{{questionerio.id_pergunta}}_8"  ng-click="getStarValue(questionerio.id_pergunta,8)">
+									<span id="span_{{questionerio.id_pergunta}}_8">&nbsp;</span>
+								</label>
+                        </div>
+                      </div>
+                      <div class="custom_label_dv q_rating" ng-if="questionerio.escala == 10">
+                        <div class="custom_radio_lable">
+                          <label for="rad_{{questionerio.id_pergunta}}_9">
+									<input name="answers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="9" id="rad_{{questionerio.id_pergunta}}_9"  ng-click="getStarValue(questionerio.id_pergunta,9)">
+									<span id="span_{{questionerio.id_pergunta}}_9">&nbsp;</span>
+								</label>
+                        </div>
+                      </div>
+                      <div class="custom_label_dv q_rating" ng-if="questionerio.escala == 10">
+                        <div class="custom_radio_lable">
+                          <label for="rad_{{questionerio.id_pergunta}}_10">
+									<input name="answers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="10" id="rad_{{questionerio.id_pergunta}}_10"  ng-click="getStarValue(questionerio.id_pergunta,10)">
+									<span id="span_{{questionerio.id_pergunta}}_10">&nbsp;</span>
+								</label>
+                        </div>
+                      </div>
+                      <span>Muito satisfeito</span> </div>
+                    <!--like-count-box-wrapper END-->
+                  </div>
+		  </script>
+          <script type="text/ng-template" id="SurveyFavorStarRating">
+				<div class="col-md-5 col-sm-5">
+					<input type="hidden" name="answers[rating_answer][{{questionerio.id_pergunta}}][id_questionario]" ng-value="{{questionerio.id_questionario}}">
+                    <h2 class="srv_question">{{questionerio.question}}</h2>
+                  </div>
+                  <div class="col-md-7 col-sm-7">
+                    <div class="radio-box-wrapper q_data clearfix">
+                      <div class="custom_radio">
+                        <div class="radio_dv">
+
+                          <input name="answers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="1" id="rad_{{questionerio.id_pergunta}}_1"  ng-click="getStarValue(questionerio.id_pergunta,1)">
+                          <label for="rad_{{questionerio.id_pergunta}}_1">Discordo Totalmente</label>
+                        </div>
+                        <div class="radio_dv">
+                          <input name="answers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="2" id="rad_{{questionerio.id_pergunta}}_2"  ng-click="getStarValue(questionerio.id_pergunta,2)">
+                          <label for="rad_{{questionerio.id_pergunta}}_2">Discordo</label>
+                        </div>
+                        <div class="radio_dv">
+                          <input name="answers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="3" id="rad_{{questionerio.id_pergunta}}_3"  ng-click="getStarValue(questionerio.id_pergunta,3)">
+                          <label for="rad_{{questionerio.id_pergunta}}_3">Neutro</label>
+                        </div>
+                        <div class="radio_dv">
+                         <input name="answers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="4" id="rad_{{questionerio.id_pergunta}}_4"  ng-click="getStarValue(questionerio.id_pergunta,4)">
+                          <label for="rad_{{questionerio.id_pergunta}}_4">Concordo</label>
+                        </div>
+                        <div class="radio_dv">
+                          <input name="answers[rating_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="5" id="rad_{{questionerio.id_pergunta}}_5"  ng-click="getStarValue(questionerio.id_pergunta,5)">
+                          <label for="rad_{{questionerio.id_pergunta}}_5">Totalmente de acordo</label>
+                        </div>
+                      </div>
+                    </div>
+                    <!--like-count-box-wrapper END-->
+                  </div>
+					</script>
+          <script type="text/ng-template" id="SurveyheartRating">
+				<input type="hidden" name="answers[heart_answer][{{questionerio.id_pergunta}}][id_questionario]" ng-value="{{questionerio.id_questionario}}">
+					<div class="col-md-5 col-sm-5">
+						<h2 class="srv_question"><!-- <span class="qno">1.</span>  -->{{questionerio.question}}</h2>
+					</div>
+					<div class="col-md-7 col-sm-7">
+                    <div class="like-count-box-wrapper q_data"> <span>Não satisfeito</span>
+                      <div class="custom_label_dv star heart q_rating">
+                        <div class="custom_radio_lable">
+                    		<label for="rad21_{{questionerio.id_pergunta}}_1">
+								<input name="answers[heart_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="1"  id="rad21_{{questionerio.id_pergunta}}_1"  ng-click="getHeartValue(questionerio.id_pergunta,1)">
+								<span id="span_{{questionerio.id_pergunta}}_1">&nbsp;</span>
+							</label>
+                        </div>
+                      </div>
+                      <div class="custom_label_dv star heart  q_rating">
+                        <div class="custom_radio_lable">
+                          <label for="rad22_{{questionerio.id_pergunta}}_2">
+								<input name="answers[heart_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="2"  id="rad22_{{questionerio.id_pergunta}}_2"  ng-click="getHeartValue(questionerio.id_pergunta,2)">
+								<span id="span_{{questionerio.id_pergunta}}_2">&nbsp;</span>
+							</label>
+                      </div>
+                  	  </div>
+                      <div class="custom_label_dv star  heart q_rating">
+                        <div class="custom_radio_lable">
+                          <label for="rad23_{{questionerio.id_pergunta}}_3">
+								<input name="answers[heart_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="3"  id="rad23_{{questionerio.id_pergunta}}_3"  ng-click="getHeartValue(questionerio.id_pergunta,3)">
+								<span id="span_{{questionerio.id_pergunta}}_3">&nbsp;</span>
+							</label>
+                        </div>
+                      </div>
+                      <div class="custom_label_dv star  heart q_rating">
+                        <div class="custom_radio_lable">
+                         <label for="rad24_{{questionerio.id_pergunta}}_4">
+							<input name="answers[heart_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="4"  id="rad24_{{questionerio.id_pergunta}}_4"  ng-click="getHeartValue(questionerio.id_pergunta,4)">
+							<span id="span_{{questionerio.id_pergunta}}_4">&nbsp;</span>
+						</label>
+                        </div>
+                      </div>
+                      <div class="custom_label_dv star  heart q_rating">
+                        <div class="custom_radio_lable">
+                          <label for="rad25_{{questionerio.id_pergunta}}_5">
+							<input name="answers[heart_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="5"  id="rad25_{{questionerio.id_pergunta}}_5"  ng-click="getHeartValue(questionerio.id_pergunta,5)">
+							<span id="span_{{questionerio.id_pergunta}}_5">&nbsp;</span>
+						</label>
+                        </div>
+                      </div>
+                      <div class="custom_label_dv star  heart q_rating" ng-if="questionerio.escala == 10">
+                        <div class="custom_radio_lable">
+                          <label for="rad25_{{questionerio.id_pergunta}}_6">
+								<input name="answers[heart_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="6"  id="rad25_{{questionerio.id_pergunta}}_6"  ng-click="getHeartValue(questionerio.id_pergunta,6)">
+								<span id="span_{{questionerio.id_pergunta}}_6">&nbsp;</span>
+							</label>
+                        </div>
+                      </div>
+                      <div class="custom_label_dv star  heart q_rating" ng-if="questionerio.escala == 10">
+                        <div class="custom_radio_lable">
+                          <label for="rad25_{{questionerio.id_pergunta}}_7">
+								<input name="answers[heart_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="7"  id="rad25_{{questionerio.id_pergunta}}_7"  ng-click="getHeartValue(questionerio.id_pergunta,7)">
+								<span id="span_{{questionerio.id_pergunta}}_7">&nbsp;</span>
+							</label>
+                        </div>
+                      </div>
+                      <div class="custom_label_dv star  heart q_rating" ng-if="questionerio.escala == 10">
+                        <div class="custom_radio_lable">
+                          <label for="rad25_{{questionerio.id_pergunta}}_8">
+								<input name="answers[heart_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="8"  id="rad25_{{questionerio.id_pergunta}}_8"  ng-click="getHeartValue(questionerio.id_pergunta,8)">
+								<span id="span_{{questionerio.id_pergunta}}_8">&nbsp;</span>
+							</label>
+                        </div>
+                      </div>
+                      <div class="custom_label_dv star  heart q_rating" ng-if="questionerio.escala == 10">
+                        <div class="custom_radio_lable">
+                          <label for="rad25_{{questionerio.id_pergunta}}_9">
+							<input name="answers[heart_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="9"  id="rad25_{{questionerio.id_pergunta}}_9"  ng-click="getHeartValue(questionerio.id_pergunta,9)">
+							<span id="span_{{questionerio.id_pergunta}}_9">&nbsp;</span>
+						</label>
+                        </div>
+                      </div>
+                      <div class="custom_label_dv star  heart q_rating" ng-if="questionerio.escala == 10">
+                        <div class="custom_radio_lable">
+                          <label for="rad25_{{questionerio.id_pergunta}}_10">
+							<input name="answers[heart_answer][{{questionerio.id_pergunta}}][value]" type="radio" autocomplete="off" value="10"  id="rad25_{{questionerio.id_pergunta}}_10"  ng-click="getHeartValue(questionerio.id_pergunta,10)">
+							<span id="span_{{questionerio.id_pergunta}}_10">&nbsp;</span>
+						</label>
+                        </div>
+                      </div>
+                      <span>Extremamente satisfeito</span> </div>
+                    <!--like-count-box-wrapper END-->
+                  </div>
+					</script>
+        </div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+</div>

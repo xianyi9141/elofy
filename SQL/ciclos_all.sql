@@ -1,0 +1,13 @@
+-- select * from ttl_revisao_ciclo where id_empresa=108
+-- select id_revisao_ciclos_avaliacoes from ttl_revisao_ciclo_avaliacoes where id_revisao_ciclo in (66,69,72,73,77)
+-- delete from ttl_revisao_ciclo_avaliacoes_fase where id_revisao_ciclo_avaliacoes in (select id_revisao_ciclos_avaliacoes from ttl_revisao_ciclo_avaliacoes where id_revisao_ciclo in (66,69,72,73,77))
+-- delete from ttl_revisao_ciclo_score where id_revisao_ciclo in (66,69,72,73,77)
+-- select id_revisao_ciclo_fases from ttl_revisao_ciclo_fases where id_revisao_ciclo in (66,69,72,73,77)
+-- delete from ttl_revisao_ciclo_fase_tipo_score where id_revisao_ciclo_fases in (select id_revisao_ciclo_fases from ttl_revisao_ciclo_fases where id_revisao_ciclo in (66,69,72,73,77))
+-- delete from ttl_revisao_ciclo_fases where id_revisao_ciclo in (66,69,72,73,77)
+-- delete from ttl_revisao_ciclo_avaliacoes  where id_revisao_ciclo in (66,69,72,73,77)
+-- delete from ttl_revisao_ciclo  where id_revisao_ciclo in (66,69,72,73,77)
+-- select *  from ttl_revisao_ciclo_avaliacoes  where id_revisao_ciclo in (74) and respondido =1
+-- select *  from ttl_revisao_ciclo_avaliacoes_fase  where id_revisao_ciclo_avaliacoes in (18033)
+-- select * from ttl_perguntas where id_empresa =108
+select * from ttl_revisao_ciclo_fases where id_revisao_ciclo =74

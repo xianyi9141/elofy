@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_empresa` ADD `elos` INT(11) NOT NULL DEFAULT '0' AFTER `label_carreer`, ADD `label_elos` VARCHAR(100) NULL DEFAULT NULL AFTER `elos

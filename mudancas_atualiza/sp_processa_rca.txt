@@ -1,0 +1,266 @@
+precisa configuração para ver quem é o gestor, e se duplica se forem diferentes os gestores
+
+BEGIN  
+
+
+
+    DECLARE curId_processa_rca               INTEGER;
+
+    DECLARE curId_revisao_ciclos_avaliacoes  INTEGER;
+
+    DECLARE curOperacao                      INTEGER;
+
+    DECLARE curId_usuario_atualizador        INTEGER;
+
+    DECLARE curProcessado				        INTEGER;
+
+    DECLARE vTimestamp                       DATETIME;
+
+    
+
+    DECLARE vId_revisao_ciclo                INTEGER; 
+
+	 DECLARE vId_usuario_avaliado             INTEGER; 
+
+	 DECLARE vId_usuario_avaliador            INTEGER; 
+
+	 DECLARE vId_tipo_avaliacao               INTEGER; 
+
+	 DECLARE vValores                         INTEGER;
+
+	 DECLARE vCompetencias                    INTEGER;
+
+    DECLARE vResultados                      INTEGER;  
+
+	 DECLARE vPotencial                       INTEGER; 
+
+	 DECLARE vSurvey                          INTEGER; 
+
+	 DECLARE vRespondido                      INTEGER; 
+
+	 DECLARE vAutorizado                      INTEGER;
+
+	 DECLARE vAuto                            INTEGER;
+
+	 DECLARE vId_gestor                       INTEGER;
+
+DECLARE vId_gestor2                       INTEGER;
+
+
+    DECLARE vFim_cursor                      BOOL DEFAULT FALSE;
+
+
+
+
+
+    DECLARE cur_processa_rca CURSOR FOR 
+
+       SELECT id_processa_rca, id_revisao_ciclos_avaliacoes, operacao, id_usuario_atualizador, processado
+
+          from ttl_processa_rca
+
+       WHERE processado = 0;
+
+
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET vFim_cursor = TRUE;
+
+
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+
+       BEGIN
+
+          ROLLBACK;
+
+          GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, @errno = MYSQL_ERRNO, 
+
+                                      @text = MESSAGE_TEXT; 
+
+          SET @erro = CONCAT("ERRO ", @errno, " (", @sqlstate, "): ", @text); 
+
+          SELECT @erro;  
+
+       END;
+
+
+
+    SELECT SYSDATE() INTO vTimestamp;
+
+
+
+    OPEN cur_processa_rca;
+
+
+
+       loop_processa_rca: LOOP
+
+          FETCH cur_processa_rca INTO curId_processa_rca, curId_revisao_ciclos_avaliacoes, curOperacao, curId_usuario_atualizador, curProcessado;
+
+
+
+          IF vFim_cursor THEN
+
+             LEAVE loop_processa_rca;
+
+          END IF;
+
+          
+
+          SET vId_revisao_ciclo = NULL;
+
+          
+
+          SELECT id_revisao_ciclo, id_usuario_avaliado, id_usuario_avaliador, id_tipo_avaliacao, valores, competencias, 
+
+                  resultados,  potencial, survey, respondido, autorizado
+
+         			INTO  vId_revisao_ciclo, vId_usuario_avaliado, vId_usuario_avaliador, vId_tipo_avaliacao, vValores, vCompetencias, 
+
+                  vResultados,  vPotencial, vSurvey, vRespondido, vAutorizado
+
+             		FROM ttl_revisao_ciclo_avaliacoes
+
+                  where id_revisao_ciclos_avaliacoes = curId_revisao_ciclos_avaliacoes;
+
+          
+
+         START TRANSACTION;
+
+         	
+
+         	
+
+        
+
+          IF vId_revisao_ciclo IS NOT NULL THEN
+
+         
+
+             IF (curOperacao = 1 and curProcessado = 0) THEN
+
+          
+
+                SELECT id_resp_time, id_gestor INTO vId_gestor, vId_gestor2 from v_usuariostime where id_usuario = vId_usuario_avaliado;
+					  
+             
+				IF (vId_gestor != vId_usuario_avaliado ) THEN
+                INSERT INTO ttl_revisao_ciclo_avaliacoes ( id_revisao_ciclo, id_usuario_avaliado, id_usuario_avaliador, 
+
+		   		                                            id_tipo_avaliacao, valores, competencias, 
+
+                                                           resultados,  potencial, survey, respondido, autorizado,
+
+                                                           id_usuario_atualizador, data_atualizacao
+
+                                                         )
+
+                                             values      ( vId_revisao_ciclo, vId_usuario_avaliado, vId_gestor, 2,
+
+                                                           vValores, vCompetencias, vResultados,  vPotencial, vSurvey, vRespondido, vAutorizado,
+
+                                                           curId_usuario_atualizador, vTimestamp
+
+                                                         );
+           END IF;                                              
+
+            
+           IF (vId_gestor2 != vId_gestor ) THEN  
+                     INSERT INTO ttl_revisao_ciclo_avaliacoes ( id_revisao_ciclo, id_usuario_avaliado, id_usuario_avaliador, 
+
+		   		                                            id_tipo_avaliacao, valores, competencias, 
+
+                                                           resultados,  potencial, survey, respondido, autorizado,
+
+                                                           id_usuario_atualizador, data_atualizacao
+
+                                                         )
+
+                                             values      ( vId_revisao_ciclo, vId_usuario_avaliado, vId_gestor2, 2,
+
+                                                           vValores, vCompetencias, vResultados,  vPotencial, vSurvey, vRespondido, vAutorizado,
+
+                                                           curId_usuario_atualizador, vTimestamp
+
+                                                         );
+         		END IF;
+
+             END IF;
+
+
+
+             IF (curOperacao = 2 and curProcessado = 0) THEN
+
+          
+
+                INSERT INTO ttl_revisao_ciclo_avaliacoes ( id_revisao_ciclo, id_usuario_avaliado, id_usuario_avaliador, 
+
+	   			                                            id_tipo_avaliacao, valores, competencias, 
+
+                                                           resultados,  potencial, survey, respondido, autorizado,
+
+                                                           id_usuario_atualizador, data_atualizacao
+
+                                                         )
+
+                  select vId_revisao_ciclo, vId_usuario_avaliado, t1.id_usuario, 4,
+
+                         vValores, vCompetencias, vResultados,  vPotencial, vSurvey, vRespondido, vAutorizado,
+
+                         curId_usuario_atualizador, vTimestamp
+
+                                      from v_usuariostime t1
+
+                                        where t1.id_gestor = vId_usuario_avaliado
+
+                                         and  t1.id_usuario != t1.id_resp_time
+
+                                         and  t1.ativo = 1;
+
+          
+
+             END IF;
+
+              set curProcessado =1; 
+
+          END IF;  
+
+			
+
+
+
+          SET vFim_cursor = FALSE;
+
+       
+
+			 UPDATE  ttl_processa_rca set processado = 1
+
+			    where id_processa_rca = curId_processa_rca;	          
+
+          COMMIT;
+
+
+
+       END LOOP;
+
+
+
+       CLOSE cur_processa_rca;
+
+    
+
+    	-- Verifica se há alguma etapa com autoavalição se não inativa  Precisa ajustar para o contrário
+
+ 	
+
+	 select sum(autoavalia) into vAuto from ttl_revisao_ciclo_fases where id_revisao_ciclo = vId_revisao_ciclo;
+
+ 	 IF (vAuto = 0) THEN
+
+		update ttl_revisao_ciclo_avaliacoes set ativo = 0 where id_tipo_avaliacao =1 and id_revisao_ciclo = vId_revisao_ciclo;
+
+	 END IF;	
+
+
+
+END

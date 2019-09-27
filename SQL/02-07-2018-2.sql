@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_competencias_times` CHANGE `id_competencias_times` `id_competencias_times` INT(11) NOT NULL AUTO_INCREMENT;

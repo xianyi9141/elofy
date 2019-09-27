@@ -1,0 +1,1 @@
+ALTER TABLE `ttl_revisao_ciclo_avaliacoes` ADD `auto` INT NOT NULL DEFAULT '0' AFTER `autorizado`;

@@ -1,0 +1,172 @@
+==============================
+Request \'removeuserfromzapier_post\ at:2018-10-10 22:47:32 
+
+POST /elofy/api/removeuserfromzapier?email_usuario=manuel2@urango.com.br&nome_usuario=Manuel%20Postman HTTP/1.1
+
+HTTP headers:
+Host: localhost:8888
+Connection: keep-alive
+Cache-Control: no-cache
+Origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+Zapier-Api-Key: ELZ13925bbe64da2c39e
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36
+Postman-Token: ff8e221a-d293-e8b9-3542-1d4cc777a421
+Accept: */*
+Accept-Encoding: gzip, deflate, br
+Accept-Language: pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7
+Cookie: ci_session=a%3A5%3A%7Bs%3A10%3A%22session_id%22%3Bs%3A32%3A%22e990ff27fbb9793fdf53d3b2d5c6e2a1%22%3Bs%3A10%3A%22ip_address%22%3Bs%3A3%3A%22%3A%3A1%22%3Bs%3A10%3A%22user_agent%22%3Bs%3A120%3A%22Mozilla%2F5.0+%28Macintosh%3B+Intel+Mac+OS+X+10_11_3%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F69.0.3497.100+Safari%2F537.3%22%3Bs%3A13%3A%22last_activity%22%3Bi%3A1539203744%3Bs%3A9%3A%22user_data%22%3Bs%3A0%3A%22%22%3B%7D785f4cc166cebc439229fdd3474152f0
+
+Request body:
+
+==============================
+<br />Request \'removeuserfromzapier_post\ at:2018-10-10 22:47:01 
+<br />
+<br />POST /elofy/api/removeuserfromzapier?email_usuario=manuel2@urango.com.br&nome_usuario=Manuel%20Postman HTTP/1.1
+<br />
+<br />HTTP headers:
+<br />Host: localhost:8888
+<br />Connection: keep-alive
+<br />Cache-Control: no-cache
+<br />Origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+<br />Zapier-Api-Key: ELZ13925bbe4385ec64e
+<br />User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36
+<br />Postman-Token: 411a4961-b045-5a23-4f0f-5660489fea95
+<br />Accept: */*
+<br />Accept-Encoding: gzip, deflate, br
+<br />Accept-Language: pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7
+<br />Cookie: ci_session=a%3A5%3A%7Bs%3A10%3A%22session_id%22%3Bs%3A32%3A%22e990ff27fbb9793fdf53d3b2d5c6e2a1%22%3Bs%3A10%3A%22ip_address%22%3Bs%3A3%3A%22%3A%3A1%22%3Bs%3A10%3A%22user_agent%22%3Bs%3A120%3A%22Mozilla%2F5.0+%28Macintosh%3B+Intel+Mac+OS+X+10_11_3%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F69.0.3497.100+Safari%2F537.3%22%3Bs%3A13%3A%22last_activity%22%3Bi%3A1539203744%3Bs%3A9%3A%22user_data%22%3Bs%3A0%3A%22%22%3B%7D785f4cc166cebc439229fdd3474152f0
+<br />
+<br />Request body:
+<br />
+<br />==============================
+<br /><br />Request \'removeuserfromzapier_post\ at:2018-10-10 22:46:30 
+<br /><br />
+<br /><br />POST /elofy/api/removeuserfromzapier?email_usuario=manuel2@urango.com.br&nome_usuario=Manuel%20Postman HTTP/1.1
+<br /><br />
+<br /><br />HTTP headers:
+<br /><br />Host: localhost:8888
+<br /><br />Connection: keep-alive
+<br /><br />Cache-Control: no-cache
+<br /><br />Origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+<br /><br />Zapier-Api-Key: ELZ13925bbe4385ec64e
+<br /><br />User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36
+<br /><br />Postman-Token: 9a10bdc6-2cc1-dc80-2ae8-5147ce0b4f70
+<br /><br />Accept: */*
+<br /><br />Accept-Encoding: gzip, deflate, br
+<br /><br />Accept-Language: pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7
+<br /><br />Cookie: ci_session=a%3A5%3A%7Bs%3A10%3A%22session_id%22%3Bs%3A32%3A%22e990ff27fbb9793fdf53d3b2d5c6e2a1%22%3Bs%3A10%3A%22ip_address%22%3Bs%3A3%3A%22%3A%3A1%22%3Bs%3A10%3A%22user_agent%22%3Bs%3A120%3A%22Mozilla%2F5.0+%28Macintosh%3B+Intel+Mac+OS+X+10_11_3%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F69.0.3497.100+Safari%2F537.3%22%3Bs%3A13%3A%22last_activity%22%3Bi%3A1539203744%3Bs%3A9%3A%22user_data%22%3Bs%3A0%3A%22%22%3B%7D785f4cc166cebc439229fdd3474152f0
+<br /><br />
+<br /><br />Request body:
+<br /><br />
+<br /><br />==============================
+<br /><br /><br />Request \'removeuserfromzapier_post\ at:2018-10-10 22:40:44 
+<br /><br /><br />
+<br /><br /><br />POST /elofy/api/removeuserfromzapier?email_usuario=manuel2@urango.com.br&nome_usuario=Manuel%20Postman HTTP/1.1
+<br /><br /><br />
+<br /><br /><br />HTTP headers:
+<br /><br /><br />Host: localhost:8888
+<br /><br /><br />Connection: keep-alive
+<br /><br /><br />Cache-Control: no-cache
+<br /><br /><br />Origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+<br /><br /><br />Zapier-Api-Key: ELZ13925bbe4385ec64e
+<br /><br /><br />User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36
+<br /><br /><br />Postman-Token: f14e1b66-6281-c713-e2e8-34e6e84dfd97
+<br /><br /><br />Accept: */*
+<br /><br /><br />Accept-Encoding: gzip, deflate, br
+<br /><br /><br />Accept-Language: pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7
+<br /><br /><br />Cookie: ci_session=a%3A5%3A%7Bs%3A10%3A%22session_id%22%3Bs%3A32%3A%22e990ff27fbb9793fdf53d3b2d5c6e2a1%22%3Bs%3A10%3A%22ip_address%22%3Bs%3A3%3A%22%3A%3A1%22%3Bs%3A10%3A%22user_agent%22%3Bs%3A120%3A%22Mozilla%2F5.0+%28Macintosh%3B+Intel+Mac+OS+X+10_11_3%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F69.0.3497.100+Safari%2F537.3%22%3Bs%3A13%3A%22last_activity%22%3Bi%3A1539203744%3Bs%3A9%3A%22user_data%22%3Bs%3A0%3A%22%22%3B%7D785f4cc166cebc439229fdd3474152f0
+<br /><br /><br />
+<br /><br /><br />Request body:
+<br /><br /><br />
+<br /><br /><br />==============================
+<br /><br /><br /><br />Request \'removeuserfromzapier_post\ at:2018-10-10 22:39:53 
+<br /><br /><br /><br />
+<br /><br /><br /><br />POST /elofy/api/removeuserfromzapier?email_usuario=manuel2@urango.com.br&nome_usuario=Manuel%20Postman HTTP/1.1
+<br /><br /><br /><br />
+<br /><br /><br /><br />HTTP headers:
+<br /><br /><br /><br />Host: localhost:8888
+<br /><br /><br /><br />Connection: keep-alive
+<br /><br /><br /><br />Cache-Control: no-cache
+<br /><br /><br /><br />Origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+<br /><br /><br /><br />Zapier-Api-Key: ELZ13925bbe4385ec64e
+<br /><br /><br /><br />User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36
+<br /><br /><br /><br />Postman-Token: 6ff6cbcd-6bd1-a56a-5399-e1032e59fda5
+<br /><br /><br /><br />Accept: */*
+<br /><br /><br /><br />Accept-Encoding: gzip, deflate, br
+<br /><br /><br /><br />Accept-Language: pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7
+<br /><br /><br /><br />Cookie: ci_session=a%3A5%3A%7Bs%3A10%3A%22session_id%22%3Bs%3A32%3A%22e990ff27fbb9793fdf53d3b2d5c6e2a1%22%3Bs%3A10%3A%22ip_address%22%3Bs%3A3%3A%22%3A%3A1%22%3Bs%3A10%3A%22user_agent%22%3Bs%3A120%3A%22Mozilla%2F5.0+%28Macintosh%3B+Intel+Mac+OS+X+10_11_3%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F69.0.3497.100+Safari%2F537.3%22%3Bs%3A13%3A%22last_activity%22%3Bi%3A1539203744%3Bs%3A9%3A%22user_data%22%3Bs%3A0%3A%22%22%3B%7D785f4cc166cebc439229fdd3474152f0
+<br /><br /><br /><br />
+<br /><br /><br /><br />Request body:
+<br /><br /><br /><br />
+<br /><br /><br /><br />==============================
+<br /><br /><br /><br /><br />Request at:2018-03-14 03:57:01 
+<br /><br /><br /><br /><br />
+<br /><br /><br /><br /><br />GET /elofy/api/zapierpool?teste=loudo&teste2=laude HTTP/1.1
+<br /><br /><br /><br /><br />
+<br /><br /><br /><br /><br />HTTP headers:
+<br /><br /><br /><br /><br />Host: localhost:8888
+<br /><br /><br /><br /><br />Connection: keep-alive
+<br /><br /><br /><br /><br />Cache-Control: max-age=0
+<br /><br /><br /><br /><br />Upgrade-Insecure-Requests: 1
+<br /><br /><br /><br /><br />User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.162 Safari/537.36
+<br /><br /><br /><br /><br />Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+<br /><br /><br /><br /><br />Accept-Encoding: gzip, deflate, br
+<br /><br /><br /><br /><br />Accept-Language: pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7
+<br /><br /><br /><br /><br />Cookie: micro_office_retina=1; ci_session=a%3A4%3A%7Bs%3A10%3A%22session_id%22%3Bs%3A32%3A%22f9710d6f5d88a820447769813cc871d6%22%3Bs%3A10%3A%22ip_address%22%3Bs%3A3%3A%22%3A%3A1%22%3Bs%3A10%3A%22user_agent%22%3Bs%3A115%3A%22Mozilla%2F5.0+%28Windows+NT+10.0%3B+Win64%3B+x64%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F65.0.3325.162+Safari%2F537.36%22%3Bs%3A13%3A%22last_activity%22%3Bi%3A1520994761%3B%7D5a0eac56032ead56bdd221c658e910bc
+<br /><br /><br /><br /><br />
+<br /><br /><br /><br /><br />Request body:
+<br /><br /><br /><br /><br />
+<br /><br /><br /><br /><br />==============================
+<br /><br /><br /><br /><br />Request ||adduserfromzapier|| at:2018-03-14 04:04:36 
+<br /><br /><br /><br /><br />
+<br /><br /><br /><br /><br />GET /elofy/api/adduserfromzapier HTTP/1.1
+<br /><br /><br /><br /><br />
+<br /><br /><br /><br /><br />HTTP headers:
+<br /><br /><br /><br /><br />Host: localhost:8888
+<br /><br /><br /><br /><br />Connection: keep-alive
+<br /><br /><br /><br /><br />Cache-Control: max-age=0
+<br /><br /><br /><br /><br />Upgrade-Insecure-Requests: 1
+<br /><br /><br /><br /><br />User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.162 Safari/537.36
+<br /><br /><br /><br /><br />Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+<br /><br /><br /><br /><br />Accept-Encoding: gzip, deflate, br
+<br /><br /><br /><br /><br />Accept-Language: pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7
+<br /><br /><br /><br /><br />Cookie: micro_office_retina=1; ci_session=a%3A4%3A%7Bs%3A10%3A%22session_id%22%3Bs%3A32%3A%22f9710d6f5d88a820447769813cc871d6%22%3Bs%3A10%3A%22ip_address%22%3Bs%3A3%3A%22%3A%3A1%22%3Bs%3A10%3A%22user_agent%22%3Bs%3A115%3A%22Mozilla%2F5.0+%28Windows+NT+10.0%3B+Win64%3B+x64%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F65.0.3325.162+Safari%2F537.36%22%3Bs%3A13%3A%22last_activity%22%3Bi%3A1520994761%3B%7D5a0eac56032ead56bdd221c658e910bc
+<br /><br /><br /><br /><br />
+<br /><br /><br /><br /><br />Request body:
+<br /><br /><br /><br /><br />
+<br /><br /><br /><br /><br />==============================
+<br /><br /><br /><br /><br />Request ||adduserfromzapier|| at:2018-03-14 04:07:27 
+<br /><br /><br /><br /><br />
+<br /><br /><br /><br /><br />GET /elofy/api/adduserfromzapier HTTP/1.1
+<br /><br /><br /><br /><br />
+<br /><br /><br /><br /><br />HTTP headers:
+<br /><br /><br /><br /><br />Host: localhost:8888
+<br /><br /><br /><br /><br />Connection: keep-alive
+<br /><br /><br /><br /><br />Cache-Control: max-age=0
+<br /><br /><br /><br /><br />Upgrade-Insecure-Requests: 1
+<br /><br /><br /><br /><br />User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.162 Safari/537.36
+<br /><br /><br /><br /><br />Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+<br /><br /><br /><br /><br />Accept-Encoding: gzip, deflate, br
+<br /><br /><br /><br /><br />Accept-Language: pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7
+<br /><br /><br /><br /><br />Cookie: micro_office_retina=1; ci_session=a%3A4%3A%7Bs%3A10%3A%22session_id%22%3Bs%3A32%3A%22f9710d6f5d88a820447769813cc871d6%22%3Bs%3A10%3A%22ip_address%22%3Bs%3A3%3A%22%3A%3A1%22%3Bs%3A10%3A%22user_agent%22%3Bs%3A115%3A%22Mozilla%2F5.0+%28Windows+NT+10.0%3B+Win64%3B+x64%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F65.0.3325.162+Safari%2F537.36%22%3Bs%3A13%3A%22last_activity%22%3Bi%3A1520994761%3B%7D5a0eac56032ead56bdd221c658e910bc
+<br /><br /><br /><br /><br />
+<br /><br /><br /><br /><br />Request body:
+<br /><br /><br /><br /><br />
+<br /><br /><br /><br /><br />==============================
+<br /><br /><br /><br /><br />Request ||adduserfromzapier|| at:2018-03-16 14:24:54 
+<br /><br /><br /><br /><br />
+<br /><br /><br /><br /><br />GET /elofy/api/adduserfromzapier HTTP/1.1
+<br /><br /><br /><br /><br />
+<br /><br /><br /><br /><br />HTTP headers:
+<br /><br /><br /><br /><br />Host: localhost:8888
+<br /><br /><br /><br /><br />Connection: keep-alive
+<br /><br /><br /><br /><br />Upgrade-Insecure-Requests: 1
+<br /><br /><br /><br /><br />User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36
+<br /><br /><br /><br /><br />Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+<br /><br /><br /><br /><br />Accept-Encoding: gzip, deflate, br
+<br /><br /><br /><br /><br />Accept-Language: en-US,en;q=0.9,pt;q=0.8
+<br /><br /><br /><br /><br />Cookie: bp-activity-oldestpage=1; ci_session=a%3A5%3A%7Bs%3A10%3A%22session_id%22%3Bs%3A32%3A%22db582bc14a6f782e97768c68fffad7c0%22%3Bs%3A10%3A%22ip_address%22%3Bs%3A3%3A%22%3A%3A1%22%3Bs%3A10%3A%22user_agent%22%3Bs%3A120%3A%22Mozilla%2F5.0+%28Macintosh%3B+Intel+Mac+OS+X+10_11_3%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F64.0.3282.186+Safari%2F537.3%22%3Bs%3A13%3A%22last_activity%22%3Bi%3A1521206678%3Bs%3A9%3A%22user_data%22%3Bs%3A0%3A%22%22%3B%7Dab6a2d274bc57497c02b06e929c0042a
+<br /><br /><br /><br /><br />
+<br /><br /><br /><br /><br />Request body:
+<br /><br /><br /><br /><br />
+<br /><br /><br /><br /><br /><br /><br /><br /><br /><br />

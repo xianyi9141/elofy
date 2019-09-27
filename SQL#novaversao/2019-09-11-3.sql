@@ -1,0 +1,16 @@
+ALTER TABLE `ttl_rchave_contrato_atualizacoes`
+ADD COLUMN `descricao_1` BLOB NULL DEFAULT NULL after meta_1,
+ADD COLUMN `descricao_2` BLOB NULL DEFAULT NULL after meta_2,
+ADD COLUMN `descricao_3` BLOB NULL DEFAULT NULL after meta_3,
+ADD COLUMN `descricao_4` BLOB NULL DEFAULT NULL after meta_4,
+ADD COLUMN `descricao_5` BLOB NULL DEFAULT NULL after meta_5,
+ADD COLUMN `descricao_6` BLOB NULL DEFAULT NULL after meta_6,
+ADD COLUMN `descricao_7` BLOB NULL DEFAULT NULL after meta_7,
+ADD COLUMN `descricao_8` BLOB NULL DEFAULT NULL after meta_8,
+ADD COLUMN `descricao_9` BLOB NULL DEFAULT NULL after meta_9,
+ADD COLUMN `descricao_10` BLOB NULL DEFAULT NULL after meta_10,
+ADD COLUMN `descricao_11` BLOB NULL DEFAULT NULL after meta_11,
+ADD COLUMN `descricao_12` BLOB NULL DEFAULT NULL after meta_12,
+ADD COLUMN `descricao_13` BLOB NULL DEFAULT NULL after meta_13,
+ADD COLUMN `descricao_14` BLOB NULL DEFAULT NULL after meta_14,
+ADD COLUMN `descricao_15` BLOB NULL DEFAULT NULL after meta_15;
